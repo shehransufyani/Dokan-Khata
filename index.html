@@ -248,6 +248,14 @@ video.scan{width:100%;border-radius:12px;background:#000;aspect-ratio:4/3;object
 .terms p{margin:0;color:var(--muted)}
 .timerbig{font-size:3rem;font-weight:700;color:var(--accent);line-height:1}
 body.gated{overflow:hidden}
+.scanbar{display:flex;align-items:center;gap:12px;background:var(--accent-soft);border:1px solid var(--accent);border-radius:12px;padding:10px 14px}
+.scanbar .grow{flex:1;min-width:0}.scanbar .grow b{display:block}
+.scanbar .dot{width:12px;height:12px;border-radius:50%;background:var(--accent);flex:none;animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.75)}}
+.scanlast{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px 12px;border-top:1px solid var(--line)}
+.scanlast.flash{animation:flash .6s ease-out}
+@keyframes flash{from{background:var(--accent-soft)}to{background:var(--surface)}}
+@media (prefers-reduced-motion:reduce){.scanbar .dot,.scanlast.flash{animation:none}}
 .setup{display:grid;gap:14px;grid-template-columns:1fr;max-width:760px}
 .kv{display:grid;grid-template-columns:1fr auto;gap:4px 12px}
 </style>
@@ -275,6 +283,7 @@ const I = {
   lock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>',
   book:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5"/><path d="M8 7h7"/></svg>',
   star:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z"/></svg>',
+  gun:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h13a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-4l-2 7H6l2-7H3z"/><path d="M18 8h3"/><path d="M18 5l3-2M18 11l3 2"/></svg>',
   globe:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>'
 };
 
@@ -316,6 +325,7 @@ en:{home:"Home",sell:"Sell",products:"Products",money:"Money",shop:"My shop",set
   ["Service and liability","We work to keep the app running but cannot promise it will never fail. As far as the law allows, we are not responsible for losses from lost data, mistakes in entries or interruptions."],
   ["Changes","We may update these terms, the plans or prices. We will show changes in the app, and using the app after a change means you accept it."],
   ["Law","These terms follow the laws of Bangladesh."]],
+ scannerMode:"Barcode scanner",scannerReady:"Scanner ready",scannerHelp:"Scan items with your USB or Bluetooth scanner. Each scan adds one to the bill.",beep:"Beep",scanWaiting:"Waiting for the first scan…",addAsNew:"Add as new product",
  rocket:"Rocket",demo:"Demo",locked:"Locked",plans:"Plans",guide:"How to use",seePlans:"See plans",unlock:"Unlock",haveCode:"Have an access code?",codePh:"Paste your code or link",
  badCode:"That code is not valid. Check it and try again.",codeExpired:"This code has ended. Renew your plan.",unlocked:"Unlocked: {plan} plan",
  demoOver:"Your free 10 minutes are over",demoOverBody:"Choose a plan and pay with bKash, Nagad or Rocket. We send you a personal access code on WhatsApp. Enter it here to open the app.",
@@ -334,7 +344,7 @@ en:{home:"Home",sell:"Sell",products:"Products",money:"Money",shop:"My shop",set
  g1t:"Set up your shop",g1b:"Open Setup. Type your shop name and WhatsApp number, and pick English or Bangla.",
  g2t:"Add your products",g2b:"Go to Products and press Add product. Enter the name, selling price, buying cost and how many you have. Add a photo and barcode if you like.",
  g3t:"Make a sale",g3b:"Open Sell and tap each product the customer buys. Tap again for more. Press Complete sale and the stock goes down by itself.",
- g4t:"Use a barcode scanner",g4b:"Plug in a USB scanner and scan into the barcode box, or press Scan with camera on a phone. The item is added to the bill.",
+ g4t:"Use a barcode scanner",g4b:"Connect a USB or Bluetooth scanner and press Barcode scanner on the Sell screen. Every scan adds the item to the bill with a beep. A new barcode lets you add the product on the spot. On a phone, use Scan with camera.",
  g5t:"Sell on due (baki)",g5b:"On the bill, choose Due and write the customer's name. Find all dues under Money, then Due. Press Mark as paid when they pay.",
  g6t:"Write income and expenses",g6b:"In Money, open Income & expenses and press Add. Record rent, bills, salaries or extra income so your net earnings are right.",
  g7t:"Read your reports",g7b:"Home shows sales, profit, costs and net earnings for today, 7 days, 30 days or this month, with best sellers and low stock.",
@@ -377,6 +387,7 @@ bn:{home:"হোম",sell:"বিক্রি",products:"পণ্য",money:"�
   ["সেবা ও দায়","আমরা অ্যাপ চালু রাখতে চেষ্টা করি, তবে কখনো সমস্যা হবে না এমন নিশ্চয়তা দিতে পারি না। আইন যতটুকু অনুমতি দেয়, তথ্য হারানো, ভুল এন্ট্রি বা সেবা বন্ধ থাকার ক্ষতির দায় আমাদের নয়।"],
   ["পরিবর্তন","আমরা এই শর্তাবলি, প্ল্যান বা দাম বদলাতে পারি। পরিবর্তন অ্যাপে দেখানো হবে। পরিবর্তনের পর অ্যাপ ব্যবহার করলে তা মেনে নেওয়া বোঝাবে।"],
   ["আইন","এই শর্তাবলি বাংলাদেশের আইন অনুযায়ী চলবে।"]],
+ scannerMode:"বারকোড স্ক্যানার",scannerReady:"স্ক্যানার প্রস্তুত",scannerHelp:"USB বা ব্লুটুথ স্ক্যানারে পণ্য স্ক্যান করুন। প্রতি স্ক্যানে বিলে একটি করে যোগ হবে।",beep:"শব্দ",scanWaiting:"প্রথম স্ক্যানের অপেক্ষা…",addAsNew:"নতুন পণ্য হিসেবে যোগ করুন",
  rocket:"রকেট",demo:"ডেমো",locked:"লক",plans:"প্ল্যান",guide:"কীভাবে ব্যবহার করবেন",seePlans:"প্ল্যান দেখুন",unlock:"খুলুন",haveCode:"অ্যাক্সেস কোড আছে?",codePh:"কোড বা লিংক পেস্ট করুন",
  badCode:"কোডটি সঠিক নয়। আবার দেখে চেষ্টা করুন।",codeExpired:"এই কোডের মেয়াদ শেষ। প্ল্যান রিনিউ করুন।",unlocked:"চালু হয়েছে: {plan} প্ল্যান",
  demoOver:"আপনার ফ্রি ১০ মিনিট শেষ",demoOverBody:"একটি প্ল্যান বাছুন এবং বিকাশ, নগদ বা রকেটে পেমেন্ট করুন। আমরা হোয়াটসঅ্যাপে আপনার ব্যক্তিগত অ্যাক্সেস কোড পাঠাব। কোডটি এখানে দিলেই অ্যাপ খুলবে।",
@@ -395,7 +406,7 @@ bn:{home:"হোম",sell:"বিক্রি",products:"পণ্য",money:"�
  g1t:"দোকান সেটআপ করুন",g1b:"সেটআপে যান। দোকানের নাম ও হোয়াটসঅ্যাপ নম্বর লিখুন, ভাষা বাছুন।",
  g2t:"পণ্য যোগ করুন",g2b:"পণ্য পেজে গিয়ে পণ্য যোগ করুন চাপুন। নাম, বিক্রয়মূল্য, ক্রয়মূল্য ও কতটি আছে লিখুন। চাইলে ছবি ও বারকোড দিন।",
  g3t:"বিক্রি করুন",g3b:"বিক্রি পেজে কাস্টমার যা কিনছে তাতে চাপ দিন। বেশি হলে আবার চাপুন। বিক্রি সম্পন্ন চাপলে স্টক নিজে থেকেই কমবে।",
- g4t:"বারকোড স্ক্যানার ব্যবহার",g4b:"USB স্ক্যানার লাগিয়ে বারকোড বক্সে স্ক্যান করুন, অথবা ফোনে ক্যামেরায় স্ক্যান চাপুন। পণ্যটি বিলে যোগ হবে।",
+ g4t:"বারকোড স্ক্যানার ব্যবহার",g4b:"USB বা ব্লুটুথ স্ক্যানার লাগিয়ে বিক্রি পেজে বারকোড স্ক্যানার চাপুন। প্রতি স্ক্যানে শব্দসহ পণ্য বিলে যোগ হবে। নতুন বারকোড হলে সেখানেই পণ্য যোগ করতে পারবেন। ফোনে ক্যামেরায় স্ক্যান ব্যবহার করুন।",
  g5t:"বাকিতে বিক্রি",g5b:"বিলে বাকি বেছে কাস্টমারের নাম লিখুন। সব বাকি পাবেন হিসাব > বাকি তে। টাকা দিলে পরিশোধ হয়েছে চাপুন।",
  g6t:"আয় ও খরচ লিখুন",g6b:"হিসাব > আয় ও খরচ খুলে যোগ চাপুন। ভাড়া, বিল, বেতন বা বাড়তি আয় লিখলে নিট আয় সঠিক থাকবে।",
  g7t:"রিপোর্ট দেখুন",g7b:"হোমে আজ, ৭ দিন, ৩০ দিন বা এই মাসের বিক্রি, লাভ, খরচ ও নিট আয় দেখবেন, সাথে বেশি বিক্রিত ও কম স্টকের পণ্য।",
@@ -766,7 +777,9 @@ function vSell(){
     ${can("barcode")?`<div class="scanrow">
       <div class="search">${I.scan}<input class="input" id="scanInput" inputmode="numeric" placeholder="${t("scanPh")}" autocomplete="off"></div>
       <button class="btn" data-act="camera" data-target="sell">${I.scan}<span>${t("camera")}</span></button>
-    </div>`:`<div><button class="btn" data-act="upgrade" data-f="barcode">${I.scan}<span>${t("f_barcode")}</span>${lockIc()}</button></div>`}
+      <button class="btn ${S.meta.scanMode?"primary":""}" data-act="scanMode" aria-pressed="${S.meta.scanMode?"true":"false"}">${I.gun}<span>${t("scannerMode")}</span></button>
+    </div>
+    ${S.meta.scanMode?`<div class="scanbar"><span class="dot"></span><div class="grow"><b>${t("scannerReady")}</b><span class="small muted">${t("scannerHelp")}</span></div><button class="chip ${S.meta.scanSound?"on":""}" data-act="scanSound">${t("beep")}</button></div><div class="li scanlast" id="lastScan"><span class="small muted">${t("scanWaiting")}</span></div>`:""}`:`<div><button class="btn" data-act="upgrade" data-f="barcode">${I.scan}<span>${t("f_barcode")}</span>${lockIc()}</button></div>`}
     <div class="chips">${["",...cats()].map(c=>`<button class="chip ${S.cat===c?"on":""}" data-act="cat" data-v="${esc(c)}">${esc(c||t("all"))}</button>`).join("")}</div>
     <div class="tilegrid" id="grid">${sellGrid()}</div>
   </div>
@@ -826,9 +839,43 @@ function handleBarcode(code){
   if(!can("barcode")) return;
   if(S.scanTarget==="form"){ const el=$("#pBarcode"); if(el) el.value=code; S.scanTarget=null; return; }
   const p=S.products.find(x=>x.barcode&&x.barcode===code);
-  if(!p){ toast(t("notFound")+": "+code); return; }
+  if(!p){ beep(false); unknownSheet(code); return; }
+  const before=S.cart.find(x=>x.pid===p.id)?.qty||0;
   addToCart(p.id);
+  const after=S.cart.find(x=>x.pid===p.id)?.qty||0;
+  beep(after>before);
+  if(after>before) showLastScan(p,after);
 }
+/* handheld scanner: USB/Bluetooth scanners type the code very fast and press Enter */
+let audioCtx=null;
+function beep(ok){
+  if(!S.meta.scanSound) return;
+  try{ audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();
+    const tones=ok?[[1850,.09]]:[[420,.12],[320,.16]]; let at=audioCtx.currentTime;
+    tones.forEach(([f,d])=>{ const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.type="square"; o.frequency.value=f; g.gain.value=.06; o.connect(g); g.connect(audioCtx.destination); o.start(at); o.stop(at+d); at+=d+.05; });
+  }catch(e){}
+}
+function showLastScan(p,q){
+  const el=$("#lastScan"); if(!el) return;
+  el.innerHTML=`<div class="thumb">${pic(p)}</div><div class="grow"><b>${esc(pname(p))}</b><span class="small muted num">${M(p.price)} × ${N(q)}</span></div><span class="pill ok">✓</span>`;
+  el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash");
+}
+function unknownSheet(code){
+  openSheet("unknown",`<div class="sheet-head"><h2>${t("notFound")}</h2><button class="iconbtn" data-act="close" aria-label="${t("cancel")}">${I.x}</button></div>
+  <p style="margin:0 0 14px">${t("barcode")}: <b class="num">${esc(code)}</b></p>
+  <div class="row"><button class="btn primary" data-act="newFromCode" data-v="${esc(code)}">${I.plus}${t("addAsNew")}</button><button class="btn" data-act="close">${t("cancel")}</button></div>`);
+}
+const SCAN={buf:"",last:0};
+document.addEventListener("keydown",ev=>{
+  if(!S.meta.scanMode||S.view!=="sell"||!can("barcode")||S.sheet) return;
+  const tg=ev.target, typing=tg&&(tg.tagName==="INPUT"||tg.tagName==="TEXTAREA"||tg.tagName==="SELECT")&&tg.id!=="scanInput";
+  if(typing||ev.ctrlKey||ev.metaKey||ev.altKey) return;
+  const now=performance.now();
+  if(now-SCAN.last>120) SCAN.buf="";
+  SCAN.last=now;
+  if(ev.key==="Enter"){ if(SCAN.buf.length>=3){ ev.preventDefault(); const c=SCAN.buf; SCAN.buf=""; if(tg.id==="scanInput") tg.value=""; handleBarcode(c); } return; }
+  if(ev.key.length===1){ SCAN.buf+=ev.key; if(tg.id!=="scanInput") ev.preventDefault(); }
+},true);
 
 /* ---------- products ---------- */
 function vProducts(){
@@ -1076,6 +1123,9 @@ const A={
     const rows=[["date","time","items","total","discount","payment","customer","profit"]].concat([...S.sales].sort((a,b)=>a.at-b.at).map(s=>[dayKey(s.at),new Date(s.at).toTimeString().slice(0,5),s.items.map(i=>i.name+" x"+i.qty).join("; "),s.total,s.discount,s.method,s.customer,s.total-sum(s.items,i=>i.qty*i.cost)]));
     download("sales-"+dayKey(Date.now())+".csv","﻿"+rows.map(r=>r.map(q).join(",")).join("\n"),"text/csv"); },
   close(){ closeSheet(); },
+  scanMode(){ S.meta.scanMode=!S.meta.scanMode; if(S.meta.scanMode&&S.meta.scanSound===undefined) S.meta.scanSound=true; saveMeta(); if(S.meta.scanMode) beep(true); render(); },
+  scanSound(){ S.meta.scanSound=!S.meta.scanSound; saveMeta(); if(S.meta.scanSound) beep(true); render(); },
+  newFromCode(el){ const code=el.dataset.v; closeSheet(); if(!can("unlimited")&&S.products.length>=CONFIG.productLimit){ upgradeSheet("unlimited"); return; } productForm(null); const b=$("#pBarcode"); if(b) b.value=code; setTimeout(()=>$("#pName")?.focus(),50); },
   gateLang(el){ S.meta.lang=el.dataset.v; saveMeta(); shell(); render(); },
   acceptTerms(){ if(!$("#termsChk")?.checked) return; S.meta.termsOk=Date.now(); lsSet("dk-terms",String(S.meta.termsOk)); saveMeta(); render(); },
   startTrial(){ S.meta.demoStart=Date.now(); lsSet("dk-demo",String(S.meta.demoStart)); saveMeta(); startDemoTicker(); shell(); location.hash="#home"; render(); },
