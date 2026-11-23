@@ -90,7 +90,8 @@ h1{font-size:1.5rem} h2{font-size:1.1rem} h3{font-size:.95rem}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;min-width:0}
 .btn{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:9px 14px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px}
 .btn svg{width:18px;height:18px}
-.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+a.btn,a.iconbtn{color:var(--ink);text-decoration:none}
+.btn.primary,a.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 .btn.danger{color:var(--danger);border-color:var(--danger)}
 .btn.danger.armed{background:var(--danger);color:var(--surface)}
 .btn.block{width:100%}
@@ -212,6 +213,31 @@ video.scan{width:100%;border-radius:12px;background:#000;aspect-ratio:4/3;object
 .wa{position:sticky;bottom:calc(72px + env(safe-area-inset-bottom,0px));z-index:5;box-shadow:var(--shadow);background:#1F9D55;color:#fff;border:0;border-radius:14px;padding:13px 18px;font-weight:700;display:flex;justify-content:space-between;align-items:center;text-decoration:none;gap:10px}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(140px + env(safe-area-inset-bottom,0px));z-index:60;background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-weight:600;box-shadow:var(--shadow);max-width:calc(100% - 32px);text-align:center}
 @media (min-width:900px){.toast{bottom:32px}.wa{bottom:16px}}
+.lockic svg{width:14px;height:14px;vertical-align:-2px}
+.lockic{margin-left:4px;color:var(--muted)}
+.locked-card{position:relative;text-align:center;padding:24px 16px}
+.lockwrap{display:grid;place-items:center;min-height:60vh}
+.lockcard{max-width:520px;width:100%;padding:24px}
+.lockbadge{width:52px;height:52px;border-radius:14px;background:var(--gold-soft);color:var(--gold);display:grid;place-items:center}
+.lockbadge svg{width:26px;height:26px}
+.plans{display:grid;gap:14px;grid-template-columns:1fr}
+@media (min-width:860px){.plans{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.plan{display:flex;flex-direction:column;gap:10px;position:relative}
+.plan.pop{border:2px solid var(--accent)}
+.popbadge{position:absolute;top:14px;right:14px}
+.price{font-family:var(--font-num);font-size:2rem;font-weight:700}
+.feat{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;flex:1}
+.feat li{display:flex;gap:8px;align-items:flex-start;line-height:1.35}
+.feat li.off{color:var(--muted);opacity:.65}
+.feat .tick{width:18px;flex:none;font-weight:700;color:var(--accent)}
+.feat li.off .tick{color:var(--muted)}
+.steps{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+.guide{list-style:none;margin:0;padding:0;display:grid;gap:12px;grid-template-columns:1fr}
+@media (min-width:860px){.guide{grid-template-columns:1fr 1fr}}
+.guide li{display:flex;gap:14px;align-items:flex-start}
+.guide p{margin:4px 0 8px;color:var(--muted)}
+.gnum{width:34px;height:34px;border-radius:10px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-weight:700;flex:none}
+.side .pill,.topbar .pill{text-decoration:none}
 .setup{display:grid;gap:14px;grid-template-columns:1fr;max-width:760px}
 .kv{display:grid;grid-template-columns:1fr auto;gap:4px 12px}
 </style>
@@ -235,6 +261,9 @@ const I = {
   scan:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 8v8M10 8v8M13 8v8M17 8v8"/></svg>',
   x:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
   wa:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.4.8 3.2.6a2.8 2.8 0 0 0 1.8-1.3 2.3 2.3 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg>',
+  lock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>',
+  book:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5"/><path d="M8 7h7"/></svg>',
+  star:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z"/></svg>',
   globe:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>'
 };
 
@@ -264,6 +293,30 @@ en:{home:"Home",sell:"Sell",products:"Products",money:"Money",shop:"My shop",set
  stockAdded:"Stock added",margin:"margin",pcs:"pcs",kg:"kg",litre:"litre",dozen:"dozen",packet:"packet",box:"box",
  offline:"Works offline. Data stays on this device.",install:"Install app",dataHere:"Your data is saved on this device.",
  hello:"Here is how the shop is doing",noSales:"No sales in this period yet.",entries:"entries",lang:"বাংলা",
+ rocket:"Rocket",demo:"Demo",locked:"Locked",plans:"Plans",guide:"How to use",seePlans:"See plans",unlock:"Unlock",haveCode:"Have an access code?",codePh:"Paste your code or link",
+ badCode:"That code is not valid. Check it and try again.",codeExpired:"This code has ended. Renew your plan.",unlocked:"Unlocked: {plan} plan",
+ demoOver:"Your free minute is over",demoOverBody:"Choose a plan and pay with bKash, Nagad or Rocket. We send you a personal access code on WhatsApp. Enter it here to open the app.",
+ planEnded:"Your plan has ended",planEndedBody:"Your plan ended on {date}. Renew to keep selling and tracking stock.",dataSafe:"Everything you entered is still saved on this device.",
+ needPlan:"This is part of the {plan} plan (৳{price} a month).",plansSub:"Pay monthly with bKash, Nagad or Rocket. Cancel any time.",yourPlan:"You are on the {plan} plan until {date}.",
+ popular:"Most shops pick this",perMonth:"month",choose:"Choose {plan}",renew:"Renew",payFor:"{plan} plan",
+ paySend:"Open {app} and send <b class=\"num\">৳{price}</b> to <b class=\"num\">{num}</b>.",payNoNum:"Send the plan amount with {app}. Our payment number will be shown here.",
+ payTrx:"Type the Transaction ID from the {app} message below.",payWait:"Press send. We check the payment and reply on WhatsApp with your access code.",
+ trxId:"Transaction ID (TrxID)",yourPhone:"Your phone number",sendPayment:"Send payment details on WhatsApp",payNotReady:"Online plan orders open soon.",
+ payFill:"Fill in the Transaction ID, shop name and phone number",paySent:"Payment details sent. Your code will arrive on WhatsApp.",
+ tier_basic:"Shuru",tier_standard:"Byabsa",tier_pro:"Pro",tierd_basic:"For a small shop starting out",tierd_standard:"For a growing shop",tierd_pro:"Sell online too",
+ b_sell:"Sell by tapping product pictures",b_products:"Up to 50 products",b_cashbook:"Income and expense book",b_reports:"Today and 7-day reports",b_low:"Low stock alerts",b_lang:"Bangla and English, works offline",
+ f_unlimited:"Unlimited products",f_barcode:"Barcode scanning",f_photos:"Product photos",f_due:"Due (baki) tracking",f_reports:"30-day and monthly reports, best sellers",f_export:"Backup and Excel export",f_shop:"Online shop with WhatsApp orders",
+ fd_unlimited:"Add as many products as you stock.",fd_barcode:"Scan with a USB scanner or the phone camera to add items to the bill.",fd_photos:"Show a photo on each product so you find it fast.",fd_due:"Record sales on credit and see who owes you.",fd_reports:"See longer reports and your best-selling products.",fd_export:"Download a backup and your sales list for Excel.",fd_shop:"A shop page your customers browse and order from on WhatsApp.",
+ productLimit:"The Shuru plan holds up to 50 products.",guideSub:"Nine short steps to get your shop running.",tryIt:"Open",newHere:"New here? Learn the app in nine short steps.",
+ g1t:"Set up your shop",g1b:"Open Setup. Type your shop name and WhatsApp number, and pick English or Bangla.",
+ g2t:"Add your products",g2b:"Go to Products and press Add product. Enter the name, selling price, buying cost and how many you have. Add a photo and barcode if you like.",
+ g3t:"Make a sale",g3b:"Open Sell and tap each product the customer buys. Tap again for more. Press Complete sale and the stock goes down by itself.",
+ g4t:"Use a barcode scanner",g4b:"Plug in a USB scanner and scan into the barcode box, or press Scan with camera on a phone. The item is added to the bill.",
+ g5t:"Sell on due (baki)",g5b:"On the bill, choose Due and write the customer's name. Find all dues under Money, then Due. Press Mark as paid when they pay.",
+ g6t:"Write income and expenses",g6b:"In Money, open Income & expenses and press Add. Record rent, bills, salaries or extra income so your net earnings are right.",
+ g7t:"Read your reports",g7b:"Home shows sales, profit, costs and net earnings for today, 7 days, 30 days or this month, with best sellers and low stock.",
+ g8t:"Share your online shop",g8b:"My shop shows your products, prices and stock. Customers choose items and send the order to your WhatsApp.",
+ g9t:"Keep your plan active",g9b:"Pay with bKash, Nagad or Rocket on the Plans page. Your access code arrives on WhatsApp. Install the app from your browser menu to open it like any other app.",
  rent:"Rent",electricity:"Electricity",salary:"Salary",transport:"Transport",purchase:"Stock purchase",other:"Other",service:"Service",commission:"Commission"},
 bn:{home:"হোম",sell:"বিক্রি",products:"পণ্য",money:"হিসাব",shop:"আমার দোকান",setup:"সেটআপ",tagline:"স্টক, বিক্রি ও টাকার হিসাব",
  today:"আজ",d7:"৭ দিন",d30:"৩০ দিন",month:"এই মাস",sales:"বিক্রি",profit:"লাভ",expenses:"চলতি খরচ",net:"নিট আয়",otherIncome:"অন্যান্য আয়",
@@ -289,6 +342,30 @@ bn:{home:"হোম",sell:"বিক্রি",products:"পণ্য",money:"�
  stockAdded:"স্টক যোগ হয়েছে",margin:"মার্জিন",pcs:"পিস",kg:"কেজি",litre:"লিটার",dozen:"ডজন",packet:"প্যাকেট",box:"বক্স",
  offline:"ইন্টারনেট ছাড়াও চলে। ডেটা এই ডিভাইসে থাকে।",install:"অ্যাপ ইনস্টল",dataHere:"আপনার ডেটা এই ডিভাইসে সেভ থাকে।",
  hello:"দোকানের অবস্থা এক নজরে",noSales:"এই সময়ে এখনো বিক্রি নেই।",entries:"টি এন্ট্রি",lang:"English",
+ rocket:"রকেট",demo:"ডেমো",locked:"লক",plans:"প্ল্যান",guide:"কীভাবে ব্যবহার করবেন",seePlans:"প্ল্যান দেখুন",unlock:"খুলুন",haveCode:"অ্যাক্সেস কোড আছে?",codePh:"কোড বা লিংক পেস্ট করুন",
+ badCode:"কোডটি সঠিক নয়। আবার দেখে চেষ্টা করুন।",codeExpired:"এই কোডের মেয়াদ শেষ। প্ল্যান রিনিউ করুন।",unlocked:"চালু হয়েছে: {plan} প্ল্যান",
+ demoOver:"আপনার ফ্রি এক মিনিট শেষ",demoOverBody:"একটি প্ল্যান বাছুন এবং বিকাশ, নগদ বা রকেটে পেমেন্ট করুন। আমরা হোয়াটসঅ্যাপে আপনার ব্যক্তিগত অ্যাক্সেস কোড পাঠাব। কোডটি এখানে দিলেই অ্যাপ খুলবে।",
+ planEnded:"আপনার প্ল্যানের মেয়াদ শেষ",planEndedBody:"আপনার প্ল্যান {date} তারিখে শেষ হয়েছে। বিক্রি ও স্টকের হিসাব চালু রাখতে রিনিউ করুন।",dataSafe:"আপনার লেখা সব তথ্য এই ডিভাইসে সেভ আছে।",
+ needPlan:"এটি {plan} প্ল্যানে আছে (মাসে ৳{price})।",plansSub:"বিকাশ, নগদ বা রকেটে মাসিক পেমেন্ট। যেকোনো সময় বন্ধ করতে পারবেন।",yourPlan:"আপনি {date} পর্যন্ত {plan} প্ল্যানে আছেন।",
+ popular:"বেশিরভাগ দোকান এটি নেয়",perMonth:"মাস",choose:"{plan} নিন",renew:"রিনিউ",payFor:"{plan} প্ল্যান",
+ paySend:"{app} খুলে <b class=\"num\">{num}</b> নম্বরে <b class=\"num\">৳{price}</b> পাঠান।",payNoNum:"{app} দিয়ে প্ল্যানের টাকা পাঠান। আমাদের পেমেন্ট নম্বর এখানে দেখানো হবে।",
+ payTrx:"{app} মেসেজ থেকে ট্রানজেকশন আইডি নিচে লিখুন।",payWait:"পাঠান চাপুন। আমরা পেমেন্ট দেখে হোয়াটসঅ্যাপে আপনার অ্যাক্সেস কোড পাঠাব।",
+ trxId:"ট্রানজেকশন আইডি (TrxID)",yourPhone:"আপনার ফোন নম্বর",sendPayment:"হোয়াটসঅ্যাপে পেমেন্টের তথ্য পাঠান",payNotReady:"অনলাইনে প্ল্যান অর্ডার শিগগিরই চালু হবে।",
+ payFill:"ট্রানজেকশন আইডি, দোকানের নাম ও ফোন নম্বর লিখুন",paySent:"পেমেন্টের তথ্য পাঠানো হয়েছে। কোড হোয়াটসঅ্যাপে আসবে।",
+ tier_basic:"শুরু",tier_standard:"ব্যবসা",tier_pro:"প্রো",tierd_basic:"নতুন ছোট দোকানের জন্য",tierd_standard:"বড় হতে থাকা দোকানের জন্য",tierd_pro:"অনলাইনেও বিক্রি করুন",
+ b_sell:"ছবিতে চাপ দিয়ে বিক্রি",b_products:"৫০টি পর্যন্ত পণ্য",b_cashbook:"আয় ও খরচের খাতা",b_reports:"আজ ও ৭ দিনের রিপোর্ট",b_low:"স্টক কমার সতর্কতা",b_lang:"বাংলা ও ইংরেজি, ইন্টারনেট ছাড়াও চলে",
+ f_unlimited:"যত খুশি পণ্য",f_barcode:"বারকোড স্ক্যান",f_photos:"পণ্যের ছবি",f_due:"বাকির হিসাব",f_reports:"৩০ দিন ও মাসিক রিপোর্ট, বেশি বিক্রিত পণ্য",f_export:"ব্যাকআপ ও এক্সেল এক্সপোর্ট",f_shop:"হোয়াটসঅ্যাপ অর্ডারসহ অনলাইন দোকান",
+ fd_unlimited:"যত পণ্য রাখেন সব যোগ করুন।",fd_barcode:"USB স্ক্যানার বা ফোনের ক্যামেরায় স্ক্যান করে বিলে যোগ করুন।",fd_photos:"প্রতিটি পণ্যে ছবি দিন, দ্রুত খুঁজে পাবেন।",fd_due:"বাকিতে বিক্রি লিখুন এবং কার কাছে কত পাওনা দেখুন।",fd_reports:"লম্বা সময়ের রিপোর্ট ও বেশি বিক্রিত পণ্য দেখুন।",fd_export:"ব্যাকআপ ও এক্সেলের জন্য বিক্রির তালিকা ডাউনলোড করুন।",fd_shop:"একটি দোকান পেজ, যেখান থেকে কাস্টমার হোয়াটসঅ্যাপে অর্ডার করবে।",
+ productLimit:"শুরু প্ল্যানে ৫০টি পর্যন্ত পণ্য রাখা যায়।",guideSub:"দোকান চালু করতে নয়টি ছোট ধাপ।",tryIt:"খুলুন",newHere:"নতুন? নয়টি ছোট ধাপে অ্যাপটি শিখুন।",
+ g1t:"দোকান সেটআপ করুন",g1b:"সেটআপে যান। দোকানের নাম ও হোয়াটসঅ্যাপ নম্বর লিখুন, ভাষা বাছুন।",
+ g2t:"পণ্য যোগ করুন",g2b:"পণ্য পেজে গিয়ে পণ্য যোগ করুন চাপুন। নাম, বিক্রয়মূল্য, ক্রয়মূল্য ও কতটি আছে লিখুন। চাইলে ছবি ও বারকোড দিন।",
+ g3t:"বিক্রি করুন",g3b:"বিক্রি পেজে কাস্টমার যা কিনছে তাতে চাপ দিন। বেশি হলে আবার চাপুন। বিক্রি সম্পন্ন চাপলে স্টক নিজে থেকেই কমবে।",
+ g4t:"বারকোড স্ক্যানার ব্যবহার",g4b:"USB স্ক্যানার লাগিয়ে বারকোড বক্সে স্ক্যান করুন, অথবা ফোনে ক্যামেরায় স্ক্যান চাপুন। পণ্যটি বিলে যোগ হবে।",
+ g5t:"বাকিতে বিক্রি",g5b:"বিলে বাকি বেছে কাস্টমারের নাম লিখুন। সব বাকি পাবেন হিসাব > বাকি তে। টাকা দিলে পরিশোধ হয়েছে চাপুন।",
+ g6t:"আয় ও খরচ লিখুন",g6b:"হিসাব > আয় ও খরচ খুলে যোগ চাপুন। ভাড়া, বিল, বেতন বা বাড়তি আয় লিখলে নিট আয় সঠিক থাকবে।",
+ g7t:"রিপোর্ট দেখুন",g7b:"হোমে আজ, ৭ দিন, ৩০ দিন বা এই মাসের বিক্রি, লাভ, খরচ ও নিট আয় দেখবেন, সাথে বেশি বিক্রিত ও কম স্টকের পণ্য।",
+ g8t:"অনলাইন দোকান শেয়ার করুন",g8b:"আমার দোকানে আপনার পণ্য, দাম ও স্টক দেখা যায়। কাস্টমার পণ্য বেছে আপনার হোয়াটসঅ্যাপে অর্ডার পাঠায়।",
+ g9t:"প্ল্যান চালু রাখুন",g9b:"প্ল্যান পেজে বিকাশ, নগদ বা রকেটে পেমেন্ট করুন। অ্যাক্সেস কোড হোয়াটসঅ্যাপে আসবে। ব্রাউজার মেনু থেকে অ্যাপ ইনস্টল করলে অন্য অ্যাপের মতো খুলবে।",
  rent:"ভাড়া",electricity:"বিদ্যুৎ",salary:"বেতন",transport:"পরিবহন",purchase:"মাল কেনা",other:"অন্যান্য",service:"সার্ভিস",commission:"কমিশন"}
 };
 
@@ -298,7 +375,7 @@ const S = {
   meta:{id:"settings",shopName:"",phone:"",lang:"en",sample:false,showCount:true},
   view:"home", period:"7", moneyTab:"sales", pf:"all", q:"", cat:"",
   cart:[], co:{discount:"",method:"cash",customer:"",note:""},
-  shopCart:{}, sheet:null, armed:null, scanStream:null, scanTarget:null, edit:null
+  shopCart:{}, access:null, sheet:null, armed:null, scanStream:null, scanTarget:null, edit:null
 };
 const t = (k,v) => { let s=(T[S.meta.lang]||T.en)[k] ?? T.en[k] ?? k; if(v) for(const x in v) s=s.replace("{"+x+"}",v[x]); return s; };
 const $ = (s,r=document) => r.querySelector(s);
@@ -370,6 +447,146 @@ function seed(){
   S.products.forEach(p=>DB.put("products",p)); S.sales.forEach(s=>DB.put("sales",s)); S.entries.forEach(e=>DB.put("entries",e)); saveMeta();
 }
 
+/* ---------- plans, access codes, demo ---------- */
+const CONFIG = {
+  // Public half of the key that signs access codes. The private half stays with the owner (admin page).
+  publicKey:{kty:"EC",crv:"P-256",x:"cCbKTo1P7_w9YYh6Wu-tsEoDlTh15W16lpLIOCi7gQA",y:"_jAOQ6Dx6sEtTj331aBq3lo4uMsvvYfL8u8ayRNVFis"},
+  demoSeconds:60,
+  ownerWhatsApp:"",                       // where plan orders go, e.g. "017XXXXXXXX"
+  pay:{bkash:"",nagad:"",rocket:""},      // numbers customers send money to
+  productLimit:50                          // product cap on the Shuru plan
+};
+const PLAN_ORDER=["basic","standard","pro"];
+const TIERS={
+  basic:{price:350,features:[]},
+  standard:{price:500,features:["unlimited","barcode","photos","due","reports","export"]},
+  pro:{price:1000,features:["unlimited","barcode","photos","due","reports","export","shop"]}
+};
+const BASE_FEATURES=["b_sell","b_products","b_cashbook","b_reports","b_low","b_lang"];
+const PAID_FEATURES=["unlimited","barcode","photos","due","reports","export","shop"];
+const b64u={
+  dec:s=>Uint8Array.from(atob(s.replace(/-/g,"+").replace(/_/g,"/")+"=".repeat((4-s.length%4)%4)),c=>c.charCodeAt(0))
+};
+async function verifyCode(raw){
+  try{
+    let code=String(raw||"").trim(); const m=code.match(/code=([^&\s#]+)/); if(m) code=decodeURIComponent(m[1]);
+    const [p,s]=code.split("."); if(!p||!s) return null;
+    const key=await crypto.subtle.importKey("jwk",CONFIG.publicKey,{name:"ECDSA",namedCurve:"P-256"},false,["verify"]);
+    const ok=await crypto.subtle.verify({name:"ECDSA",hash:"SHA-256"},key,b64u.dec(s),b64u.dec(p)); if(!ok) return null;
+    const d=JSON.parse(new TextDecoder().decode(b64u.dec(p))); if(!TIERS[d.t]||!d.e) return null;
+    return {id:d.i,biz:d.b||"",tier:d.t,exp:d.e,code};
+  }catch(e){ return null; }
+}
+const lsGet=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
+const lsSet=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
+function demoEnd(){ const st=+S.meta.demoStart||+lsGet("dk-demo")||0; return st?st+CONFIG.demoSeconds*1000:0; }
+function curTier(){
+  if(S.access&&S.access.exp>=Date.now()) return S.access.tier;
+  if(!S.access&&Date.now()<demoEnd()) return "pro";
+  return null;
+}
+const inDemo=()=>!S.access&&Date.now()<demoEnd();
+const can=f=>{const tr=curTier(); return !!tr&&TIERS[tr].features.includes(f);};
+const minTier=f=>PLAN_ORDER.find(k=>TIERS[k].features.includes(f))||"pro";
+const lockIc=()=>`<span class="lockic" aria-hidden="true">${I.lock}</span>`;
+function upgradeSheet(f){
+  const need=minTier(f);
+  openSheet("upgrade",`<div class="sheet-head"><h2>${I.lock.replace("<svg",'<svg width="20" height="20" style="vertical-align:-3px;margin-right:6px"')}${t("f_"+f)}</h2><button class="iconbtn" data-act="close" aria-label="${t("cancel")}">${I.x}</button></div>
+  <p style="margin:0 0 6px">${t("needPlan",{plan:t("tier_"+need),price:N(TIERS[need].price)})}</p>
+  <p class="muted small" style="margin:0 0 16px">${t("fd_"+f)}</p>
+  <a class="btn primary block" href="#plans">${t("seePlans")}</a>`);
+}
+async function activate(raw,quiet){
+  const a=await verifyCode(raw);
+  if(!a){ if(!quiet) toast(t("badCode")); return false; }
+  if(a.exp<Date.now()){ if(!quiet) toast(t("codeExpired")); }
+  clearInterval(demoTimer); S.access=a; S.meta.access=a.code; if(a.biz&&(!S.meta.shopName||S.meta.sample)) S.meta.shopName=a.biz; saveMeta(); lsSet("dk-access",a.code);
+  if(!quiet){ shell(); location.hash="#home"; render(); toast(t("unlocked",{plan:t("tier_"+a.tier)})); }
+  return true;
+}
+function tierChip(){
+  if(inDemo()) return `<a class="pill gold" href="#plans" id="demoPill">${t("demo")} ${demoLeft()}</a>`;
+  const tr=curTier(); if(!tr) return `<a class="pill out" href="#plans">${I.lock.replace("<svg",'<svg width="12" height="12"')} ${t("locked")}</a>`;
+  return `<a class="pill ok" href="#plans">${t("tier_"+tr)}</a>`;
+}
+function demoLeft(){ const s=Math.max(0,Math.ceil((demoEnd()-Date.now())/1000)); return Math.floor(s/60)+":"+String(s%60).padStart(2,"0"); }
+let demoTimer=null;
+function startDemoTicker(){
+  clearInterval(demoTimer);
+  demoTimer=setInterval(()=>{
+    if(!inDemo()){ clearInterval(demoTimer); closeSheet(); shell(); render(); return; }
+    document.querySelectorAll("#demoPill").forEach(x=>x.textContent=t("demo")+" "+demoLeft());
+  },1000);
+}
+function codeBox(){
+  return `<form id="codeForm" class="stack" style="gap:8px"><label for="codeIn" class="small muted" style="font-weight:600">${t("haveCode")}</label>
+    <div class="row" style="flex-wrap:nowrap"><input class="input" id="codeIn" placeholder="${t("codePh")}" autocomplete="off" spellcheck="false"><button class="btn primary" type="submit">${t("unlock")}</button></div></form>`;
+}
+function vLocked(){
+  const expired=S.access&&S.access.exp<Date.now();
+  return `<div class="lockwrap"><div class="card stack lockcard">
+    <div class="lockbadge">${I.lock}</div>
+    <h1>${expired?t("planEnded"):t("demoOver")}</h1>
+    <p class="muted" style="margin:0">${expired?t("planEndedBody",{date:fdate(S.access.exp,{day:"numeric",month:"long",year:"numeric"})}):t("demoOverBody")}</p>
+    ${codeBox()}
+    <div class="row"><a class="btn" href="#plans">${t("seePlans")}</a><a class="btn" href="#guide">${t("guide")}</a><button class="btn" data-act="lang">${I.globe}${t("lang")}</button></div>
+    <p class="small muted" style="margin:0">${t("dataSafe")}</p>
+  </div></div>`;
+}
+function vPlans(){
+  const cur=S.access&&S.access.exp>=Date.now()?S.access.tier:null;
+  const rows=[...BASE_FEATURES.map(f=>[f,PLAN_ORDER]),...PAID_FEATURES.map(f=>[f,PLAN_ORDER.filter(k=>TIERS[k].features.includes(f))])];
+  return `<div class="page-head"><div><h1>${t("plans")}</h1><p>${t("plansSub")}</p></div></div>
+  ${cur?`<div class="banner"><p>${t("yourPlan",{plan:t("tier_"+cur),date:fdate(S.access.exp,{day:"numeric",month:"long",year:"numeric"})})}</p></div>`:""}
+  <div class="plans">${PLAN_ORDER.map(k=>`<section class="card plan ${k==="standard"?"pop":""}">
+    ${k==="standard"?`<span class="pill gold popbadge">${t("popular")}</span>`:""}
+    <h2>${t("tier_"+k)}</h2><p class="muted small" style="margin:0">${t("tierd_"+k)}</p>
+    <div class="price"><span class="num">৳${N(TIERS[k].price)}</span><span class="muted small"> / ${t("perMonth")}</span></div>
+    <ul class="feat">${rows.map(([f,tiers])=>{const on=tiers.includes(k); const label=f==="b_products"&&k!=="basic"?null:t(f.startsWith("b_")?f:"f_"+f); if(!label) return ""; return `<li class="${on?"":"off"}"><span class="tick">${on?"✓":"–"}</span>${esc(label)}</li>`;}).join("")}</ul>
+    <button class="btn ${k==="standard"?"primary":""} block" data-act="buy" data-v="${k}">${cur===k?t("renew"):t("choose",{plan:t("tier_"+k)})}</button>
+  </section>`).join("")}</div>
+  <section class="card" style="margin-top:14px;max-width:560px">${codeBox()}</section>`;
+}
+function paySheet(k){
+  S.edit={tier:k,method:"bkash"};
+  openSheet("pay",`<div class="sheet-head"><h2>${t("payFor",{plan:t("tier_"+k)})} · <span class="num">৳${N(TIERS[k].price)}</span></h2><button class="iconbtn" data-act="close" aria-label="${t("cancel")}">${I.x}</button></div>
+  <div class="seg" id="paySeg">${["bkash","nagad","rocket"].map(m=>`<button type="button" class="${m==="bkash"?"on":""}" data-act="payMethod" data-v="${m}">${t(m)}</button>`).join("")}</div>
+  <div id="payBody" style="margin-top:14px">${payBody()}</div>`);
+}
+function payBody(){
+  const k=S.edit.tier, m=S.edit.method, price=TIERS[k].price;
+  const num=CONFIG.pay[m];
+  return `<form id="payForm" class="stack">
+    <ol class="steps">
+      <li>${num?t("paySend",{app:t(m),price:N(price),num:esc(num)}):t("payNoNum",{app:t(m)})}</li>
+      <li>${t("payTrx")}</li>
+      <li>${t("payWait")}</li>
+    </ol>
+    <div class="field"><label for="payTrx">${t("trxId")}</label><input class="input num" id="payTrx" autocomplete="off" required></div>
+    <div class="grid2"><div class="field"><label for="payShop">${t("shopName")}</label><input class="input" id="payShop" value="${esc(S.meta.sample?"":S.meta.shopName)}" required></div>
+    <div class="field"><label for="payPhone">${t("yourPhone")}</label><input class="input num" id="payPhone" inputmode="tel" value="${esc(S.meta.sample?"":S.meta.phone)}" required></div></div>
+    <button class="btn primary block" type="submit" ${CONFIG.ownerWhatsApp?"":"disabled"}>${I.wa.replace("<svg",'<svg width="18" height="18"')} ${t("sendPayment")}</button>
+    ${CONFIG.ownerWhatsApp?"":`<p class="small muted" style="margin:0">${t("payNotReady")}</p>`}
+  </form>`;
+}
+function submitPayment(){
+  const trx=$("#payTrx").value.trim(), shop=$("#payShop").value.trim(), ph=$("#payPhone").value.trim();
+  if(!trx||!shop||!ph){ toast(t("payFill")); return; }
+  const k=S.edit.tier;
+  const msg=`Dokan Khata plan payment\nPlan: ${T.en["tier_"+k]} (৳${TIERS[k].price}/month)\nPaid with: ${T.en[S.edit.method]}\nTransaction ID: ${trx}\nShop: ${shop}\nPhone: ${ph}`;
+  let d=CONFIG.ownerWhatsApp.replace(/\D/g,""); if(d.startsWith("0")) d="88"+d;
+  const a=document.createElement("a"); a.href=`https://wa.me/${d}?text=${encodeURIComponent(msg)}`; a.target="_blank"; a.rel="noopener"; document.body.appendChild(a); a.click(); a.remove();
+  closeSheet(); toast(t("paySent"));
+}
+
+/* ---------- guide ---------- */
+const GUIDE=[["g1","setup"],["g2","products"],["g3","sell"],["g4","sell"],["g5","money"],["g6","money"],["g7","home"],["g8","shop"],["g9","plans"]];
+function vGuide(){
+  return `<div class="page-head"><div><h1>${t("guide")}</h1><p>${t("guideSub")}</p></div>
+    <div class="seg" style="min-width:200px"><button class="${S.meta.lang==="en"?"on":""}" data-act="setLang" data-v="en">English</button><button class="${S.meta.lang==="bn"?"on":""}" data-act="setLang" data-v="bn">বাংলা</button></div></div>
+  <ol class="guide">${GUIDE.map(([g,v])=>`<li class="card"><div class="gnum num">${N(+g.slice(1))}</div><div style="min-width:0"><h2>${t(g+"t")}</h2><p>${t(g+"b")}</p>${curTier()||v==="plans"?`<a class="linkbtn" href="#${v}">${t("tryIt")} →</a>`:""}</div></li>`).join("")}</ol>`;
+}
+
 /* ---------- shell ---------- */
 const NAV=[["home","home"],["sell","sell"],["products","box"],["money","money"],["shop","shop"]];
 function shell(){
@@ -378,12 +595,17 @@ function shell(){
   <nav class="side" aria-label="Main">${brand}
     ${NAV.map(([v,ic])=>`<a href="#${v}" data-nav="${v}">${I[ic]}<span>${t(v)}</span></a>`).join("")}
     <a href="#setup" data-nav="setup">${I.gear}<span>${t("setup")}</span></a>
+    <a href="#guide" data-nav="guide">${I.book}<span>${t("guide")}</span></a>
+    <a href="#plans" data-nav="plans">${I.star}<span>${t("plans")}</span></a>
     <div class="grow"></div>
+    <div style="margin:0 6px 10px">${tierChip()}</div>
     <button class="btn" data-act="lang">${I.globe}${t("lang")}</button>
     <p class="small muted" style="margin:10px 6px 0">${t("offline")}</p>
   </nav>
   <div style="min-width:0">
     <header class="topbar">${brand}
+      ${tierChip()}
+      <a class="iconbtn" href="#guide" aria-label="${t("guide")}">${I.book}</a>
       <button class="iconbtn" data-act="lang" aria-label="Language">${S.meta.lang==="bn"?"EN":"বাং"}</button>
       <a class="iconbtn" href="#setup" aria-label="${t("setup")}">${I.gear}</a>
     </header>
@@ -395,8 +617,9 @@ function shell(){
 function render(){
   document.documentElement.lang=S.meta.lang==="bn"?"bn":"en";
   document.querySelectorAll("[data-nav]").forEach(a=>a.classList.toggle("on",a.dataset.nav===S.view));
-  const v={home:vHome,sell:vSell,products:vProducts,money:vMoney,shop:vShop,setup:vSetup}[S.view]||vHome;
-  const banner = S.meta.sample && S.view!=="shop" ? `<div class="banner"><p>${t("sampleBanner")}</p><button class="btn" data-act="clearSample">${t("clearSample")}</button></div>` : "";
+  const open={plans:vPlans,guide:vGuide};
+  let v=open[S.view]||(curTier()?({home:vHome,sell:vSell,products:vProducts,money:vMoney,shop:vShop,setup:vSetup}[S.view]||vHome):vLocked);
+  const banner = S.meta.sample && curTier() && !open[S.view] && S.view!=="shop" ? `<div class="banner"><p>${t("sampleBanner")}</p><button class="btn" data-act="clearSample">${t("clearSample")}</button></div>` : "";
   $("#main").innerHTML=banner+v();
   renderCartbar();
 }
@@ -425,7 +648,7 @@ function vHome(){
   const stockVal=sum(S.products,p=>Math.max(0,p.stock)*p.cost);
   const dueAmt=sum(S.sales.filter(s=>s.method==="due"&&!s.paidAt),s=>s.total);
   return `<div class="page-head"><div><h1>${t("home")}</h1><p>${t("hello")}</p></div>
-    <div class="chips">${["today","7","30","month"].map(p=>`<button class="chip ${S.period===p?"on":""}" data-act="period" data-v="${p}">${t(p==="today"?"today":p==="7"?"d7":p==="30"?"d30":"month")}</button>`).join("")}</div></div>
+    <div class="chips">${["today","7","30","month"].map(p=>(p==="30"||p==="month")&&!can("reports")?`<button class="chip" data-act="upgrade" data-f="reports">${t(p==="30"?"d30":"month")}${lockIc()}</button>`:`<button class="chip ${S.period===p?"on":""}" data-act="period" data-v="${p}">${t(p==="today"?"today":p==="7"?"d7":p==="30"?"d30":"month")}</button>`).join("")}</div></div>
   <div class="tiles">
     <div class="tile hero"><div class="lbl">${t("sales")}</div><div class="val">${M(st.sales)}</div><div class="sub"><span class="num">${N(st.count)}</span> ${t("bills")}</div></div>
     <div class="tile"><div class="lbl">${t("profit")}</div><div class="val ${st.profit<0?"neg":""}">${M(st.profit)}</div><div class="sub">${t("afterCost")}</div></div>
@@ -435,8 +658,8 @@ function vHome(){
   <div class="dash">
     <div class="stack">
       <section class="card chart"><div class="row between" style="margin-bottom:8px"><h2>${t("salesChart")}</h2></div>${chart()}</section>
-      <section class="card"><h2 style="margin-bottom:6px">${t("topSellers")}</h2>
-        ${tops.length?`<div class="list">${tops.map(x=>`<div class="li"><div class="grow"><b>${esc(S.meta.lang==="bn"&&x.nameBn?x.nameBn:x.name)}</b><div class="bar"><i style="width:${Math.max(4,x.amt/tmax*100)}%"></i></div></div><div style="text-align:right"><div class="amt">${M(x.amt)}</div><div class="small muted"><span class="num">${N(x.qty)}</span> ${t("itemsSold")}</div></div></div>`).join("")}</div>`:`<div class="empty">${t("noSales")}</div>`}
+      <section class="card"><h2 style="margin-bottom:6px">${t("topSellers")}${can("reports")?"":lockIc()}</h2>
+        ${!can("reports")?`<div class="empty"><p style="margin:0 0 10px">${t("fd_reports")}</p><button class="btn" data-act="upgrade" data-f="reports">${t("seePlans")}</button></div>`:tops.length?`<div class="list">${tops.map(x=>`<div class="li"><div class="grow"><b>${esc(S.meta.lang==="bn"&&x.nameBn?x.nameBn:x.name)}</b><div class="bar"><i style="width:${Math.max(4,x.amt/tmax*100)}%"></i></div></div><div style="text-align:right"><div class="amt">${M(x.amt)}</div><div class="small muted"><span class="num">${N(x.qty)}</span> ${t("itemsSold")}</div></div></div>`).join("")}</div>`:`<div class="empty">${t("noSales")}</div>`}
       </section>
     </div>
     <div class="stack">
@@ -447,12 +670,13 @@ function vHome(){
         <span class="muted">${t("stockValue")}</span><b class="num">${M(stockVal)}</b>
         <span class="small muted">${t("atCost")} · <span class="num">${N(S.products.length)}</span> ${t("items")}</span><span></span>
       </div></section>
-      <a class="card" href="#money" data-act="goDue" style="text-decoration:none;color:inherit"><div class="kv"><span class="muted">${t("dueTotal")}</span><b class="num" style="color:var(--warn)">${M(dueAmt)}</b></div></a>
+      ${!S.meta.guideSeen?`<a class="card" href="#guide" style="text-decoration:none;color:inherit;display:flex;gap:12px;align-items:center"><span class="gnum">${I.book.replace("<svg",'<svg width="18" height="18"')}</span><span>${t("newHere")}</span></a>`:""}
+      ${!can("due")?"":`<a class="card" href="#money" data-act="goDue" style="text-decoration:none;color:inherit"><div class="kv"><span class="muted">${t("dueTotal")}</span><b class="num" style="color:var(--warn)">${M(dueAmt)}</b></div></a>`}
     </div>
   </div>`;
 }
 function chart(){
-  const days = S.period==="30"?30 : S.period==="month"? new Date().getDate() : S.period==="today"?7:7;
+  const days = !can("reports")?7 : S.period==="30"?30 : S.period==="month"? new Date().getDate() : S.period==="today"?7:7;
   const W=640,H=220,pl=52,pr=8,pt=12,pb=28; const iw=W-pl-pr, ih=H-pt-pb;
   const data=[]; for(let i=days-1;i>=0;i--){ const d=new Date(); d.setDate(d.getDate()-i); const k=dayKey(d); data.push({k,d:d.getTime(),v:sum(S.sales.filter(s=>dayKey(s.at)===k),s=>s.total)}); }
   const mx=Math.max(...data.map(d=>d.v),1); const step=Math.pow(10,Math.floor(Math.log10(mx))); const top=Math.ceil(mx/step)*step||1;
@@ -477,10 +701,10 @@ function vSell(){
     <div class="row">
       <div class="search">${I.search}<input class="input" id="q" type="search" placeholder="${t("search")}" value="${esc(S.q)}" autocomplete="off"></div>
     </div>
-    <div class="scanrow">
+    ${can("barcode")?`<div class="scanrow">
       <div class="search">${I.scan}<input class="input" id="scanInput" inputmode="numeric" placeholder="${t("scanPh")}" autocomplete="off"></div>
       <button class="btn" data-act="camera" data-target="sell">${I.scan}<span>${t("camera")}</span></button>
-    </div>
+    </div>`:`<div><button class="btn" data-act="upgrade" data-f="barcode">${I.scan}<span>${t("f_barcode")}</span>${lockIc()}</button></div>`}
     <div class="chips">${["",...cats()].map(c=>`<button class="chip ${S.cat===c?"on":""}" data-act="cat" data-v="${esc(c)}">${esc(c||t("all"))}</button>`).join("")}</div>
     <div class="tilegrid" id="grid">${sellGrid()}</div>
   </div>
@@ -506,7 +730,7 @@ function cartHTML(){
     <div class="row"><b>${t("total")}</b><span class="grand" id="coTotal">${M(tt.total)}</span></div>
   </div>
   <div class="field" style="margin-top:12px"><label>${t("payment")}</label>
-    <div class="chips" style="flex-wrap:wrap">${["cash","bkash","nagad","card","due"].map(m=>`<button class="chip ${S.co.method===m?"on":""}" data-act="method" data-v="${m}">${t(m)}</button>`).join("")}</div></div>
+    <div class="chips" style="flex-wrap:wrap">${["cash","bkash","nagad","rocket","card","due"].map(m=>m==="due"&&!can("due")?`<button class="chip" data-act="upgrade" data-f="due">${t(m)}${lockIc()}</button>`:`<button class="chip ${S.co.method===m?"on":""}" data-act="method" data-v="${m}">${t(m)}</button>`).join("")}</div></div>
   <div class="field" style="margin-top:10px"><label for="coCust">${t("customer")}</label><input class="input" id="coCust" data-co="customer" value="${esc(S.co.customer)}" placeholder="${S.co.method==="due"?t("customerPh"):""}"></div>
   <button class="btn primary block" style="margin-top:14px;min-height:50px;font-size:1.05rem" data-act="completeSale">${t("confirmSale")} · <span class="num" id="coTotal2">${M(tt.total)}</span></button>`;
 }
@@ -537,6 +761,7 @@ function completeSale(){
 }
 function handleBarcode(code){
   code=String(code).trim(); if(!code) return;
+  if(!can("barcode")) return;
   if(S.scanTarget==="form"){ const el=$("#pBarcode"); if(el) el.value=code; S.scanTarget=null; return; }
   const p=S.products.find(x=>x.barcode&&x.barcode===code);
   if(!p){ toast(t("notFound")+": "+code); return; }
@@ -580,7 +805,7 @@ function productForm(p){
   const units=["pcs","kg","litre","dozen","packet","box"];
   openSheet("product",`<div class="sheet-head"><h2>${p?t("editProduct"):t("addProduct")}</h2><button class="iconbtn" data-act="close" aria-label="${t("cancel")}">${I.x}</button></div>
   <form id="pForm" class="stack" data-id="${p?.id||""}">
-    <div class="photo-pick"><div class="thumb" id="pPhotoPrev">${p?pic(p):"📦"}</div><label class="btn" for="pPhoto">${t("choosePhoto")}</label><input id="pPhoto" type="file" accept="image/*" hidden></div>
+    <div class="photo-pick"><div class="thumb" id="pPhotoPrev">${p?pic(p):"📦"}</div>${can("photos")?`<label class="btn" for="pPhoto">${t("choosePhoto")}</label><input id="pPhoto" type="file" accept="image/*" hidden>`:`<button type="button" class="btn" data-act="upgrade" data-f="photos">${t("choosePhoto")}${lockIc()}</button>`}</div>
     <div class="field"><label for="pName">${t("name")}</label><input class="input" id="pName" required value="${esc(p?.name)}"></div>
     <div class="field"><label for="pNameBn">${t("nameBn")}</label><input class="input" id="pNameBn" value="${esc(p?.nameBn)}" lang="bn"></div>
     <div class="grid2">
@@ -591,7 +816,7 @@ function productForm(p){
       <div class="field"><label for="pCat">${t("category")}</label><input class="input" id="pCat" list="catList" value="${esc(p?.category)}"><datalist id="catList">${cats().map(c=>`<option value="${esc(c)}">`).join("")}</datalist></div>
       <div class="field"><label for="pLow">${t("lowAt")}</label><input class="input num" id="pLow" type="number" step="any" min="0" inputmode="decimal" value="${p?esc(p.lowAt):"5"}"></div>
     </div>
-    <div class="field"><label for="pBarcode">${t("barcode")}</label><div class="row" style="flex-wrap:nowrap"><input class="input num" id="pBarcode" value="${esc(p?.barcode)}" inputmode="numeric"><button type="button" class="iconbtn" data-act="camera" data-target="form" aria-label="${t("camera")}">${I.scan}</button></div></div>
+    <div class="field"><label for="pBarcode">${t("barcode")}</label><div class="row" style="flex-wrap:nowrap"><input class="input num" id="pBarcode" value="${esc(p?.barcode)}" inputmode="numeric" ${can("barcode")?"":"disabled"}><button type="button" class="iconbtn" data-act="${can("barcode")?"camera":"upgrade"}" data-f="barcode" data-target="form" aria-label="${t("camera")}">${can("barcode")?I.scan:I.lock}</button></div></div>
     <div class="row between" style="margin-top:4px">
       ${p?`<button type="button" class="btn danger" data-act="delProduct" data-id="${p.id}">${t("del")}</button>`:"<span></span>"}
       <button class="btn primary" type="submit">${t("save")}</button>
@@ -629,7 +854,9 @@ function saveRestock(f){
 function vMoney(){
   const tabs=[["sales","salesTab"],["cashbook","cashbook"],["due","dueTab"]];
   let body="";
-  if(S.moneyTab==="sales"){
+  if(S.moneyTab==="due"&&!can("due")){
+    body=`<div class="card locked-card"><div class="lockbadge" style="margin:0 auto 10px">${I.lock}</div><h2>${t("f_due")}</h2><p class="muted">${t("fd_due")}</p><button class="btn primary" data-act="upgrade" data-f="due">${t("seePlans")}</button></div>`;
+  } else if(S.moneyTab==="sales"){
     const by={}; [...S.sales].sort((a,b)=>b.at-a.at).forEach(s=>{(by[dayKey(s.at)]=by[dayKey(s.at)]||[]).push(s)});
     const keys=Object.keys(by).slice(0,45);
     body=keys.length?keys.map(k=>{const arr=by[k]; return `<section class="card"><div class="row between" style="margin-bottom:4px"><h3>${esc(fdate(arr[0].at,{weekday:"short",day:"numeric",month:"short"}))}</h3><b class="num">${M(sum(arr,s=>s.total))}</b></div>
@@ -646,7 +873,7 @@ function vMoney(){
     body=Object.keys(by).length?`<section class="card"><div class="list">${Object.entries(by).sort((a,b)=>sum(b[1],s=>s.total)-sum(a[1],s=>s.total)).map(([c,arr])=>`<div class="li"><div class="thumb" style="font-weight:700">${esc(c.slice(0,1))}</div><div class="grow"><b>${esc(c)}</b><span class="small muted"><span class="num">${N(arr.length)}</span> ${t("bills")} · ${esc(fdate(Math.min(...arr.map(s=>s.at))))}</span></div><span class="amt" style="color:var(--warn)">${M(sum(arr,s=>s.total))}</span><button class="btn" style="min-height:34px;padding:4px 10px" data-act="markPaid" data-v="${esc(c)}">${t("markPaid")}</button></div>`).join("")}</div></section>`:`<div class="card empty">${t("noDue")}</div>`;
   }
   return `<div class="page-head"><div><h1>${t("money")}</h1></div>${S.moneyTab==="cashbook"?`<button class="btn primary" data-act="newEntry">${I.plus}${t("addEntry")}</button>`:""}</div>
-  <div class="chips" style="margin-bottom:14px">${tabs.map(([k,l])=>`<button class="chip ${S.moneyTab===k?"on":""}" data-act="mtab" data-v="${k}">${t(l)}</button>`).join("")}</div>
+  <div class="chips" style="margin-bottom:14px">${tabs.map(([k,l])=>`<button class="chip ${S.moneyTab===k?"on":""}" data-act="mtab" data-v="${k}">${t(l)}${k==="due"&&!can("due")?lockIc():""}</button>`).join("")}</div>
   <div class="stack">${body}</div>`;
 }
 function saleSheet(s){
@@ -680,6 +907,7 @@ function saveEntry(){
 /* ---------- public shop preview ---------- */
 function waNumber(){ let d=(S.meta.phone||"").replace(/\D/g,""); if(d.startsWith("0")) d="88"+d; else if(d.length===10&&d.startsWith("1")) d="880"+d; return d; }
 function vShop(){
+  if(!can("shop")) return `<div class="page-head"><div><h1>${t("shop")}</h1></div></div><div class="card locked-card" style="max-width:560px"><div class="lockbadge" style="margin:0 auto 10px">${I.lock}</div><h2>${t("f_shop")}</h2><p class="muted">${t("fd_shop")}</p><p class="muted small">${t("needPlan",{plan:t("tier_pro"),price:N(TIERS.pro.price)})}</p><a class="btn primary" href="#plans">${t("seePlans")}</a></div>`;
   const list=filtered(S.products).sort((a,b)=>(b.stock>0)-(a.stock>0)||pname(a).localeCompare(pname(b)));
   const n=Object.values(S.shopCart).reduce((a,b)=>a+b,0);
   const tot=sum(Object.entries(S.shopCart),([id,q])=>(S.products.find(p=>p.id===id)?.price||0)*q);
@@ -710,9 +938,10 @@ function vSetup(){
       <label class="row" style="gap:8px;flex-wrap:nowrap"><input type="checkbox" id="sCount" data-meta="showCount" ${S.meta.showCount?"checked":""} style="width:20px;height:20px"> <span>${t("showCount")}</span></label>
     </section>
     <section class="card stack"><h2>${t("backup")}</h2>
-      <div class="row"><button class="btn" data-act="exportJson">${t("exportJson")}</button><button class="btn" data-act="exportCsv">${t("exportCsv")}</button>
-      <label class="btn" for="importFile">${t("importJson")}</label><input type="file" id="importFile" accept="application/json,.json" hidden></div>
+      ${!can("export")?`<p class="muted" style="margin:0">${t("fd_export")}</p><div><button class="btn" data-act="upgrade" data-f="export">${t("seePlans")}${lockIc()}</button></div>`:`<div class="row"><button class="btn" data-act="exportJson">${t("exportJson")}</button><button class="btn" data-act="exportCsv">${t("exportCsv")}</button>
+      <label class="btn" for="importFile">${t("importJson")}</label><input type="file" id="importFile" accept="application/json,.json" hidden></div>`}
     </section>
+    <section class="card stack"><h2>${t("plans")}</h2><div>${tierChip()}</div>${S.access?`<p class="small muted" style="margin:0">${esc(S.access.biz)} · ${t("yourPlan",{plan:t("tier_"+S.access.tier),date:fdate(S.access.exp,{day:"numeric",month:"long",year:"numeric"})})}</p>`:""}${codeBox()}</section>
     <section class="card stack"><h2>${t("resetAll")}</h2><p class="muted" style="margin:0">${t("resetHelp")}</p>
       <div><button class="btn danger ${S.armed==="reset"?"armed":""}" data-act="reset">${S.armed==="reset"?t("tapAgain"):t("resetAll")}</button></div></section>
   </div>`;
@@ -762,7 +991,7 @@ const A={
   openCart(){ openSheet("cart",""); $("#sheetBody").innerHTML=cartHTML(); },
   completeSale,
   camera(el){ openScanner(el.dataset.target); },
-  newProduct(){ productForm(null); },
+  newProduct(){ if(!can("unlimited")&&S.products.length>=CONFIG.productLimit){ upgradeSheet("unlimited"); toast(t("productLimit")); return; } productForm(null); },
   editProduct(el){ productForm(S.products.find(p=>p.id===el.dataset.id)); },
   delProduct(el){ if(S.armed!=="p"+el.dataset.id){ S.armed="p"+el.dataset.id; el.textContent=t("tapAgain"); el.classList.add("armed"); return; }
     S.products=S.products.filter(p=>p.id!==el.dataset.id); S.cart=S.cart.filter(c=>c.pid!==el.dataset.id); DB.del("products",el.dataset.id); closeSheet(); render(); toast(t("deleted")); },
@@ -778,12 +1007,15 @@ const A={
   sinc(el){ const p=S.products.find(x=>x.id===el.dataset.id); const q=(S.shopCart[p.id]||0)+1; if(q>p.stock){toast(t("onlyLeft",{n:N(p.stock)}));return;} S.shopCart[p.id]=q; render(); },
   sdec(el){ const id=el.dataset.id; S.shopCart[id]=(S.shopCart[id]||0)-1; if(S.shopCart[id]<=0) delete S.shopCart[id]; render(); },
   clearSample(){ wipe(); S.meta.sample=false; S.meta.shopName=""; S.meta.phone=""; saveMeta(); shell(); render(); toast(t("cleared")); },
-  reset(){ if(S.armed!=="reset"){ S.armed="reset"; render(); return; } wipe(); S.meta={id:"settings",shopName:"",phone:"",lang:S.meta.lang,sample:false,showCount:true,seeded:true}; saveMeta(); S.armed=null; shell(); render(); toast(t("deleted")); },
+  reset(){ if(S.armed!=="reset"){ S.armed="reset"; render(); return; } wipe(); S.meta={id:"settings",shopName:"",phone:"",lang:S.meta.lang,sample:false,showCount:true,seeded:true,access:S.meta.access,demoStart:S.meta.demoStart,guideSeen:S.meta.guideSeen}; saveMeta(); S.armed=null; shell(); render(); toast(t("deleted")); },
   exportJson(){ download("dokan-khata-backup-"+dayKey(Date.now())+".json",JSON.stringify({app:"dokan-khata",v:1,meta:S.meta,products:S.products,sales:S.sales,entries:S.entries}),"application/json"); },
   exportCsv(){ const q=v=>'"'+String(v??"").replace(/"/g,'""')+'"';
     const rows=[["date","time","items","total","discount","payment","customer","profit"]].concat([...S.sales].sort((a,b)=>a.at-b.at).map(s=>[dayKey(s.at),new Date(s.at).toTimeString().slice(0,5),s.items.map(i=>i.name+" x"+i.qty).join("; "),s.total,s.discount,s.method,s.customer,s.total-sum(s.items,i=>i.qty*i.cost)]));
     download("sales-"+dayKey(Date.now())+".csv","﻿"+rows.map(r=>r.map(q).join(",")).join("\n"),"text/csv"); },
   close(){ closeSheet(); },
+  upgrade(el){ upgradeSheet(el.dataset.f); },
+  buy(el){ paySheet(el.dataset.v); },
+  payMethod(el){ S.edit.method=el.dataset.v; document.querySelectorAll("#paySeg button").forEach(b=>b.classList.toggle("on",b===el)); $("#payBody").innerHTML=payBody(); },
   overlay(el,ev){ if(ev.target===el) closeSheet(); }
 };
 document.addEventListener("click",ev=>{
@@ -794,7 +1026,7 @@ document.addEventListener("click",ev=>{
   fn(el,ev);
 });
 document.addEventListener("submit",ev=>{ ev.preventDefault(); const f=ev.target;
-  if(f.id==="pForm") saveProduct(f); else if(f.id==="rForm") saveRestock(f); else if(f.id==="eForm") saveEntry(); });
+  if(f.id==="codeForm") activate($("#codeIn").value); else if(f.id==="payForm") submitPayment(); else if(f.id==="pForm") saveProduct(f); else if(f.id==="rForm") saveRestock(f); else if(f.id==="eForm") saveEntry(); });
 document.addEventListener("input",ev=>{
   const el=ev.target;
   if(el.id==="q"){ S.q=el.value; const g=$("#grid"); if(!g) return;
@@ -814,8 +1046,8 @@ document.addEventListener("keydown",ev=>{
   if(ev.key==="Enter"&&ev.target.id==="scanInput"){ ev.preventDefault(); handleBarcode(ev.target.value); ev.target.value=""; }
   if(ev.key==="Escape"&&S.sheet) closeSheet();
 });
-const VIEWS=["home","sell","products","money","shop","setup"];
-function route(){ const h=location.hash.replace("#",""); S.view=VIEWS.includes(h)?h:"home"; S.q=""; S.cat=""; S.armed=null; if(S.sheet) closeSheet(); render(); window.scrollTo(0,0); }
+const VIEWS=["home","sell","products","money","shop","setup","plans","guide"];
+function route(){ const h=location.hash.replace("#",""); S.view=VIEWS.includes(h)?h:"home"; if(S.view==="guide"&&!S.meta.guideSeen){ S.meta.guideSeen=true; saveMeta(); } S.q=""; S.cat=""; S.armed=null; if(S.sheet) closeSheet(); render(); window.scrollTo(0,0); }
 addEventListener("hashchange",route);
 let wasWide=wide(); addEventListener("resize",()=>{ const w=wide(); if(w!==wasWide){ wasWide=w; if(S.sheet==="cart") closeSheet(); if(S.view==="sell") render(); } });
 
@@ -825,7 +1057,15 @@ let wasWide=wide(); addEventListener("resize",()=>{ const w=wide(); if(w!==wasWi
   if(ok){ const [p,s,e,m]=await Promise.all(["products","sales","entries","meta"].map(x=>DB.all(x)));
     S.products=p; S.sales=s; S.entries=e; const st=m.find(x=>x.id==="settings"); if(st) S.meta=Object.assign(S.meta,st); }
   if(!S.products.length&&!S.sales.length&&!S.meta.shopName&&!S.meta.seeded){ seed(); S.meta.seeded=true; saveMeta(); }
+  const urlCode=new URLSearchParams(location.search).get("code");
+  const saved=S.meta.access||lsGet("dk-access");
+  if(urlCode){ await activate(urlCode,true); try{ history.replaceState(null,"",location.pathname+(location.hash||"#home")); }catch(e){} }
+  else if(saved){ S.access=await verifyCode(saved); }
+  if(!S.access&&!S.meta.demoStart&&!lsGet("dk-demo")){ S.meta.demoStart=Date.now(); lsSet("dk-demo",String(S.meta.demoStart)); saveMeta(); }
+  if(!S.meta.demoStart&&lsGet("dk-demo")) S.meta.demoStart=+lsGet("dk-demo");
+  if(inDemo()) startDemoTicker();
   shell(); route();
+  if(urlCode&&S.access) toast(t("unlocked",{plan:t("tier_"+S.access.tier)}));
 })();
 </script>
 <!--deploy-only-->

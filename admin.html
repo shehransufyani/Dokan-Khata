@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Dokan Khata Admin</title>
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
+<style>
+:root{--bg:#F2F5F0;--surface:#fff;--ink:#16231B;--muted:#5A6B60;--line:#D5DED4;--accent:#0E6B4A;--accent-ink:#fff;--soft:#DAEEE3;--danger:#B3372A;
+ --font:"Hind Siliguri",system-ui,sans-serif;--num:"Space Grotesk","Hind Siliguri",system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root{--bg:#0E1511;--surface:#16201A;--ink:#E5EEE8;--muted:#9AAEA1;--line:#2A3830;--accent:#3DBE8A;--accent-ink:#04120B;--soft:#183A2B;--danger:#F07A6A;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--font)}
+main{max-width:860px;margin:0 auto;padding:24px max(16px,env(safe-area-inset-left,0px)) 60px}
+h1,h2{font-family:var(--num);margin:0 0 6px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;margin-top:16px}
+label{display:block;font-weight:600;font-size:.85rem;color:var(--muted);margin:10px 0 4px}
+input,select,textarea{width:100%;font:inherit;color:inherit;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:9px 12px}
+textarea{min-height:90px;font-family:ui-monospace,monospace;font-size:.8rem}
+.grid{display:grid;gap:0 12px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+button,.btn{font:inherit;font-weight:600;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:9px 14px;cursor:pointer;text-decoration:none;display:inline-block}
+.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;align-items:center}
+.muted{color:var(--muted)} .small{font-size:.85rem}
+.out{word-break:break-all;background:var(--soft);border-radius:10px;padding:12px;font-family:ui-monospace,monospace;font-size:.8rem;margin-top:12px}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+th,td{text-align:left;padding:8px;border-bottom:1px solid var(--line);vertical-align:top}
+.tw{overflow-x:auto}
+.err{color:var(--danger);font-weight:600}
+</style>
+</head>
+<body><main>
+<h1>Dokan Khata Admin</h1>
+<p class="muted">Create personal access codes for businesses after they pay. Only someone with your private key file can create codes.</p>
+
+<section class="card" id="keyCard">
+  <h2>1. Load your private key</h2>
+  <p class="small muted" id="keyStatus">No key loaded on this browser.</p>
+  <label for="keyFile">Key file (admin-key.json)</label>
+  <input type="file" id="keyFile" accept=".json,application/json">
+  <div class="row"><button id="forgetKey">Remove key from this browser</button></div>
+</section>
+
+<section class="card">
+  <h2>2. Create a code</h2>
+  <div class="grid">
+    <div><label for="biz">Business name</label><input id="biz" placeholder="Rahman General Store"></div>
+    <div><label for="phone">Their WhatsApp number</label><input id="phone" inputmode="tel" placeholder="017XXXXXXXX"></div>
+    <div><label for="tier">Plan</label><select id="tier"><option value="basic">Shuru · ৳350</option><option value="standard" selected>Byabsa · ৳500</option><option value="pro">Pro · ৳1000</option></select></div>
+    <div><label for="months">Length</label><select id="months"><option value="1">1 month</option><option value="3">3 months</option><option value="6">6 months</option><option value="12">12 months</option></select></div>
+    <div><label for="trx">Transaction ID (for your records)</label><input id="trx"></div>
+  </div>
+  <div class="row"><button class="primary" id="make">Create code</button><span id="msg" class="err"></span></div>
+  <div id="result" hidden>
+    <div class="out" id="link"></div>
+    <div class="row"><button id="copy">Copy link</button><a class="btn primary" id="wa" target="_blank" rel="noopener">Send on WhatsApp</a></div>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Codes created on this browser</h2>
+  <div class="tw"><table><thead><tr><th>Date</th><th>Business</th><th>Plan</th><th>Ends</th><th>TrxID</th><th></th></tr></thead><tbody id="hist"></tbody></table></div>
+</section>
+</main>
+<script>
+"use strict";
+const $=s=>document.querySelector(s);
+const ls={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}},del(k){try{localStorage.removeItem(k)}catch(e){}}};
+const b64u=b=>btoa(String.fromCharCode(...new Uint8Array(b))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const PLAN={basic:"Shuru",standard:"Byabsa",pro:"Pro"};
+let key=null;
+async function loadKey(jwk){ key=await crypto.subtle.importKey("jwk",jwk,{name:"ECDSA",namedCurve:"P-256"},false,["sign"]); $("#keyStatus").textContent="Key loaded. You can create codes."; }
+(async()=>{ const k=ls.get("dk-admin-key"); if(k){ try{ await loadKey(JSON.parse(k)); }catch(e){ ls.del("dk-admin-key"); } } renderHist(); })();
+$("#keyFile").onchange=async e=>{ try{ const d=JSON.parse(await e.target.files[0].text()); if(d.app!=="dokan-khata-admin") throw 0; await loadKey(d.privateKey); ls.set("dk-admin-key",JSON.stringify(d.privateKey)); }catch(err){ $("#keyStatus").textContent="That is not the admin key file."; } };
+$("#forgetKey").onclick=()=>{ ls.del("dk-admin-key"); key=null; $("#keyStatus").textContent="No key loaded on this browser."; };
+const appUrl=()=>new URL("./",location.href).href;
+$("#make").onclick=async()=>{
+  $("#msg").textContent="";
+  if(!key){ $("#msg").textContent="Load your key file first."; return; }
+  const biz=$("#biz").value.trim(); if(!biz){ $("#msg").textContent="Enter the business name."; return; }
+  const end=new Date(); end.setMonth(end.getMonth()+ +$("#months").value); end.setHours(23,59,59,0);
+  const payload={i:Math.random().toString(36).slice(2,8),b:biz,t:$("#tier").value,e:end.getTime()};
+  const bytes=new TextEncoder().encode(JSON.stringify(payload));
+  const sig=await crypto.subtle.sign({name:"ECDSA",hash:"SHA-256"},key,bytes);
+  const code=b64u(bytes)+"."+b64u(sig);
+  const link=appUrl()+"?code="+code;
+  $("#link").textContent=link; $("#result").hidden=false;
+  let ph=$("#phone").value.replace(/\D/g,""); if(ph.startsWith("0")) ph="88"+ph;
+  const text=`Assalamu alaikum! Your Dokan Khata ${PLAN[payload.t]} plan is active until ${end.toLocaleDateString("en-GB")}.\nTap this link to open your shop app:\n${link}`;
+  $("#wa").href=(ph?`https://wa.me/${ph}`:"https://wa.me/")+"?text="+encodeURIComponent(text);
+  const h=JSON.parse(ls.get("dk-admin-hist")||"[]"); h.unshift({at:Date.now(),biz,phone:$("#phone").value,tier:payload.t,end:payload.e,trx:$("#trx").value,link}); ls.set("dk-admin-hist",JSON.stringify(h.slice(0,500))); renderHist();
+};
+$("#copy").onclick=async()=>{ try{ await navigator.clipboard.writeText($("#link").textContent); $("#copy").textContent="Copied"; }catch(e){ const r=document.createRange(); r.selectNodeContents($("#link")); getSelection().removeAllRanges(); getSelection().addRange(r); } setTimeout(()=>$("#copy").textContent="Copy link",1500); };
+function renderHist(){ const h=JSON.parse(ls.get("dk-admin-hist")||"[]");
+  $("#hist").innerHTML=h.length?h.map((x,i)=>`<tr><td>${new Date(x.at).toLocaleDateString("en-GB")}</td><td>${esc(x.biz)}<div class="small muted">${esc(x.phone)}</div></td><td>${PLAN[x.tier]}</td><td>${new Date(x.end).toLocaleDateString("en-GB")}</td><td>${esc(x.trx)}</td><td><button data-i="${i}" class="cp">Copy link</button></td></tr>`).join(""):`<tr><td colspan="6" class="muted">No codes yet.</td></tr>`;
+  document.querySelectorAll(".cp").forEach(b=>b.onclick=async()=>{ try{ await navigator.clipboard.writeText(h[+b.dataset.i].link); b.textContent="Copied"; }catch(e){} });
+}
+</script>
+</body></html>

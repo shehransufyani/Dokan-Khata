@@ -10,6 +10,13 @@ A stock, sales and cash app for shops of any size. Works on phones, tablets, lap
 - **My shop**: what customers see. They pick items and send the order to your WhatsApp.
 - **Setup**: shop name, WhatsApp number, language, backup download/restore, sales CSV export.
 
+## Plans and access codes
+- Plans: Shuru ৳350, Byabsa ৳500, Pro ৳1000 per month. Byabsa has everything except the online shop. Edit `TIERS` in `index.html` to change what each plan includes.
+- New visitors get a one-minute demo per device, then the app locks until an access code is entered.
+- Access codes are signed with a private key. Create them on `admin.html` after loading `admin-key.json` (kept privately, never in this repo). A code carries the business name, plan and end date, and arrives as a link the business taps.
+- Payments: bKash, Nagad or Rocket send-money. The customer sends the Transaction ID through WhatsApp; you check it and send a code. Set your numbers in `CONFIG` in `index.html` (`ownerWhatsApp`, `pay`).
+- Limit: the app runs fully in the browser, so a technical person could bypass the lock by editing the page. Server-side checks come with the login and sync work.
+
 ## How it is built
 One `index.html` (plain HTML, CSS, JavaScript, no build step), `manifest.webmanifest`, `sw.js` for offline, and `icons/`. Data is stored in the browser's IndexedDB on each device.
 
