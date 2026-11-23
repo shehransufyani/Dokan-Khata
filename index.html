@@ -238,12 +238,23 @@ video.scan{width:100%;border-radius:12px;background:#000;aspect-ratio:4/3;object
 .guide p{margin:4px 0 8px;color:var(--muted)}
 .gnum{width:34px;height:34px;border-radius:10px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-weight:700;flex:none}
 .side .pill,.topbar .pill{text-decoration:none}
+.gate{position:fixed;inset:0;z-index:80;background:var(--bg);overflow:auto;display:flex;justify-content:center;align-items:flex-start;padding-top:calc(16px + env(safe-area-inset-top,0px));padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.gatecard{background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);width:100%;max-width:720px;padding:22px;display:flex;flex-direction:column;gap:16px;margin:auto 0}
+.termsbox{max-height:min(46vh,460px);overflow:auto;border:1px solid var(--line);border-radius:12px;padding:4px 16px;background:var(--bg)}
+.terms{margin:0;padding-left:22px}
+.terms li{padding:10px 0;border-bottom:1px solid var(--line)}
+.terms li:last-child{border-bottom:0}
+.terms h3{font-size:1rem;margin:0 0 2px}
+.terms p{margin:0;color:var(--muted)}
+.timerbig{font-size:3rem;font-weight:700;color:var(--accent);line-height:1}
+body.gated{overflow:hidden}
 .setup{display:grid;gap:14px;grid-template-columns:1fr;max-width:760px}
 .kv{display:grid;grid-template-columns:1fr auto;gap:4px 12px}
 </style>
 </head>
 <body>
 <div class="app" id="app"></div>
+<div id="gateRoot"></div>
 <div id="sheetRoot"></div>
 <div id="toastRoot"></div>
 <script>
@@ -293,9 +304,21 @@ en:{home:"Home",sell:"Sell",products:"Products",money:"Money",shop:"My shop",set
  stockAdded:"Stock added",margin:"margin",pcs:"pcs",kg:"kg",litre:"litre",dozen:"dozen",packet:"packet",box:"box",
  offline:"Works offline. Data stays on this device.",install:"Install app",dataHere:"Your data is saved on this device.",
  hello:"Here is how the shop is doing",noSales:"No sales in this period yet.",entries:"entries",lang:"বাংলা",
+ terms:"Terms and conditions",termsSub:"Please read and accept before using Dokan Khata.",termsAgree:"I have read and agree to these terms",termsNext:"Accept and continue",termsUpdated:"Last updated 23 November 2026",
+ introT:"You can try everything free for 10 minutes",introB:"Every feature is open for 10 minutes on this device, with example data for a grocery shop. When the time is up, the app locks.",introB2:"To keep using it, choose a plan and pay with bKash, Nagad or Rocket. We send you a personal access code on WhatsApp.",introStart:"Start my 10 minutes",introCode:"I already have a code",
+ tm:[["About the service","Dokan Khata is an app for shops to record products, stock, sales, dues, income and expenses. It is run by the Dokan Khata team in Bangladesh."],
+  ["Free trial","Each device gets one free trial of 10 minutes with all features. After that, the app locks until you enter a valid access code."],
+  ["Plans and payment","Plans are paid monthly in Taka with bKash, Nagad or Rocket. Your access starts when we confirm your payment and send your access code. Payments are not refundable after the code is sent, unless we fail to provide the service."],
+  ["Your access code","Your code is for your business only. Do not share or sell it. We may cancel a code that is shared, copied or misused."],
+  ["Your data","Your shop data is saved on your own device. We do not see it. Clearing your browser data or losing the device can delete it, so download a backup regularly. You are responsible for your backups."],
+  ["Correct use","Use the app only for lawful business. Do not copy, resell or change the app, and do not try to get around the plan locks."],
+  ["Figures and advice","Reports are only as correct as what you enter. The app does not give accounting, tax or legal advice."],
+  ["Service and liability","We work to keep the app running but cannot promise it will never fail. As far as the law allows, we are not responsible for losses from lost data, mistakes in entries or interruptions."],
+  ["Changes","We may update these terms, the plans or prices. We will show changes in the app, and using the app after a change means you accept it."],
+  ["Law","These terms follow the laws of Bangladesh."]],
  rocket:"Rocket",demo:"Demo",locked:"Locked",plans:"Plans",guide:"How to use",seePlans:"See plans",unlock:"Unlock",haveCode:"Have an access code?",codePh:"Paste your code or link",
  badCode:"That code is not valid. Check it and try again.",codeExpired:"This code has ended. Renew your plan.",unlocked:"Unlocked: {plan} plan",
- demoOver:"Your free minute is over",demoOverBody:"Choose a plan and pay with bKash, Nagad or Rocket. We send you a personal access code on WhatsApp. Enter it here to open the app.",
+ demoOver:"Your free 10 minutes are over",demoOverBody:"Choose a plan and pay with bKash, Nagad or Rocket. We send you a personal access code on WhatsApp. Enter it here to open the app.",
  planEnded:"Your plan has ended",planEndedBody:"Your plan ended on {date}. Renew to keep selling and tracking stock.",dataSafe:"Everything you entered is still saved on this device.",
  needPlan:"This is part of the {plan} plan (৳{price} a month).",plansSub:"Pay monthly with bKash, Nagad or Rocket. Cancel any time.",yourPlan:"You are on the {plan} plan until {date}.",
  popular:"Most shops pick this",perMonth:"month",choose:"Choose {plan}",renew:"Renew",payFor:"{plan} plan",
@@ -342,9 +365,21 @@ bn:{home:"হোম",sell:"বিক্রি",products:"পণ্য",money:"�
  stockAdded:"স্টক যোগ হয়েছে",margin:"মার্জিন",pcs:"পিস",kg:"কেজি",litre:"লিটার",dozen:"ডজন",packet:"প্যাকেট",box:"বক্স",
  offline:"ইন্টারনেট ছাড়াও চলে। ডেটা এই ডিভাইসে থাকে।",install:"অ্যাপ ইনস্টল",dataHere:"আপনার ডেটা এই ডিভাইসে সেভ থাকে।",
  hello:"দোকানের অবস্থা এক নজরে",noSales:"এই সময়ে এখনো বিক্রি নেই।",entries:"টি এন্ট্রি",lang:"English",
+ terms:"শর্তাবলি",termsSub:"দোকান খাতা ব্যবহারের আগে পড়ে সম্মতি দিন।",termsAgree:"আমি শর্তাবলি পড়েছি এবং রাজি আছি",termsNext:"সম্মতি দিয়ে এগিয়ে যান",termsUpdated:"সর্বশেষ হালনাগাদ ২৩ নভেম্বর ২০২৬",
+ introT:"১০ মিনিট সবকিছু ফ্রি ব্যবহার করুন",introB:"এই ডিভাইসে ১০ মিনিট সব ফিচার খোলা থাকবে, সাথে একটি মুদি দোকানের উদাহরণ ডেটা। সময় শেষ হলে অ্যাপ লক হয়ে যাবে।",introB2:"চালিয়ে যেতে একটি প্ল্যান বাছুন এবং বিকাশ, নগদ বা রকেটে পেমেন্ট করুন। আমরা হোয়াটসঅ্যাপে আপনার ব্যক্তিগত অ্যাক্সেস কোড পাঠাব।",introStart:"আমার ১০ মিনিট শুরু করুন",introCode:"আমার কোড আছে",
+ tm:[["সেবা সম্পর্কে","দোকান খাতা একটি অ্যাপ, যেখানে দোকানের পণ্য, স্টক, বিক্রি, বাকি, আয় ও খরচের হিসাব রাখা যায়। এটি বাংলাদেশের দোকান খাতা টিম পরিচালনা করে।"],
+  ["ফ্রি ট্রায়াল","প্রতিটি ডিভাইসে একবার ১০ মিনিটের ফ্রি ট্রায়াল, সব ফিচারসহ। এরপর সঠিক অ্যাক্সেস কোড না দেওয়া পর্যন্ত অ্যাপ লক থাকবে।"],
+  ["প্ল্যান ও পেমেন্ট","প্ল্যানের টাকা মাসিক, বিকাশ, নগদ বা রকেটে দিতে হয়। পেমেন্ট নিশ্চিত করে অ্যাক্সেস কোড পাঠানোর পর থেকে ব্যবহার শুরু হয়। কোড পাঠানোর পর টাকা ফেরত দেওয়া হয় না, যদি না আমরা সেবা দিতে ব্যর্থ হই।"],
+  ["আপনার অ্যাক্সেস কোড","কোডটি শুধু আপনার ব্যবসার জন্য। কাউকে দেবেন না বা বিক্রি করবেন না। শেয়ার, কপি বা অপব্যবহার হলে আমরা কোড বাতিল করতে পারি।"],
+  ["আপনার তথ্য","আপনার দোকানের তথ্য আপনার নিজের ডিভাইসে সেভ থাকে। আমরা তা দেখি না। ব্রাউজারের ডেটা মুছলে বা ডিভাইস হারালে তথ্য মুছে যেতে পারে, তাই নিয়মিত ব্যাকআপ নিন। ব্যাকআপের দায়িত্ব আপনার।"],
+  ["সঠিক ব্যবহার","শুধু বৈধ ব্যবসার কাজে অ্যাপ ব্যবহার করুন। অ্যাপ কপি, বিক্রি বা পরিবর্তন করবেন না এবং প্ল্যানের লক এড়ানোর চেষ্টা করবেন না।"],
+  ["হিসাব ও পরামর্শ","রিপোর্ট ততটুকুই সঠিক, যতটুকু সঠিক তথ্য আপনি লেখেন। অ্যাপটি হিসাবরক্ষণ, কর বা আইনি পরামর্শ দেয় না।"],
+  ["সেবা ও দায়","আমরা অ্যাপ চালু রাখতে চেষ্টা করি, তবে কখনো সমস্যা হবে না এমন নিশ্চয়তা দিতে পারি না। আইন যতটুকু অনুমতি দেয়, তথ্য হারানো, ভুল এন্ট্রি বা সেবা বন্ধ থাকার ক্ষতির দায় আমাদের নয়।"],
+  ["পরিবর্তন","আমরা এই শর্তাবলি, প্ল্যান বা দাম বদলাতে পারি। পরিবর্তন অ্যাপে দেখানো হবে। পরিবর্তনের পর অ্যাপ ব্যবহার করলে তা মেনে নেওয়া বোঝাবে।"],
+  ["আইন","এই শর্তাবলি বাংলাদেশের আইন অনুযায়ী চলবে।"]],
  rocket:"রকেট",demo:"ডেমো",locked:"লক",plans:"প্ল্যান",guide:"কীভাবে ব্যবহার করবেন",seePlans:"প্ল্যান দেখুন",unlock:"খুলুন",haveCode:"অ্যাক্সেস কোড আছে?",codePh:"কোড বা লিংক পেস্ট করুন",
  badCode:"কোডটি সঠিক নয়। আবার দেখে চেষ্টা করুন।",codeExpired:"এই কোডের মেয়াদ শেষ। প্ল্যান রিনিউ করুন।",unlocked:"চালু হয়েছে: {plan} প্ল্যান",
- demoOver:"আপনার ফ্রি এক মিনিট শেষ",demoOverBody:"একটি প্ল্যান বাছুন এবং বিকাশ, নগদ বা রকেটে পেমেন্ট করুন। আমরা হোয়াটসঅ্যাপে আপনার ব্যক্তিগত অ্যাক্সেস কোড পাঠাব। কোডটি এখানে দিলেই অ্যাপ খুলবে।",
+ demoOver:"আপনার ফ্রি ১০ মিনিট শেষ",demoOverBody:"একটি প্ল্যান বাছুন এবং বিকাশ, নগদ বা রকেটে পেমেন্ট করুন। আমরা হোয়াটসঅ্যাপে আপনার ব্যক্তিগত অ্যাক্সেস কোড পাঠাব। কোডটি এখানে দিলেই অ্যাপ খুলবে।",
  planEnded:"আপনার প্ল্যানের মেয়াদ শেষ",planEndedBody:"আপনার প্ল্যান {date} তারিখে শেষ হয়েছে। বিক্রি ও স্টকের হিসাব চালু রাখতে রিনিউ করুন।",dataSafe:"আপনার লেখা সব তথ্য এই ডিভাইসে সেভ আছে।",
  needPlan:"এটি {plan} প্ল্যানে আছে (মাসে ৳{price})।",plansSub:"বিকাশ, নগদ বা রকেটে মাসিক পেমেন্ট। যেকোনো সময় বন্ধ করতে পারবেন।",yourPlan:"আপনি {date} পর্যন্ত {plan} প্ল্যানে আছেন।",
  popular:"বেশিরভাগ দোকান এটি নেয়",perMonth:"মাস",choose:"{plan} নিন",renew:"রিনিউ",payFor:"{plan} প্ল্যান",
@@ -451,7 +486,7 @@ function seed(){
 const CONFIG = {
   // Public half of the key that signs access codes. The private half stays with the owner (admin page).
   publicKey:{kty:"EC",crv:"P-256",x:"cCbKTo1P7_w9YYh6Wu-tsEoDlTh15W16lpLIOCi7gQA",y:"_jAOQ6Dx6sEtTj331aBq3lo4uMsvvYfL8u8ayRNVFis"},
-  demoSeconds:60,
+  demoSeconds:600,                         // free trial length: 10 minutes
   ownerWhatsApp:"",                       // where plan orders go, e.g. "017XXXXXXXX"
   pay:{bkash:"",nagad:"",rocket:""},      // numbers customers send money to
   productLimit:50                          // product cap on the Shuru plan
@@ -584,9 +619,35 @@ const GUIDE=[["g1","setup"],["g2","products"],["g3","sell"],["g4","sell"],["g5",
 function vGuide(){
   return `<div class="page-head"><div><h1>${t("guide")}</h1><p>${t("guideSub")}</p></div>
     <div class="seg" style="min-width:200px"><button class="${S.meta.lang==="en"?"on":""}" data-act="setLang" data-v="en">English</button><button class="${S.meta.lang==="bn"?"on":""}" data-act="setLang" data-v="bn">বাংলা</button></div></div>
-  <ol class="guide">${GUIDE.map(([g,v])=>`<li class="card"><div class="gnum num">${N(+g.slice(1))}</div><div style="min-width:0"><h2>${t(g+"t")}</h2><p>${t(g+"b")}</p>${curTier()||v==="plans"?`<a class="linkbtn" href="#${v}">${t("tryIt")} →</a>`:""}</div></li>`).join("")}</ol>`;
+  <p style="margin:0 0 12px"><a class="linkbtn" href="#terms">${t("terms")} →</a></p><ol class="guide">${GUIDE.map(([g,v])=>`<li class="card"><div class="gnum num">${N(+g.slice(1))}</div><div style="min-width:0"><h2>${t(g+"t")}</h2><p>${t(g+"b")}</p>${curTier()||v==="plans"?`<a class="linkbtn" href="#${v}">${t("tryIt")} →</a>`:""}</div></li>`).join("")}</ol>`;
 }
 
+/* ---------- first-open gate: terms, then trial notice ---------- */
+function termsList(){ return `<ol class="terms">${t("tm").map(([h,b])=>`<li><h3>${esc(h)}</h3><p>${esc(b)}</p></li>`).join("")}</ol>`; }
+function gateNeeded(){ if(!S.meta.termsOk) return "terms"; if(!S.access&&!S.meta.demoStart&&!(S.peek&&(S.view==="plans"||S.view==="guide"||S.view==="terms"))) return "intro"; return null; }
+function renderGate(){
+  const g=gateNeeded(), root=$("#gateRoot");
+  if(!g){ root.innerHTML=""; document.body.classList.remove("gated"); return; }
+  document.body.classList.add("gated");
+  const langSeg=`<div class="seg" style="max-width:220px"><button class="${S.meta.lang==="en"?"on":""}" data-act="gateLang" data-v="en">English</button><button class="${S.meta.lang==="bn"?"on":""}" data-act="gateLang" data-v="bn">বাংলা</button></div>`;
+  root.innerHTML = g==="terms" ? `<div class="gate"><div class="gatecard" role="dialog" aria-modal="true" aria-labelledby="gateTitle">
+      <div class="row between"><div class="brand"><div class="brand-mark">দ</div><div class="brand-text"><b>Dokan Khata</b><span>${t("tagline")}</span></div></div>${langSeg}</div>
+      <div><h1 id="gateTitle">${t("terms")}</h1><p class="muted" style="margin:4px 0 0">${t("termsSub")} <span class="small">${t("termsUpdated")}</span></p></div>
+      <div class="termsbox" tabindex="0">${termsList()}</div>
+      <label class="row" style="gap:10px;flex-wrap:nowrap;font-weight:600"><input type="checkbox" id="termsChk" style="width:22px;height:22px;flex:none"> <span>${t("termsAgree")}</span></label>
+      <button class="btn primary block" id="termsBtn" data-act="acceptTerms" disabled style="min-height:50px">${t("termsNext")}</button>
+    </div></div>`
+  : `<div class="gate"><div class="gatecard" role="dialog" aria-modal="true" aria-labelledby="gateTitle" style="max-width:520px">
+      <div class="row between"><div class="lockbadge" style="background:var(--accent-soft);color:var(--accent)">${I.lock}</div>${langSeg}</div>
+      <h1 id="gateTitle">${t("introT")}</h1>
+      <div class="timerbig num">10:00</div>
+      <p style="margin:0">${t("introB")}</p>
+      <p class="muted" style="margin:0">${t("introB2")}</p>
+      <button class="btn primary block" data-act="startTrial" style="min-height:50px">${t("introStart")}</button>
+      ${codeBox()}
+      <div class="row"><a class="btn" href="#plans" data-act="gatePeek">${t("seePlans")}</a></div>
+    </div></div>`;
+}
 /* ---------- shell ---------- */
 const NAV=[["home","home"],["sell","sell"],["products","box"],["money","money"],["shop","shop"]];
 function shell(){
@@ -617,10 +678,11 @@ function shell(){
 function render(){
   document.documentElement.lang=S.meta.lang==="bn"?"bn":"en";
   document.querySelectorAll("[data-nav]").forEach(a=>a.classList.toggle("on",a.dataset.nav===S.view));
-  const open={plans:vPlans,guide:vGuide};
+  const open={plans:vPlans,guide:vGuide,terms:()=>`<div class="page-head"><div><h1>${t("terms")}</h1><p class="small muted">${t("termsUpdated")}</p></div></div><div class="card" style="max-width:760px">${termsList()}</div>`};
   let v=open[S.view]||(curTier()?({home:vHome,sell:vSell,products:vProducts,money:vMoney,shop:vShop,setup:vSetup}[S.view]||vHome):vLocked);
   const banner = S.meta.sample && curTier() && !open[S.view] && S.view!=="shop" ? `<div class="banner"><p>${t("sampleBanner")}</p><button class="btn" data-act="clearSample">${t("clearSample")}</button></div>` : "";
   $("#main").innerHTML=banner+v();
+  renderGate();
   renderCartbar();
 }
 function renderCartbar(){
@@ -942,6 +1004,7 @@ function vSetup(){
       <label class="btn" for="importFile">${t("importJson")}</label><input type="file" id="importFile" accept="application/json,.json" hidden></div>`}
     </section>
     <section class="card stack"><h2>${t("plans")}</h2><div>${tierChip()}</div>${S.access?`<p class="small muted" style="margin:0">${esc(S.access.biz)} · ${t("yourPlan",{plan:t("tier_"+S.access.tier),date:fdate(S.access.exp,{day:"numeric",month:"long",year:"numeric"})})}</p>`:""}${codeBox()}</section>
+    <section class="card"><a class="linkbtn" href="#terms">${t("terms")} →</a></section>
     <section class="card stack"><h2>${t("resetAll")}</h2><p class="muted" style="margin:0">${t("resetHelp")}</p>
       <div><button class="btn danger ${S.armed==="reset"?"armed":""}" data-act="reset">${S.armed==="reset"?t("tapAgain"):t("resetAll")}</button></div></section>
   </div>`;
@@ -1013,6 +1076,10 @@ const A={
     const rows=[["date","time","items","total","discount","payment","customer","profit"]].concat([...S.sales].sort((a,b)=>a.at-b.at).map(s=>[dayKey(s.at),new Date(s.at).toTimeString().slice(0,5),s.items.map(i=>i.name+" x"+i.qty).join("; "),s.total,s.discount,s.method,s.customer,s.total-sum(s.items,i=>i.qty*i.cost)]));
     download("sales-"+dayKey(Date.now())+".csv","﻿"+rows.map(r=>r.map(q).join(",")).join("\n"),"text/csv"); },
   close(){ closeSheet(); },
+  gateLang(el){ S.meta.lang=el.dataset.v; saveMeta(); shell(); render(); },
+  acceptTerms(){ if(!$("#termsChk")?.checked) return; S.meta.termsOk=Date.now(); lsSet("dk-terms",String(S.meta.termsOk)); saveMeta(); render(); },
+  startTrial(){ S.meta.demoStart=Date.now(); lsSet("dk-demo",String(S.meta.demoStart)); saveMeta(); startDemoTicker(); shell(); location.hash="#home"; render(); },
+  gatePeek(){ S.meta.demoStart=S.meta.demoStart||0; $("#gateRoot").innerHTML=""; document.body.classList.remove("gated"); S.peek=true; },
   upgrade(el){ upgradeSheet(el.dataset.f); },
   buy(el){ paySheet(el.dataset.v); },
   payMethod(el){ S.edit.method=el.dataset.v; document.querySelectorAll("#paySeg button").forEach(b=>b.classList.toggle("on",b===el)); $("#payBody").innerHTML=payBody(); },
@@ -1029,6 +1096,7 @@ document.addEventListener("submit",ev=>{ ev.preventDefault(); const f=ev.target;
   if(f.id==="codeForm") activate($("#codeIn").value); else if(f.id==="payForm") submitPayment(); else if(f.id==="pForm") saveProduct(f); else if(f.id==="rForm") saveRestock(f); else if(f.id==="eForm") saveEntry(); });
 document.addEventListener("input",ev=>{
   const el=ev.target;
+  if(el.id==="termsChk"){ $("#termsBtn").disabled=!el.checked; return; }
   if(el.id==="q"){ S.q=el.value; const g=$("#grid"); if(!g) return;
     if(S.view==="sell") g.innerHTML=sellGrid(); else if(S.view==="products") render(), $("#q").focus(), $("#q").setSelectionRange(S.q.length,S.q.length); else if(S.view==="shop") { render(); const q=$("#q"); q.focus(); q.setSelectionRange(S.q.length,S.q.length);} return; }
   if(el.dataset.co){ S.co[el.dataset.co]=el.value; if(el.dataset.co==="discount"){ const tt=cartTotals(); ["#coTotal","#coTotal2"].forEach(s=>{const x=$(s); if(x) x.textContent=M(tt.total)}); renderCartbar(); } return; }
@@ -1036,6 +1104,7 @@ document.addEventListener("input",ev=>{
 });
 document.addEventListener("change",async ev=>{
   const el=ev.target;
+  if(el.id==="termsChk"){ $("#termsBtn").disabled=!el.checked; }
   if(el.id==="pPhoto"&&el.files[0]){ S.edit.photo=await resizeImage(el.files[0]); if(S.edit.photo) $("#pPhotoPrev").innerHTML=`<img src="${S.edit.photo}" alt="">`; }
   if(el.id==="importFile"&&el.files[0]){ try{ const d=JSON.parse(await el.files[0].text()); if(d.app!=="dokan-khata"||!Array.isArray(d.products)) throw 0;
       wipe(); S.products=d.products; S.sales=d.sales||[]; S.entries=d.entries||[]; S.meta=Object.assign(S.meta,d.meta||{},{id:"settings"});
@@ -1046,7 +1115,7 @@ document.addEventListener("keydown",ev=>{
   if(ev.key==="Enter"&&ev.target.id==="scanInput"){ ev.preventDefault(); handleBarcode(ev.target.value); ev.target.value=""; }
   if(ev.key==="Escape"&&S.sheet) closeSheet();
 });
-const VIEWS=["home","sell","products","money","shop","setup","plans","guide"];
+const VIEWS=["home","sell","products","money","shop","setup","plans","guide","terms"];
 function route(){ const h=location.hash.replace("#",""); S.view=VIEWS.includes(h)?h:"home"; if(S.view==="guide"&&!S.meta.guideSeen){ S.meta.guideSeen=true; saveMeta(); } S.q=""; S.cat=""; S.armed=null; if(S.sheet) closeSheet(); render(); window.scrollTo(0,0); }
 addEventListener("hashchange",route);
 let wasWide=wide(); addEventListener("resize",()=>{ const w=wide(); if(w!==wasWide){ wasWide=w; if(S.sheet==="cart") closeSheet(); if(S.view==="sell") render(); } });
@@ -1061,7 +1130,7 @@ let wasWide=wide(); addEventListener("resize",()=>{ const w=wide(); if(w!==wasWi
   const saved=S.meta.access||lsGet("dk-access");
   if(urlCode){ await activate(urlCode,true); try{ history.replaceState(null,"",location.pathname+(location.hash||"#home")); }catch(e){} }
   else if(saved){ S.access=await verifyCode(saved); }
-  if(!S.access&&!S.meta.demoStart&&!lsGet("dk-demo")){ S.meta.demoStart=Date.now(); lsSet("dk-demo",String(S.meta.demoStart)); saveMeta(); }
+  if(!S.meta.termsOk&&lsGet("dk-terms")) S.meta.termsOk=+lsGet("dk-terms");
   if(!S.meta.demoStart&&lsGet("dk-demo")) S.meta.demoStart=+lsGet("dk-demo");
   if(inDemo()) startDemoTicker();
   shell(); route();
