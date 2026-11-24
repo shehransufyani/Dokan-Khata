@@ -553,10 +553,10 @@ const PLAN_ORDER=["basic","standard","pro"];
 const TIERS={
   basic:{price:350,features:[]},
   standard:{price:500,features:["unlimited","barcode","photos","reports"]},
-  pro:{price:1000,features:["unlimited","barcode","photos","due","reports","export","shop"]}
+  pro:{price:1000,features:["unlimited","barcode","photos","reports","due","export","shop"]}
 };
 const BASE_FEATURES=["b_sell","b_products","b_cashbook","b_reports","b_low","b_lang"];
-const PAID_FEATURES=["unlimited","barcode","photos","due","reports","export","shop"];
+const PAID_FEATURES=["unlimited","barcode","photos","reports","due","export","shop"];
 const b64u={
   dec:s=>Uint8Array.from(atob(s.replace(/-/g,"+").replace(/_/g,"/")+"=".repeat((4-s.length%4)%4)),c=>c.charCodeAt(0))
 };
