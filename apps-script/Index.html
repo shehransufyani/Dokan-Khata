@@ -957,7 +957,7 @@ function productForm(p){
   const units=["pcs","kg","litre","dozen","packet","box"];
   openSheet("product",`<div class="sheet-head"><h2>${p?t("editProduct"):t("addProduct")}</h2><button class="iconbtn" data-act="close" aria-label="${t("cancel")}">${I.x}</button></div>
   <form id="pForm" class="stack" data-id="${p?.id||""}">
-    <div class="photo-pick"><div class="thumb" id="pPhotoPrev">${p?pic(p):"📦"}</div>${can("photos")?`<label class="btn" for="pPhoto">${t("choosePhoto")}</label><input id="pPhoto" type="file" accept="image/*" hidden>`:`<button type="button" class="btn" data-act="upgrade" data-f="photos">${t("choosePhoto")}${lockIc()}</button>`}</div>
+    <div class="photo-pick"><div class="thumb" id="pPhotoPrev">${p?pic(p):"📦"}</div>${can("photos")?`<label class="btn" for="pPhoto">${t("choosePhoto")}</label><input id="pPhoto" type="file" accept="image/png,image/jpeg,image/webp,image/gif,image/heic" hidden>`:`<button type="button" class="btn" data-act="upgrade" data-f="photos">${t("choosePhoto")}${lockIc()}</button>`}</div>
     <div class="field"><label for="pName">${t("name")}</label><input class="input" id="pName" required value="${esc(p?.name)}"></div>
     <div class="field"><label for="pNameBn">${t("nameBn")}</label><input class="input" id="pNameBn" value="${esc(p?.nameBn)}" lang="bn"></div>
     <div class="grid2">
