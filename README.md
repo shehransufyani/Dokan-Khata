@@ -11,7 +11,7 @@ A stock, sales and cash app for shops of any size. Works on phones, tablets, lap
 - **Setup**: shop name, WhatsApp number, language, backup download/restore, sales CSV export.
 
 ## Plans and access codes
-- Plans: Shuru ৳350, Bepsha ৳500, Pro ৳1000 per month. Bepsha has everything except due (baki) tracking, backup/Excel export and the online shop, which are Pro only. Edit `TIERS` in `index.html` to change what each plan includes.
+- Plans: Shuru ৳500, Bepsha ৳800, Pro ৳1200 per month. Bepsha has everything except due (baki) tracking, backup/Excel export and the online shop, which are Pro only. Edit `TIERS` in `index.html` to change what each plan includes.
 - First open shows the Terms and conditions (English and Bangla), then a screen explaining the free 7-day trial. After 7 days the app locks until an access code is entered. Change `demoSeconds` in `CONFIG` to adjust.
 - Access codes are signed with a private key. Create them on `admin.html` after loading `admin-key.json` (kept privately, never in this repo). A code carries the business name, plan and end date, and arrives as a link the business taps.
 - Payments: bKash, Nagad or Rocket send-money. The customer sends the Transaction ID through WhatsApp; you check it and send a code. Set your numbers in `CONFIG` in `index.html` (`ownerWhatsApp`, `pay`).

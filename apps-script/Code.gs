@@ -8,7 +8,7 @@
  * Bind this script to a Google Sheet (Extensions > Apps Script) and deploy it as a web app.
  */
 
-var PLANS = { basic: 'Shuru (৳350)', standard: 'Bepsha (৳500)', pro: 'Pro (৳1000)' };
+var PLANS = { basic: 'Shuru (৳500)', standard: 'Bepsha (৳800)', pro: 'Pro (৳1200)' };
 var SHEETS = {
   codes:    ['Code', 'Business', 'Phone', 'Plan', 'Expires', 'Status', 'Created', 'Note', 'Account'],
   payments: ['Paid at', 'Package', 'Method', 'Transaction ID', 'Store name', 'Phone', 'Status', 'Access code', 'Account'],
@@ -18,7 +18,7 @@ var SHEETS = {
 var SHEET_NAMES = { codes: 'Codes', payments: 'Payments', data: 'Data', accounts: 'Accounts' };
 var TRIAL_MS = 7 * 24 * 60 * 60 * 1000; // 7-day free trial
 var STORES = ['products', 'sales', 'entries', 'orders', 'meta'];
-var PRICES = { basic: 350, standard: 500, pro: 1000 };
+var PRICES = { basic: 500, standard: 800, pro: 1200 };
 
 /* ---------- web app ---------- */
 function doGet() {
@@ -190,7 +190,7 @@ function ask_(ui, title, prompt) {
   return r.getSelectedButton() === ui.Button.OK ? r.getResponseText().trim() : null;
 }
 function askPlan_(ui) {
-  var t = ask_(ui, 'Plan', 'Type 1 for Shuru (৳350), 2 for Bepsha (৳500) or 3 for Pro (৳1000)');
+  var t = ask_(ui, 'Plan', 'Type 1 for Shuru (৳500), 2 for Bepsha (৳800) or 3 for Pro (৳1200)');
   return t === null ? null : ({ '1': 'basic', '2': 'standard', '3': 'pro' })[t] || null;
 }
 function showCode_(ui, res, biz) {
