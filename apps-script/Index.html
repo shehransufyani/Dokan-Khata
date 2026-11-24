@@ -664,7 +664,7 @@ function submitPayment(){
     gs("submitPayment",{tier:k,method:S.edit.method,trx,shop,phone:ph}).then(()=>{ closeSheet(); toast(t("paySent")); }).catch(()=>{ if(btn) btn.disabled=false; toast(t("payFail")); }); return; }
   const msg=`Dokan Khata plan payment\nPlan: ${T.en["tier_"+k]} (৳${TIERS[k].price}/month)\nPaid with: ${T.en[S.edit.method]}\nTransaction ID: ${trx}\nShop: ${shop}\nPhone: ${ph}`;
   let d=CONFIG.ownerWhatsApp.replace(/\D/g,""); if(d.startsWith("0")) d="88"+d;
-  const a=document.createElement("a"); a.href=`https://wa.me/${d}?text=${encodeURIComponent(msg)}`; a.target="_blank"; a.rel="noopener"; document.body.appendChild(a); a.click(); a.remove();
+  const a=document.createElement("a"); a.href=`https:\/\/wa.me/${d}?text=${encodeURIComponent(msg)}`; a.target="_blank"; a.rel="noopener"; document.body.appendChild(a); a.click(); a.remove();
   closeSheet(); toast(t("paySent"));
 }
 
@@ -1075,7 +1075,7 @@ function vShop(){
   <div class="shopgrid" id="grid">${list.map(p=>{const q=S.shopCart[p.id]||0, out=p.stock<=0; return `<div class="sitem"><div class="pic">${pic(p)}</div><div class="body"><div class="nm">${esc(pname(p))}</div>
      <span class="pill ${out?"out":stockState(p)==="low"?"low":"ok"}" style="align-self:flex-start">${out?t("outStock"):(S.meta.showCount?t("leftN",{n:N(p.stock)}):t("inStock"))}</span>
      <div class="foot"><b class="num" style="color:var(--gold)">${M(p.price)}</b>${out?"":(q?`<div class="stepper"><button data-act="sdec" data-id="${p.id}" aria-label="Less">−</button><span>${N(q)}</span><button data-act="sinc" data-id="${p.id}" aria-label="More">+</button></div>`:`<button class="btn" style="min-height:34px;padding:4px 12px" data-act="sinc" data-id="${p.id}">${I.plus}</button>`)}</div></div></div>`}).join("")}</div>
-  ${n&&num?`<a class="wa" href="https://wa.me/${num}?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener">${I.wa.replace("<svg",'<svg width="22" height="22"')}<span style="flex:1">${t("orderWa")} · <span class="num">${N(n)}</span></span><span class="num">${M(tot)}</span></a>`:""}
+  ${n&&num?`<a class="wa" href="https:\/\/wa.me/${num}?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener">${I.wa.replace("<svg",'<svg width="22" height="22"')}<span style="flex:1">${t("orderWa")} · <span class="num">${N(n)}</span></span><span class="num">${M(tot)}</span></a>`:""}
   </div>`;
 }
 
