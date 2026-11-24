@@ -386,7 +386,7 @@ function waUrl_(phone, text) {
   var d = String(phone || '').replace(/[^\d]/g, '');
   if (d.indexOf('01') === 0) d = '88' + d;
   if (!/^8801\d{9}$/.test(d)) return '';
-  return 'https:' + '//wa.me/' + d + '?text=' + encodeURIComponent(text);
+  return 'https:' + '//api.whatsapp.com/send?phone=' + d + '&text=' + encodeURIComponent(text);
 }
 function waCell_(phone, text) { var u = waUrl_(phone, text); return u ? '=HYPERLINK("' + u.replace(/"/g, '""') + '","Send on WhatsApp")' : ''; }
 function rows_(key, cols) { var sh = sheet_(key), last = sh.getLastRow(); return last > 1 ? sh.getRange(2, 1, last - 1, cols).getValues() : []; }
