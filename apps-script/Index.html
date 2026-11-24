@@ -795,13 +795,13 @@ function gateStore(langSeg){
 }
 function gateTour(langSeg){
   const i=Math.min(S.tourStep||0,TOUR.length-1), [ic,k]=TOUR[i], last=i===TOUR.length-1, started=!!(S.auth.trialStart||S.access);
-  return `<div class="gate"><div class="gatecard" role="dialog" aria-modal="true" aria-labelledby="gateTitle" style="max-width:600px">
+  return `<div class="gate"><div class="gatecard" role="dialog" aria-modal="true" aria-labelledby="gateTitle" style="max-width:600px;min-height:min(560px,calc(100vh - 48px))">
     <div class="row between"><span class="small muted" style="font-weight:600">${t("tourOf",{n:N(i+1),total:N(TOUR.length)})}</span>${langSeg}</div>
     <div class="tourdots" aria-hidden="true">${TOUR.map((_,x)=>`<span class="${x<=i?"on":""}"></span>`).join("")}</div>
     <div class="row" style="flex-wrap:nowrap;gap:14px"><div class="tourico">${I[ic]}</div><h1 id="gateTitle" style="margin:0">${t(k+"t")}</h1></div>
     <ol class="steps tourlist">${t(k+"b").split("|").map(x=>`<li>${esc(x)}</li>`).join("")}</ol>
     <p class="small" id="authErr" role="alert" style="margin:0;color:var(--danger)"></p>
-    <div class="row between"><button type="button" class="btn" data-act="tourBack" ${i?"":"disabled"}>${t("back")}</button>
+    <div class="row between" style="margin-top:auto"><button type="button" class="btn" data-act="tourBack" ${i?"":"disabled"}>${t("back")}</button>
       <button type="button" class="btn primary" id="authBtn" data-act="tourNext" style="min-height:48px">${last?t(started?"tourDone":"tourStart"):t("next")}</button></div>
   </div></div>`;
 }
@@ -1272,7 +1272,7 @@ function vShop(){
 
 /* ---------- setup ---------- */
 function vSetup(){
-  return `<div class="page-head"><div><h1>${t("setup")}</h1><p>${t("dataHere")}</p></div></div>
+  return `<div class="page-head"><div><h1>${t("setup")}</h1><p>${t(GAS?"cloudNote":"dataHere")}</p></div></div>
   <div class="setup">
     ${GAS&&S.auth?`<section class="card stack"><h2>${t("account")}</h2><p class="muted" style="margin:0">${t("loggedInAs",{login:esc(S.auth.login)})}</p><div class="row"><button class="btn" data-act="tourAgain">${t("tourAgain")}</button><button class="btn danger" data-act="logout">${t("logout")}</button></div></section>`:""}
     <section class="card stack">
