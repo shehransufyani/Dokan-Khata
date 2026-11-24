@@ -16,7 +16,7 @@ var SHEETS = {
   accounts: ['ID', 'Login', 'Shop', 'Created', 'Trial started', 'Code', 'Last login', 'Hash', 'Salt', 'Reset']
 };
 var SHEET_NAMES = { codes: 'Codes', payments: 'Payments', data: 'Data', accounts: 'Accounts' };
-var TRIAL_MS = 10 * 60 * 1000;
+var TRIAL_MS = 7 * 24 * 60 * 60 * 1000; // 7-day free trial
 var STORES = ['products', 'sales', 'entries', 'meta'];
 
 /* ---------- web app ---------- */
