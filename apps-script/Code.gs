@@ -1,5 +1,5 @@
 /**
- * Dokan Khata on Google Apps Script.
+ * Store Flow on Google Apps Script.
  * - Serves the app (Index.html) as a web app.
  * - Shop owners sign up with an email or phone number and a password ("Accounts" sheet).
  * - Keeps every shop's products, sales, income/expenses and settings in this Google Sheet.
@@ -22,7 +22,7 @@ var STORES = ['products', 'sales', 'entries', 'meta'];
 /* ---------- web app ---------- */
 function doGet() {
   return HtmlService.createHtmlOutputFromFile('Index')
-    .setTitle('Dokan Khata')
+    .setTitle('Store Flow')
     .addMetaTag('viewport', 'width=device-width, initial-scale=1, viewport-fit=cover')
     .setFaviconUrl('https://shehransufyani.github.io/Dokan-Khata/icons/icon-192.png')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
@@ -161,7 +161,7 @@ function submitPayment(token, p) {
   } finally { lock.releaseLock(); }
   try {
     var owner = Session.getEffectiveUser().getEmail();
-    if (owner) MailApp.sendEmail(owner, 'Dokan Khata payment: ' + shop + ' (' + PLANS[tier] + ')',
+    if (owner) MailApp.sendEmail(owner, 'Store Flow payment: ' + shop + ' (' + PLANS[tier] + ')',
       'New plan payment to check.\n\nPlan: ' + PLANS[tier] + '\nPaid with: ' + method + '\nTransaction ID: ' + trx +
       '\nShop: ' + shop + '\nPhone: ' + phone + '\nAccount: ' + a.login + '\n\nAccess code for this payment: ' + res.code + '\n\nCheck the money arrived in your ' + method + ' app, then send this code to ' + phone + '. If the money did not arrive, set the code to "off" in the Codes sheet.\n' + ss_().getUrl());
   } catch (e) {}
@@ -170,7 +170,7 @@ function submitPayment(token, p) {
 
 /* ---------- owner menu in the Sheet ---------- */
 function onOpen() {
-  SpreadsheetApp.getUi().createMenu('Dokan Khata')
+  SpreadsheetApp.getUi().createMenu('Store Flow')
     .addItem('Create access code', 'menuCreateCode')
     .addItem('Show code for selected payment', 'menuApprovePayment')
     .addItem('Create my master code', 'menuMasterCode')
@@ -347,7 +347,7 @@ function resetStart(raw) {
   if (a) {
     var code = String(Math.floor(100000 + Math.random() * 900000));
     sheet_('accounts').getRange(a.row, 10).setValue(hash_(code, a.salt) + '|' + (Date.now() + 30 * 60000));
-    MailApp.sendEmail(login, 'Dokan Khata password reset code', 'Your Dokan Khata reset code is ' + code + '\n\nIt works for 30 minutes. If you did not ask for this, ignore this email.');
+    MailApp.sendEmail(login, 'Store Flow password reset code', 'Your Store Flow reset code is ' + code + '\n\nIt works for 30 minutes. If you did not ask for this, ignore this email.');
   }
   return { via: 'email' };
 }

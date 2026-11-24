@@ -1,6 +1,6 @@
 {
-  "name": "Dokan Khata",
-  "short_name": "Dokan Khata",
+  "name": "Store Flow",
+  "short_name": "Store Flow",
   "description": "Track stock, sales, income and expenses for your shop.",
   "start_url": "./#home",
   "scope": "./",
