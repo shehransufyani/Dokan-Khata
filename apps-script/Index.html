@@ -646,7 +646,7 @@ function payBody(){
   return `<form id="payForm" class="stack">
     <ol class="steps">
       <li>${num?t("paySend",{app:t(m),price:N(price),num:esc(num)}):t("payNoNum",{app:t(m)})}</li>
-      <li>${t("payTrx")}</li>
+      <li>${t("payTrx",{app:t(m)})}</li>
       <li>${t("payWait")}</li>
     </ol>
     <div class="field"><label for="payTrx">${t("trxId")}</label><input class="input num" id="payTrx" autocomplete="off" required></div>
