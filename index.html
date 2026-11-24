@@ -318,7 +318,7 @@ en:{home:"Home",sell:"Sell",products:"Products",money:"Money",shop:"My shop",set
  cleared:"Example data cleared",imported:"Backup restored",badFile:"That file is not a Dokan Khata backup",
  noCamScan:"This browser cannot scan with the camera. Type the barcode or use a USB scanner.",camDenied:"Camera is not available here.",
  stockAdded:"Stock added",margin:"margin",pcs:"pcs",kg:"kg",litre:"litre",dozen:"dozen",packet:"packet",box:"box",
- offline:"Works offline. Data stays on this device.",install:"Install app",dataHere:"Your data is saved on this device.",
+ offline:"Works offline. Data stays on this device.",cloudNote:"Saved to your Google Sheet. Keeps working when the internet drops.",install:"Install app",dataHere:"Your data is saved on this device.",
  hello:"Here is how the shop is doing",noSales:"No sales in this period yet.",entries:"entries",lang:"বাংলা",
  terms:"Terms and conditions",termsSub:"Please read and accept before using Dokan Khata.",termsAgree:"I have read and agree to these terms",termsNext:"Accept and continue",termsUpdated:"Last updated 23 November 2026",
  introT:"You can try everything free for 10 minutes",introB:"Every feature is open for 10 minutes on this device, with example data for a grocery shop. When the time is up, the app locks.",introB2:"To keep using it, choose a plan and pay with bKash, Nagad or Rocket. We send you a personal access code on WhatsApp.",introStart:"Start my 10 minutes",introCode:"I already have a code",
@@ -381,7 +381,7 @@ bn:{home:"হোম",sell:"বিক্রি",products:"পণ্য",money:"�
  cleared:"উদাহরণ ডেটা মুছে ফেলা হয়েছে",imported:"ব্যাকআপ ফেরত আনা হয়েছে",badFile:"এটি দোকান খাতার ব্যাকআপ ফাইল নয়",
  noCamScan:"এই ব্রাউজারে ক্যামেরা স্ক্যান হয় না। বারকোড টাইপ করুন বা USB স্ক্যানার ব্যবহার করুন।",camDenied:"এখানে ক্যামেরা ব্যবহার করা যাচ্ছে না।",
  stockAdded:"স্টক যোগ হয়েছে",margin:"মার্জিন",pcs:"পিস",kg:"কেজি",litre:"লিটার",dozen:"ডজন",packet:"প্যাকেট",box:"বক্স",
- offline:"ইন্টারনেট ছাড়াও চলে। ডেটা এই ডিভাইসে থাকে।",install:"অ্যাপ ইনস্টল",dataHere:"আপনার ডেটা এই ডিভাইসে সেভ থাকে।",
+ cloudNote:"আপনার গুগল শিটে সেভ হয়। ইন্টারনেট চলে গেলেও কাজ চলে।", offline:"ইন্টারনেট ছাড়াও চলে। ডেটা এই ডিভাইসে থাকে।",install:"অ্যাপ ইনস্টল",dataHere:"আপনার ডেটা এই ডিভাইসে সেভ থাকে।",
  hello:"দোকানের অবস্থা এক নজরে",noSales:"এই সময়ে এখনো বিক্রি নেই।",entries:"টি এন্ট্রি",lang:"English",
  terms:"শর্তাবলি",termsSub:"দোকান খাতা ব্যবহারের আগে পড়ে সম্মতি দিন।",termsAgree:"আমি শর্তাবলি পড়েছি এবং রাজি আছি",termsNext:"সম্মতি দিয়ে এগিয়ে যান",termsUpdated:"সর্বশেষ হালনাগাদ ২৩ নভেম্বর ২০২৬",
  introT:"১০ মিনিট সবকিছু ফ্রি ব্যবহার করুন",introB:"এই ডিভাইসে ১০ মিনিট সব ফিচার খোলা থাকবে, সাথে একটি মুদি দোকানের উদাহরণ ডেটা। সময় শেষ হলে অ্যাপ লক হয়ে যাবে।",introB2:"চালিয়ে যেতে একটি প্ল্যান বাছুন এবং বিকাশ, নগদ বা রকেটে পেমেন্ট করুন। আমরা হোয়াটসঅ্যাপে আপনার ব্যক্তিগত অ্যাক্সেস কোড পাঠাব।",introStart:"আমার ১০ মিনিট শুরু করুন",introCode:"আমার কোড আছে",
@@ -723,7 +723,7 @@ function shell(){
     <div class="grow"></div>
     <div style="margin:0 6px 10px">${tierChip()}</div>
     <button class="btn" data-act="lang">${I.globe}${t("lang")}</button>
-    <p class="small muted" style="margin:10px 6px 0">${t("offline")}</p>
+    <p class="small muted" style="margin:10px 6px 0">${t(GAS?"cloudNote":"offline")}</p>
   </nav>
   <div style="min-width:0">
     <header class="topbar">${brand}

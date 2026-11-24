@@ -75,8 +75,8 @@ function addCode_(biz, phone, tier, months, note) {
   return { code: code, exp: exp, link: appLink_(code) };
 }
 function appLink_(code) {
-  var url = '';
-  try { url = ScriptApp.getService().getUrl(); } catch (e) {}
+  var url = PropertiesService.getScriptProperties().getProperty('APP_URL') || '';
+  if (!url) { try { url = ScriptApp.getService().getUrl(); } catch (e) {} }
   return url ? url + '?code=' + encodeURIComponent(code) : '(deploy the web app first to get a link)';
 }
 
@@ -160,6 +160,7 @@ function onOpen() {
     .addItem('Create my master code', 'menuMasterCode')
     .addSeparator()
     .addItem('Show app link', 'menuAppLink')
+    .addItem('Set app link', 'menuSetAppLink')
     .addItem('Set up sheets', 'setup')
     .addToUi();
 }
@@ -200,6 +201,14 @@ function menuMasterCode() {
   var exp = new Date(2099, 11, 31, 23, 59, 59), code = makeCode_();
   sheet_('codes').appendRow([code, 'Owner (master)', '', 'pro', exp, 'active', new Date(), 'Master code, keep private']);
   showCode_(ui, { code: code, exp: exp, link: appLink_(code) }, 'Owner (master)');
+}
+function menuSetAppLink() {
+  var ui = SpreadsheetApp.getUi();
+  var url = ask_(ui, 'Set app link', 'Paste the Web app URL from Deploy > Manage deployments (it ends in /exec).');
+  if (!url) return;
+  if (!/^https:\/\/script\.google\.com\/.*\/exec$/.test(url)) { ui.alert('That does not look like a Web app URL ending in /exec.'); return; }
+  PropertiesService.getScriptProperties().setProperty('APP_URL', url);
+  ui.alert('Saved. New access codes will use this link.');
 }
 function menuAppLink() {
   var ui = SpreadsheetApp.getUi();
