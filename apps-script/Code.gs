@@ -17,7 +17,8 @@ var SHEETS = {
 };
 var SHEET_NAMES = { codes: 'Codes', payments: 'Payments', data: 'Data', accounts: 'Accounts' };
 var TRIAL_MS = 7 * 24 * 60 * 60 * 1000; // 7-day free trial
-var STORES = ['products', 'sales', 'entries', 'meta'];
+var STORES = ['products', 'sales', 'entries', 'orders', 'meta'];
+var PRICES = { basic: 350, standard: 500, pro: 1000 };
 
 /* ---------- web app ---------- */
 function doGet() {
@@ -90,7 +91,7 @@ function appLink_(code) {
 /** Returns everything stored for this account: {products:[], sales:[], entries:[], meta:[]} */
 function loadAll(token) {
   var c = { code: auth_(token).id };
-  var out = { products: [], sales: [], entries: [], meta: [] };
+  var out = { products: [], sales: [], entries: [], orders: [], meta: [] };
   var sh = sheet_('data'), last = sh.getLastRow();
   if (last < 2) return out;
   var rows = sh.getRange(2, 1, last - 1, 5).getValues();
@@ -175,6 +176,9 @@ function onOpen() {
     .addItem('Show code for selected payment', 'menuApprovePayment')
     .addItem('Create my master code', 'menuMasterCode')
     .addItem('Reset password of selected account', 'menuResetPassword')
+    .addSeparator()
+    .addItem('Update owner dashboard', 'menuDashboard')
+    .addItem('Send renewal reminders now', 'menuReminders')
     .addSeparator()
     .addItem('Show app link', 'menuAppLink')
     .addItem('Set app link', 'menuSetAppLink')
@@ -318,7 +322,7 @@ function logIn(p) {
   sheet_('accounts').getRange(a.row, 7).setValue(new Date());
   return state_(a, token_(a.id));
 }
-function session(token) { return state_(auth_(token)); }
+function session(token) { var s = state_(auth_(token)); daily_(); return s; }
 function setStore(token, name) {
   var a = auth_(token); name = String(name || '').trim().slice(0, 80);
   if (!name) throw new Error('STORE');
@@ -372,4 +376,167 @@ function menuResetPassword() {
   var salt = Utilities.getUuid();
   sh.getRange(r, 8, 1, 3).setValues([[hash_(pw, salt), salt, '']]);
   ui.alert('Password reset', 'Account: ' + login + '\nNew password: ' + pw + '\n\nSend this to the shop owner. They can log in with it straight away.', ui.ButtonSet.OK);
+}
+
+
+/* ---------- owner dashboard and renewal reminders ---------- */
+function tz_() { return Session.getScriptTimeZone() || 'Asia/Dhaka'; }
+function fmt_(d) { return Utilities.formatDate(new Date(d), tz_(), 'd MMM yyyy'); }
+function waUrl_(phone, text) {
+  var d = String(phone || '').replace(/[^\d]/g, '');
+  if (d.indexOf('01') === 0) d = '88' + d;
+  if (!/^8801\d{9}$/.test(d)) return '';
+  return 'https:' + '//wa.me/' + d + '?text=' + encodeURIComponent(text);
+}
+function waCell_(phone, text) { var u = waUrl_(phone, text); return u ? '=HYPERLINK("' + u.replace(/"/g, '""') + '","Send on WhatsApp")' : ''; }
+function rows_(key, cols) { var sh = sheet_(key), last = sh.getLastRow(); return last > 1 ? sh.getRange(2, 1, last - 1, cols).getValues() : []; }
+function price_(pkg) { var m = String(pkg || '').replace(/,/g, '').match(/(\d{3,5})/); if (m) return +m[1]; var k = String(pkg || '').toLowerCase(); return PRICES[k] || 0; }
+
+/** Collects everything the owner needs: shops, plans ending, trials ending, money. */
+function ownerData_() {
+  var now = Date.now(), day = 864e5;
+  var accounts = rows_('accounts', 10).map(function (r) {
+    var ts = r[4] instanceof Date ? r[4].getTime() : (r[4] ? new Date(r[4]).getTime() : 0);
+    return { id: String(r[0]), login: String(r[1]), shop: String(r[2] || ''), created: r[3], trialStart: ts, code: norm_(r[5]), last: r[6] };
+  });
+  var byId = {}; accounts.forEach(function (a) { byId[a.id] = a; });
+  var codes = rows_('codes', 9).map(function (r) {
+    var exp = r[4] instanceof Date ? r[4].getTime() : new Date(r[4]).getTime();
+    return { code: norm_(r[0]), biz: String(r[1] || ''), phone: String(r[2] || ''), tier: String(r[3] || '').toLowerCase(), exp: exp,
+             active: String(r[5] || 'active').toLowerCase() === 'active', master: /^master/i.test(String(r[7] || '')), account: String(r[8] || '') };
+  });
+  var paying = [], ending = [];
+  accounts.forEach(function (a) {
+    var c = null; codes.forEach(function (x) { if (x.code === a.code) c = x; });
+    if (!c || !c.active || c.master || !(c.exp > now)) return;
+    var item = { shop: a.shop || c.biz, login: a.login, phone: c.phone || (a.login.indexOf('@') < 0 ? a.login : ''), tier: c.tier, exp: c.exp, code: c.code, last: a.last, daysLeft: Math.ceil((c.exp - now) / day) };
+    paying.push(item);
+    if (c.exp - now <= 7 * day) ending.push(item);
+  });
+  var trials = [], trialsEnding = [];
+  accounts.forEach(function (a) {
+    if (!a.trialStart) return;
+    var hasPlan = paying.some(function (p) { return p.login === a.login; });
+    var end = a.trialStart + TRIAL_MS;
+    if (hasPlan || end < now) return;
+    var item = { shop: a.shop, login: a.login, phone: a.login.indexOf('@') < 0 ? a.login : '', end: end, hoursLeft: Math.ceil((end - now) / 36e5) };
+    trials.push(item);
+    if (end - now <= 2 * day) trialsEnding.push(item);
+  });
+  var month = new Date(); month.setDate(1); month.setHours(0, 0, 0, 0);
+  var revMonth = 0, revAll = 0, waiting = 0, byPlan = {};
+  rows_('payments', 9).forEach(function (r) {
+    var st = String(r[6] || '').toLowerCase(), amt = price_(r[1]);
+    if (st.indexOf('check') === 0) { waiting++; return; }
+    if (st === 'off' || st === 'refunded' || st === 'rejected') return;
+    revAll += amt;
+    var at = r[0] instanceof Date ? r[0].getTime() : new Date(r[0]).getTime();
+    if (at >= month.getTime()) { revMonth += amt; byPlan[r[1]] = (byPlan[r[1]] || 0) + amt; }
+  });
+  paying.sort(function (a, b) { return a.exp - b.exp; });
+  ending.sort(function (a, b) { return a.exp - b.exp; });
+  trialsEnding.sort(function (a, b) { return a.end - b.end; });
+  return { accounts: accounts, paying: paying, ending: ending, trials: trials, trialsEnding: trialsEnding, revMonth: revMonth, revAll: revAll, waiting: waiting, byPlan: byPlan };
+}
+function renewMsg_(p) {
+  return 'Assalamu alaikum! Your Store Flow ' + (PLANS[p.tier] || p.tier) + ' plan for ' + p.shop + ' ends on ' + fmt_(p.exp) +
+    '. To keep using it, send the plan fee by bKash, Nagad or Rocket and enter the Transaction ID in the app (Plans page). Thank you!';
+}
+function trialMsg_(t) {
+  return 'Assalamu alaikum! Your Store Flow free trial for ' + (t.shop || 'your shop') + ' ends on ' + fmt_(t.end) +
+    '. Choose a plan in the app (Plans page) and pay by bKash, Nagad or Rocket to keep everything you added. Thank you!';
+}
+/** Writes the "Dashboard" tab: totals, plans ending, trials ending, all paying shops. */
+function buildDashboard_() {
+  var d = ownerData_(), ss = ss_(), sh = ss.getSheetByName('Dashboard');
+  if (!sh) { sh = ss.insertSheet('Dashboard', 0); }
+  sh.clear(); sh.clearConditionalFormatRules();
+  var out = [], fmtRows = [];
+  function row(a) { while (a.length < 7) a.push(''); out.push(a); }
+  function head(title) { row(['']); fmtRows.push(['h', out.length + 1]); row([title]); }
+  function cols(a) { fmtRows.push(['c', out.length + 1]); row(a); }
+  row(['Store Flow: owner dashboard', '', '', '', '', '', 'Updated ' + Utilities.formatDate(new Date(), tz_(), 'd MMM yyyy, h:mm a')]);
+  row(['']);
+  cols(['Paying shops', 'On free trial', 'All accounts', 'Revenue this month (৳)', 'Revenue all time (৳)', 'Payments to check', 'Plans ending in 7 days']);
+  row([d.paying.length, d.trials.length, d.accounts.length, d.revMonth, d.revAll, d.waiting, d.ending.length]);
+  head('Plans ending in the next 7 days (send a reminder)');
+  cols(['Shop', 'Login', 'Plan', 'Ends', 'Days left', 'Phone', 'Remind']);
+  if (!d.ending.length) row(['None right now.']);
+  d.ending.forEach(function (p) { row([p.shop, p.login, PLANS[p.tier] || p.tier, fmt_(p.exp), p.daysLeft, p.phone ? "'" + p.phone : '', waCell_(p.phone, renewMsg_(p))]); });
+  head('Free trials ending in the next 2 days');
+  cols(['Shop', 'Login', 'Trial ends', 'Hours left', '', 'Phone', 'Remind']);
+  if (!d.trialsEnding.length) row(['None right now.']);
+  d.trialsEnding.forEach(function (t) { row([t.shop, t.login, fmt_(t.end), t.hoursLeft, '', t.phone ? "'" + t.phone : '', waCell_(t.phone, trialMsg_(t))]); });
+  head('Revenue this month by plan');
+  cols(['Plan', 'Revenue (৳)']);
+  var plans = Object.keys(d.byPlan); if (!plans.length) row(['No paid plans yet this month.']);
+  plans.forEach(function (k) { row([k, d.byPlan[k]]); });
+  head('All paying shops');
+  cols(['Shop', 'Login', 'Plan', 'Ends', 'Days left', 'Code', 'Last login']);
+  if (!d.paying.length) row(['No paying shops yet.']);
+  d.paying.forEach(function (p) { row([p.shop, p.login, PLANS[p.tier] || p.tier, fmt_(p.exp), p.daysLeft, p.code, p.last ? fmt_(p.last) : '']); });
+  sh.getRange(1, 1, out.length, 7).setValues(out);
+  sh.getRange(1, 1).setFontSize(16).setFontWeight('bold');
+  sh.getRange(3, 1, 2, 7).setHorizontalAlignment('center');
+  sh.getRange(4, 1, 1, 7).setFontSize(18).setFontWeight('bold').setFontColor('#1E9E63');
+  fmtRows.forEach(function (f) {
+    var r = sh.getRange(f[1], 1, 1, 7);
+    if (f[0] === 'h') r.setFontWeight('bold').setFontSize(13).setBackground('#E8F7EF');
+    else r.setFontWeight('bold').setFontColor('#555555');
+  });
+  sh.setColumnWidths(1, 7, 170); sh.setFrozenRows(0);
+  PropertiesService.getScriptProperties().setProperty('DASH_AT', String(Date.now()));
+  return d;
+}
+/** Emails shops whose plan ends in 3 days or 1 day (email logins), and sends the owner one summary. Each reminder goes once. */
+function sendReminders_(d) {
+  d = d || ownerData_();
+  var pr = PropertiesService.getScriptProperties(), sent = 0, ownerLines = [];
+  d.ending.forEach(function (p) {
+    var stage = p.daysLeft <= 1 ? '1' : p.daysLeft <= 3 ? '3' : '';
+    if (!stage) return;
+    var key = 'REM|' + p.code + '|' + p.exp + '|' + stage;
+    if (pr.getProperty(key)) return;
+    if (p.login.indexOf('@') > 0) {
+      try {
+        MailApp.sendEmail(p.login, 'Your Store Flow plan ends ' + (stage === '1' ? 'tomorrow' : 'in 3 days'),
+          renewMsg_(p) + '\n\nআপনার Store Flow প্ল্যান ' + fmt_(p.exp) + ' তারিখে শেষ হবে। চালু রাখতে বিকাশ, নগদ বা রকেটে পেমেন্ট করে অ্যাপের Plans পেজে Transaction ID দিন। ধন্যবাদ!');
+        sent++;
+      } catch (e) {}
+    }
+    ownerLines.push('• ' + p.shop + ' (' + (PLANS[p.tier] || p.tier) + ') ends ' + fmt_(p.exp) + ' · ' + (p.phone ? p.phone + ' · ' + waUrl_(p.phone, renewMsg_(p)) : p.login));
+    pr.setProperty(key, String(Date.now()));
+  });
+  d.trialsEnding.forEach(function (t) {
+    var key = 'TRI|' + t.login + '|' + t.end;
+    if (t.hoursLeft > 24 || pr.getProperty(key)) return;
+    ownerLines.push('• Trial: ' + (t.shop || t.login) + ' ends ' + fmt_(t.end) + ' · ' + (t.phone ? t.phone + ' · ' + waUrl_(t.phone, trialMsg_(t)) : t.login));
+    pr.setProperty(key, String(Date.now()));
+  });
+  if (ownerLines.length) {
+    try {
+      var owner = Session.getEffectiveUser().getEmail();
+      if (owner) MailApp.sendEmail(owner, 'Store Flow: ' + ownerLines.length + ' shop(s) to remind today',
+        'These shops have a plan or free trial ending soon. Tap a WhatsApp link to send them a ready-made reminder.\n\n' + ownerLines.join('\n') + '\n\nOwner dashboard: ' + ss_().getUrl());
+    } catch (e) {}
+  }
+  return { emailed: sent, listed: ownerLines.length };
+}
+/** Runs once a day, the first time anyone opens the app that day. No extra setup or permissions needed. */
+function daily_() {
+  try {
+    var pr = PropertiesService.getScriptProperties(), today = Utilities.formatDate(new Date(), tz_(), 'yyyy-MM-dd');
+    if (pr.getProperty('DAILY_AT') === today) return;
+    var lock = LockService.getScriptLock(); if (!lock.tryLock(100)) return;
+    try {
+      if (pr.getProperty('DAILY_AT') === today) return;
+      pr.setProperty('DAILY_AT', today);
+      sendReminders_(buildDashboard_());
+    } finally { lock.releaseLock(); }
+  } catch (e) {}
+}
+function menuDashboard() { buildDashboard_(); ss_().setActiveSheet(ss_().getSheetByName('Dashboard')); }
+function menuReminders() {
+  var r = sendReminders_(buildDashboard_());
+  SpreadsheetApp.getUi().alert('Renewal reminders', r.listed ? ('Emailed ' + r.emailed + ' shop(s). ' + r.listed + ' reminder(s) are in your email and on the Dashboard tab with WhatsApp links.') : 'No plans or trials are ending soon. Nothing to send today.', SpreadsheetApp.getUi().ButtonSet.OK);
 }
