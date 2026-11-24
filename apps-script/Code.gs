@@ -11,7 +11,7 @@
 var PLANS = { basic: 'Shuru (৳350)', standard: 'Bepsha (৳500)', pro: 'Pro (৳1000)' };
 var SHEETS = {
   codes:    ['Code', 'Business', 'Phone', 'Plan', 'Expires', 'Status', 'Created', 'Note', 'Account'],
-  payments: ['Received', 'Plan', 'Method', 'Transaction ID', 'Shop', 'Phone', 'Status', 'Code', 'Account'],
+  payments: ['Paid at', 'Package', 'Method', 'Transaction ID', 'Store name', 'Phone', 'Status', 'Access code', 'Account'],
   data:     ['Code', 'Store', 'ID', 'Updated', 'JSON'],
   accounts: ['ID', 'Login', 'Shop', 'Created', 'Trial started', 'Code', 'Last login', 'Hash', 'Salt', 'Reset']
 };
@@ -36,7 +36,7 @@ function sheet_(key) {
     sh = ss.insertSheet(name);
     sh.getRange(1, 1, 1, SHEETS[key].length).setValues([SHEETS[key]]).setFontWeight('bold');
     sh.setFrozenRows(1);
-  } else if (sh.getLastColumn() < SHEETS[key].length) {
+  } else if (sh.getRange(1, 1, 1, SHEETS[key].length).getValues()[0].join('|') !== SHEETS[key].join('|')) {
     sh.getRange(1, 1, 1, SHEETS[key].length).setValues([SHEETS[key]]).setFontWeight('bold');
   }
   return sh;
@@ -157,7 +157,7 @@ function submitPayment(token, p) {
     for (var i = 0; i < used.length; i++) if (norm_(used[i][0]) === norm_(trx)) throw new Error('DUP_TRX');
     // A unique code for this payment, already tied to the paying account and plan. Send it once the money has arrived.
     res = addCode_(shop, phone, tier, 1, 'TrxID ' + trx + ' via ' + method + ' for ' + a.login, a.id);
-    ps.appendRow([new Date(), tier, method, trx, shop, phone, 'check money, then send code', res.code, a.login]);
+    ps.appendRow([new Date(), PLANS[tier], method, trx, shop, phone, 'check money, then send code', res.code, a.login]);
   } finally { lock.releaseLock(); }
   try {
     var owner = Session.getEffectiveUser().getEmail();
@@ -209,7 +209,9 @@ function menuApprovePayment() {
   if (v[7]) { sh.getRange(r, 7).setValue('code sent'); ui.alert('Code for ' + v[4], 'Send this code to ' + v[5] + ':\n\n' + v[7] + '\n\nThe row is now marked "code sent".', ui.ButtonSet.OK); return; }
   var months = parseInt(ask_(ui, 'Approve ' + v[4], 'Payment checked? How many months to give? (usually 1)'), 10);
   if (!months) return;
-  var res = addCode_(String(v[4]), String(v[5]), String(v[1]), months, 'TrxID ' + v[3] + ' via ' + v[2] + (v[8] ? ' for ' + v[8] : ''));
+  var tier = PLANS[String(v[1])] ? String(v[1]) : Object.keys(PLANS).filter(function (k) { return PLANS[k] === String(v[1]); })[0];
+  if (!tier) { ui.alert('Unknown package in this row: ' + v[1]); return; }
+  var res = addCode_(String(v[4]), String(v[5]), tier, months, 'TrxID ' + v[3] + ' via ' + v[2] + (v[8] ? ' for ' + v[8] : ''));
   sh.getRange(r, 7, 1, 2).setValues([['approved', res.code]]);
   showCode_(ui, res, String(v[4]));
 }
