@@ -4,11 +4,11 @@ A stock, sales and cash app for shops of any size. Works on phones, tablets, lap
 
 ## What it does
 - **Products**: name (English and Bangla), photo, price, cost, stock, unit, category, barcode, low-stock alert. Add stock with one tap and optionally log the purchase.
-- **Sell**: tap pictures to build a bill, or scan a barcode (USB scanner, typed code, or phone camera on Chrome/Android). Cash, bKash, Nagad, card or due (baki). Stock drops automatically.
+- **Sell**: tap pictures to build a bill, or scan a barcode (USB scanner, typed code, or phone camera on Chrome/Android). Cash, bKash, Nagad, Rocket or card. Stock drops automatically.
 - **Money**: sales by day (tap to view or delete, which returns stock), income and expense book, list of who owes you money with "mark as paid".
-- **Home**: sales, profit after product cost, running costs, net earnings, daily sales chart, best sellers, low stock, stock value, total due.
+- **Home**: sales, profit after product cost, running costs, net earnings, daily sales chart, best sellers, low stock, stock value.
 - **My shop**: what customers see. They pick items and send the order to your WhatsApp.
-- **Setup**: shop name, WhatsApp number, language, backup download/restore, sales CSV export.
+- **Setup**: shop name, WhatsApp number, language.
 
 ## Plans and access codes
 - Plans: Shuru ৳350, Bepsha ৳500, Pro ৳1000 per month. Bepsha has everything except the online shop. Edit `TIERS` in `index.html` to change what each plan includes.
