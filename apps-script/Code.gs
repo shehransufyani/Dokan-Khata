@@ -74,10 +74,10 @@ function makeCode_() {
   for (var i = 0; i < 8; i++) { if (i === 4) s += '-'; s += chars.charAt(Math.floor(Math.random() * chars.length)); }
   return findCode_(s) ? makeCode_() : s;
 }
-function addCode_(biz, phone, tier, months, note) {
+function addCode_(biz, phone, tier, months, note, account) {
   var exp = new Date(); exp.setMonth(exp.getMonth() + months); exp.setHours(23, 59, 59, 0);
   var code = makeCode_();
-  sheet_('codes').appendRow([code, biz, phone || '', tier, exp, 'active', new Date(), note || '']);
+  sheet_('codes').appendRow([code, biz, phone || '', tier, exp, 'active', new Date(), note || '', account || '']);
   return { code: code, exp: exp, link: appLink_(code) };
 }
 function appLink_(code) {
@@ -149,12 +149,21 @@ function submitPayment(token, p) {
   if (!PLANS[tier] || ['bkash', 'nagad', 'rocket'].indexOf(method) < 0) throw new Error('Choose a plan and a payment method');
   var trx = String(p.trx || '').slice(0, 60), shop = String(p.shop || '').slice(0, 120), phone = String(p.phone || '').slice(0, 30);
   if (!trx || !shop || !phone) throw new Error('Transaction ID, shop name and phone are needed');
-  sheet_('payments').appendRow([new Date(), tier, method, trx, shop, phone, 'waiting', '', a.login]);
+  var lock = LockService.getScriptLock(); lock.waitLock(20000);
+  var res;
+  try {
+    var ps = sheet_('payments'), last = ps.getLastRow();
+    var used = last > 1 ? ps.getRange(2, 4, last - 1, 1).getValues() : [];
+    for (var i = 0; i < used.length; i++) if (norm_(used[i][0]) === norm_(trx)) throw new Error('DUP_TRX');
+    // A unique code for this payment, already tied to the paying account and plan. Send it once the money has arrived.
+    res = addCode_(shop, phone, tier, 1, 'TrxID ' + trx + ' via ' + method + ' for ' + a.login, a.id);
+    ps.appendRow([new Date(), tier, method, trx, shop, phone, 'check money, then send code', res.code, a.login]);
+  } finally { lock.releaseLock(); }
   try {
     var owner = Session.getEffectiveUser().getEmail();
     if (owner) MailApp.sendEmail(owner, 'Dokan Khata payment: ' + shop + ' (' + PLANS[tier] + ')',
       'New plan payment to check.\n\nPlan: ' + PLANS[tier] + '\nPaid with: ' + method + '\nTransaction ID: ' + trx +
-      '\nShop: ' + shop + '\nPhone: ' + phone + '\nAccount: ' + a.login + '\n\nCheck it in your ' + method + ' app, then open the Sheet, select the row in "Payments" and use Dokan Khata > Approve selected payment.\n' + ss_().getUrl());
+      '\nShop: ' + shop + '\nPhone: ' + phone + '\nAccount: ' + a.login + '\n\nAccess code for this payment: ' + res.code + '\n\nCheck the money arrived in your ' + method + ' app, then send this code to ' + phone + '. If the money did not arrive, set the code to "off" in the Codes sheet.\n' + ss_().getUrl());
   } catch (e) {}
   return true;
 }
@@ -163,7 +172,7 @@ function submitPayment(token, p) {
 function onOpen() {
   SpreadsheetApp.getUi().createMenu('Dokan Khata')
     .addItem('Create access code', 'menuCreateCode')
-    .addItem('Approve selected payment', 'menuApprovePayment')
+    .addItem('Show code for selected payment', 'menuApprovePayment')
     .addItem('Create my master code', 'menuMasterCode')
     .addItem('Reset password of selected account', 'menuResetPassword')
     .addSeparator()
@@ -197,7 +206,7 @@ function menuApprovePayment() {
   var ui = SpreadsheetApp.getUi(), sh = ss_().getActiveSheet();
   if (sh.getName() !== SHEET_NAMES.payments || sh.getActiveRange().getRow() < 2) { ui.alert('Open the Payments sheet and click a payment row first.'); return; }
   var r = sh.getActiveRange().getRow(), v = sh.getRange(r, 1, 1, 9).getValues()[0];
-  if (v[7]) { ui.alert('This payment already has a code: ' + v[7]); return; }
+  if (v[7]) { sh.getRange(r, 7).setValue('code sent'); ui.alert('Code for ' + v[4], 'Send this code to ' + v[5] + ':\n\n' + v[7] + '\n\nThe row is now marked "code sent".', ui.ButtonSet.OK); return; }
   var months = parseInt(ask_(ui, 'Approve ' + v[4], 'Payment checked? How many months to give? (usually 1)'), 10);
   if (!months) return;
   var res = addCode_(String(v[4]), String(v[5]), String(v[1]), months, 'TrxID ' + v[3] + ' via ' + v[2] + (v[8] ? ' for ' + v[8] : ''));
