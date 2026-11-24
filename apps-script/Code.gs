@@ -77,7 +77,7 @@ function makeCode_() {
 function addCode_(biz, phone, tier, months, note, account) {
   var exp = new Date(); exp.setMonth(exp.getMonth() + months); exp.setHours(23, 59, 59, 0);
   var code = makeCode_();
-  sheet_('codes').appendRow([code, biz, phone || '', tier, exp, 'active', new Date(), note || '', account || '']);
+  sheet_('codes').appendRow([code, biz, phone ? "'" + phone : '', tier, exp, 'active', new Date(), note || '', account || '']);
   return { code: code, exp: exp, link: appLink_(code) };
 }
 function appLink_(code) {
@@ -157,7 +157,7 @@ function submitPayment(token, p) {
     for (var i = 0; i < used.length; i++) if (norm_(used[i][0]) === norm_(trx)) throw new Error('DUP_TRX');
     // A unique code for this payment, already tied to the paying account and plan. Send it once the money has arrived.
     res = addCode_(shop, phone, tier, 1, 'TrxID ' + trx + ' via ' + method + ' for ' + a.login, a.id);
-    ps.appendRow([new Date(), PLANS[tier], method, trx, shop, phone, 'check money, then send code', res.code, a.login]);
+    ps.appendRow([new Date(), PLANS[tier], method, "'" + trx, shop, "'" + phone, 'check money, then send code', res.code, a.login]);
   } finally { lock.releaseLock(); }
   try {
     var owner = Session.getEffectiveUser().getEmail();
