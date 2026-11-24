@@ -266,6 +266,13 @@ body.gated{overflow:hidden}
 <div id="sheetRoot"></div>
 <div id="toastRoot"></div>
 <script>
+/* show unexpected errors on screen instead of a blank page */
+(function(){ function show(m){ try{ var d=document.getElementById("errBox"); if(!d){ d=document.createElement("pre"); d.id="errBox"; d.style.cssText="position:fixed;left:8px;right:8px;bottom:8px;z-index:99;background:#FBE3DF;color:#7A1F14;border:1px solid #B3372A;border-radius:10px;padding:10px;font:12px/1.4 monospace;white-space:pre-wrap;max-height:40%;overflow:auto"; document.body.appendChild(d);} d.textContent+=m+"\n"; }catch(e){} }
+  window.addEventListener("error",function(e){ show("Error: "+(e.message||e)+(e.lineno?" (line "+e.lineno+")":"")); });
+  window.addEventListener("unhandledrejection",function(e){ show("Error: "+((e.reason&&(e.reason.stack||e.reason.message))||e.reason)); });
+})();
+</script>
+<script>
 "use strict";
 /* ---------- icons ---------- */
 const I = {
@@ -449,7 +456,7 @@ const DB = {
     r.onupgradeneeded=()=>{const d=r.result;["products","sales","entries","meta"].forEach(s=>{if(!d.objectStoreNames.contains(s))d.createObjectStore(s,{keyPath:"id"})})};
     r.onsuccess=()=>{DB.db=r.result;res(true)}; r.onerror=()=>res(false); r.onblocked=()=>res(false);
     setTimeout(()=>res(false),2500); }catch(e){res(false)} }); },
-  all(s){ if(!this.db) return Promise.resolve([]); return new Promise(res=>{ try{ const q=this.db.transaction(s).objectStore(s).getAll(); q.onsuccess=()=>res(q.result||[]); q.onerror=()=>res([]);}catch(e){res([])} }); },
+  all(s){ if(!this.db) return Promise.resolve([]); return new Promise(res=>{ setTimeout(()=>res([]),2500); try{ const q=this.db.transaction(s).objectStore(s).getAll(); q.onsuccess=()=>res(q.result||[]); q.onerror=()=>res([]);}catch(e){res([])} }); },
   put(s,o){ Sync.push({op:"put",store:s,obj:o}); if(!this.db) return; try{ this.db.transaction(s,"readwrite").objectStore(s).put(o);}catch(e){} },
   del(s,id){ Sync.push({op:"del",store:s,id}); if(!this.db) return; try{ this.db.transaction(s,"readwrite").objectStore(s).delete(id);}catch(e){} },
   clear(s){ Sync.push({op:"clear",store:s}); if(!this.db) return; try{ this.db.transaction(s,"readwrite").objectStore(s).clear();}catch(e){} }
