@@ -1272,7 +1272,7 @@ function setOrderStatus(o,st){
   if(st==="cancelled"&&o.stockOut&&!o.saleId){ moveStock(o,-1); o.stockOut=false; }
   o.status=st; DB.put("orders",o);
 }
-function waLink(phone,text){ let d=String(phone||"").replace(/[^\d]/g,""); if(d.indexOf("01")===0) d="88"+d; text=String(text).replace(/[\u{1F000}-\u{1FAFF}\u2600-\u27BF]\uFE0F?/gu,"").replace(/^ +| +$/gm,""); return "https:\/\/api.whatsapp.com/send?"+(d?"phone="+d+"&":"")+"text="+encodeURIComponent(text); }
+function waLink(phone,text){ let d=String(phone||"").replace(/[^\d]/g,""); if(d.indexOf("01")===0) d="88"+d; else if(/^1\d{9}$/.test(d)) d="880"+d; text=String(text).replace(/[\u{1F000}-\u{1FAFF}\u2600-\u27BF]\uFE0F?/gu,"").replace(/^ +| +$/gm,""); return "https:\/\/api.whatsapp.com/send?"+(d?"phone="+d+"&":"")+"text="+encodeURIComponent(text); }
 function receiptText(x,kind){
   const L=[], shop=S.meta.shopName||"Store Flow";
   L.push("🧾 "+shop+(S.meta.phone?" · "+S.meta.phone:""));

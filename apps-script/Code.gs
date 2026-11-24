@@ -385,8 +385,16 @@ function fmt_(d) { return Utilities.formatDate(new Date(d), tz_(), 'd MMM yyyy')
 function waUrl_(phone, text) {
   var d = String(phone || '').replace(/[^\d]/g, '');
   if (d.indexOf('01') === 0) d = '88' + d;
+  else if (/^1\d{9}$/.test(d)) d = '880' + d; // the Sheet drops the leading 0 of numbers like 01712345678
   if (!/^8801\d{9}$/.test(d)) return '';
   return 'https:' + '//api.whatsapp.com/send?phone=' + d + '&text=' + encodeURIComponent(text);
+}
+/** A Bangladesh mobile number as people write it (01XXXXXXXXX), even when the Sheet stored it as a number. */
+function phone_(v) {
+  var d = String(v || '').replace(/[^\d]/g, '');
+  if (/^1\d{9}$/.test(d)) return '0' + d;
+  if (/^8801\d{9}$/.test(d)) return d.slice(2);
+  return String(v || '');
 }
 function waCell_(phone, text) { var u = waUrl_(phone, text); return u ? '=HYPERLINK("' + u.replace(/"/g, '""') + '","Send on WhatsApp")' : ''; }
 function rows_(key, cols) { var sh = sheet_(key), last = sh.getLastRow(); return last > 1 ? sh.getRange(2, 1, last - 1, cols).getValues() : []; }
@@ -397,12 +405,12 @@ function ownerData_() {
   var now = Date.now(), day = 864e5;
   var accounts = rows_('accounts', 10).map(function (r) {
     var ts = r[4] instanceof Date ? r[4].getTime() : (r[4] ? new Date(r[4]).getTime() : 0);
-    return { id: String(r[0]), login: String(r[1]), shop: String(r[2] || ''), created: r[3], trialStart: ts, code: norm_(r[5]), last: r[6] };
+    return { id: String(r[0]), login: String(r[1]).indexOf('@') < 0 ? phone_(r[1]) : String(r[1]), shop: String(r[2] || ''), created: r[3], trialStart: ts, code: norm_(r[5]), last: r[6] };
   });
   var byId = {}; accounts.forEach(function (a) { byId[a.id] = a; });
   var codes = rows_('codes', 9).map(function (r) {
     var exp = r[4] instanceof Date ? r[4].getTime() : new Date(r[4]).getTime();
-    return { code: norm_(r[0]), biz: String(r[1] || ''), phone: String(r[2] || ''), tier: String(r[3] || '').toLowerCase(), exp: exp,
+    return { code: norm_(r[0]), biz: String(r[1] || ''), phone: phone_(r[2]), tier: String(r[3] || '').toLowerCase(), exp: exp,
              active: String(r[5] || 'active').toLowerCase() === 'active', master: /^master/i.test(String(r[7] || '')), account: String(r[8] || '') };
   });
   var paying = [], ending = [];
