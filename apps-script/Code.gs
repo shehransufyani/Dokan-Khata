@@ -7,7 +7,7 @@
  * Bind this script to a Google Sheet (Extensions > Apps Script) and deploy it as a web app.
  */
 
-var PLANS = { basic: 'Shuru (৳350)', standard: 'Byabsa (৳500)', pro: 'Pro (৳1000)' };
+var PLANS = { basic: 'Shuru (৳350)', standard: 'Bepsha (৳500)', pro: 'Pro (৳1000)' };
 var SHEETS = {
   codes:    ['Code', 'Business', 'Phone', 'Plan', 'Expires', 'Status', 'Created', 'Note'],
   payments: ['Received', 'Plan', 'Method', 'Transaction ID', 'Shop', 'Phone', 'Status', 'Code'],
@@ -169,7 +169,7 @@ function ask_(ui, title, prompt) {
   return r.getSelectedButton() === ui.Button.OK ? r.getResponseText().trim() : null;
 }
 function askPlan_(ui) {
-  var t = ask_(ui, 'Plan', 'Type 1 for Shuru (৳350), 2 for Byabsa (৳500) or 3 for Pro (৳1000)');
+  var t = ask_(ui, 'Plan', 'Type 1 for Shuru (৳350), 2 for Bepsha (৳500) or 3 for Pro (৳1000)');
   return t === null ? null : ({ '1': 'basic', '2': 'standard', '3': 'pro' })[t] || null;
 }
 function showCode_(ui, res, biz) {
