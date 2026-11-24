@@ -396,6 +396,7 @@ function phone_(v) {
   if (/^8801\d{9}$/.test(d)) return d.slice(2);
   return String(v || '');
 }
+function txt_(v) { v = String(v || ''); return /^\d+$/.test(v) ? "'" + v : v; }
 function waCell_(phone, text) { var u = waUrl_(phone, text); return u ? '=HYPERLINK("' + u.replace(/"/g, '""') + '","Send on WhatsApp")' : ''; }
 function rows_(key, cols) { var sh = sheet_(key), last = sh.getLastRow(); return last > 1 ? sh.getRange(2, 1, last - 1, cols).getValues() : []; }
 function price_(pkg) { var m = String(pkg || '').replace(/,/g, '').match(/(\d{3,5})/); if (m) return +m[1]; var k = String(pkg || '').toLowerCase(); return PRICES[k] || 0; }
@@ -470,11 +471,11 @@ function buildDashboard_() {
   head('Plans ending in the next 7 days (send a reminder)');
   cols(['Shop', 'Login', 'Plan', 'Ends', 'Days left', 'Phone', 'Remind']);
   if (!d.ending.length) row(['None right now.']);
-  d.ending.forEach(function (p) { row([p.shop, p.login, PLANS[p.tier] || p.tier, fmt_(p.exp), p.daysLeft, p.phone ? "'" + p.phone : '', waCell_(p.phone, renewMsg_(p))]); });
+  d.ending.forEach(function (p) { row([p.shop, txt_(p.login), PLANS[p.tier] || p.tier, fmt_(p.exp), p.daysLeft, p.phone ? "'" + p.phone : '', waCell_(p.phone, renewMsg_(p))]); });
   head('Free trials ending in the next 2 days');
   cols(['Shop', 'Login', 'Trial ends', 'Hours left', '', 'Phone', 'Remind']);
   if (!d.trialsEnding.length) row(['None right now.']);
-  d.trialsEnding.forEach(function (t) { row([t.shop, t.login, fmt_(t.end), t.hoursLeft, '', t.phone ? "'" + t.phone : '', waCell_(t.phone, trialMsg_(t))]); });
+  d.trialsEnding.forEach(function (t) { row([t.shop, txt_(t.login), fmt_(t.end), t.hoursLeft, '', t.phone ? "'" + t.phone : '', waCell_(t.phone, trialMsg_(t))]); });
   head('Revenue this month by plan');
   cols(['Plan', 'Revenue (৳)']);
   var plans = Object.keys(d.byPlan); if (!plans.length) row(['No paid plans yet this month.']);
@@ -482,7 +483,7 @@ function buildDashboard_() {
   head('All paying shops');
   cols(['Shop', 'Login', 'Plan', 'Ends', 'Days left', 'Code', 'Last login']);
   if (!d.paying.length) row(['No paying shops yet.']);
-  d.paying.forEach(function (p) { row([p.shop, p.login, PLANS[p.tier] || p.tier, fmt_(p.exp), p.daysLeft, p.code, p.last ? fmt_(p.last) : '']); });
+  d.paying.forEach(function (p) { row([p.shop, txt_(p.login), PLANS[p.tier] || p.tier, fmt_(p.exp), p.daysLeft, p.code, p.last ? fmt_(p.last) : '']); });
   sh.getRange(1, 1, out.length, 7).setValues(out);
   sh.getRange(1, 1).setFontSize(16).setFontWeight('bold');
   sh.getRange(3, 1, 2, 7).setHorizontalAlignment('center');
