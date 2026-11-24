@@ -17,6 +17,9 @@ A stock, sales and cash app for shops of any size. Works on phones, tablets, lap
 - Payments: bKash, Nagad or Rocket send-money. The customer sends the Transaction ID through WhatsApp; you check it and send a code. Set your numbers in `CONFIG` in `index.html` (`ownerWhatsApp`, `pay`).
 - Limit: the app runs fully in the browser, so a technical person could bypass the lock by editing the page. Server-side checks come with the login and sync work.
 
+## Google Apps Script version
+`apps-script/` runs the same app from a Google Sheet: data for every shop is saved in the sheet, access codes and plan payments are managed there, and the owner gets an email for each payment. See `apps-script/SETUP.md`. After changing `index.html`, run `python3 apps-script/build.py` to rebuild `apps-script/Index.html`.
+
 ## How it is built
 One `index.html` (plain HTML, CSS, JavaScript, no build step), `manifest.webmanifest`, `sw.js` for offline, and `icons/`. Data is stored in the browser's IndexedDB on each device.
 
