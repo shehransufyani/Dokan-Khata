@@ -5,31 +5,34 @@
 
 <title>Dokan Khata</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700&display=swap">
 <style>
 /* Layout: ledger-style app shell. Side rail on wide screens, bottom tab bar on phones. */
 :root{
-  --bg:#F2F5F0; --surface:#FFFFFF; --surface-2:#E8EEE7; --ink:#16231B; --muted:#5A6B60; --line:#D5DED4;
-  --accent:#0E6B4A; --accent-ink:#FFFFFF; --accent-soft:#DAEEE3;
-  --gold:#A8700A; --gold-soft:#FBEFD3;
-  --danger:#B3372A; --danger-soft:#FBE3DF; --warn:#9A6212; --warn-soft:#FBEBD0; --ok:#1C7D4D;
-  --shadow:0 1px 2px rgba(22,35,27,.06),0 6px 20px rgba(22,35,27,.07);
+  --bg:#FBF3E3; --surface:#FFFCF6; --surface-2:#F5EAD4; --ink:#241B45; --muted:#6C6384; --line:#EADCC0; --line-2:#DCC9A4; --rule:rgba(196,170,120,.16);
+  --accent:#0A7C76; --accent-ink:#FFFFFF; --accent-soft:#D3EFEB; --accent-deep:#06514D;
+  --gold:#B76E00; --gold-soft:#FFEBC0; --marigold:#F4A000;
+  --khata:#C41E3D; --khata-deep:#8E1229; --khata-soft:#FCE0E4; --pink:#E2437C; --pink-soft:#FDE2EC; --indigo:#4B2E9A; --indigo-soft:#E8E1FA;
+  --danger:#C41E3D; --danger-soft:#FCE0E4; --warn:#B36400; --warn-soft:#FFEBC0; --ok:#1C8A4C;
+  --shadow:0 1px 0 var(--line-2),0 10px 24px -12px rgba(60,35,10,.25);
   --font-body:"Hind Siliguri",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-  --font-num:"Space Grotesk","Hind Siliguri",system-ui,sans-serif;
-  --r:12px;
+  --font-num:"Baloo Da 2","Hind Siliguri",system-ui,sans-serif;
+  --r:16px;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#0E1511; --surface:#16201A; --surface-2:#1E2A23; --ink:#E5EEE8; --muted:#9AAEA1; --line:#2A3830;
-  --accent:#3DBE8A; --accent-ink:#04120B; --accent-soft:#183A2B;
-  --gold:#E8B84A; --gold-soft:#3A2E12;
-  --danger:#F07A6A; --danger-soft:#3E1D19; --warn:#E5A949; --warn-soft:#3A2B12; --ok:#5FD39A;
-  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25); color-scheme:dark}}
+  --bg:#15112B; --surface:#1E1939; --surface-2:#2A2350; --ink:#F5EEDF; --muted:#B4A9CC; --line:#352C60; --line-2:#463B78; --rule:rgba(140,120,220,.08);
+  --accent:#36C9BE; --accent-ink:#03211F; --accent-soft:#123F3F; --accent-deep:#7FE3DA;
+  --gold:#FFC14A; --gold-soft:#3D2E0E; --marigold:#FFB627;
+  --khata:#FF5D78; --khata-deep:#C9304E; --khata-soft:#43182A; --pink:#FF7FA9; --pink-soft:#421B33; --indigo:#A68BFF; --indigo-soft:#2C2457;
+  --danger:#FF6B80; --danger-soft:#43182A; --warn:#FFB84D; --warn-soft:#3D2E0E; --ok:#5FD39A;
+  --shadow:0 1px 0 rgba(0,0,0,.35),0 10px 24px -12px rgba(0,0,0,.6); color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#0E1511; --surface:#16201A; --surface-2:#1E2A23; --ink:#E5EEE8; --muted:#9AAEA1; --line:#2A3830;
-  --accent:#3DBE8A; --accent-ink:#04120B; --accent-soft:#183A2B;
-  --gold:#E8B84A; --gold-soft:#3A2E12;
-  --danger:#F07A6A; --danger-soft:#3E1D19; --warn:#E5A949; --warn-soft:#3A2B12; --ok:#5FD39A;
-  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25); color-scheme:dark}
+  --bg:#15112B; --surface:#1E1939; --surface-2:#2A2350; --ink:#F5EEDF; --muted:#B4A9CC; --line:#352C60; --line-2:#463B78; --rule:rgba(140,120,220,.08);
+  --accent:#36C9BE; --accent-ink:#03211F; --accent-soft:#123F3F; --accent-deep:#7FE3DA;
+  --gold:#FFC14A; --gold-soft:#3D2E0E; --marigold:#FFB627;
+  --khata:#FF5D78; --khata-deep:#C9304E; --khata-soft:#43182A; --pink:#FF7FA9; --pink-soft:#421B33; --indigo:#A68BFF; --indigo-soft:#2C2457;
+  --danger:#FF6B80; --danger-soft:#43182A; --warn:#FFB84D; --warn-soft:#3D2E0E; --ok:#5FD39A;
+  --shadow:0 1px 0 rgba(0,0,0,.35),0 10px 24px -12px rgba(0,0,0,.6); color-scheme:dark}
 *{box-sizing:border-box}
 html,body{height:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--font-body);-webkit-tap-highlight-color:transparent}
@@ -253,6 +256,136 @@ body.gated{overflow:hidden}
 @media (prefers-reduced-motion:reduce){.scanbar .dot,.scanlast.flash{animation:none}}
 .setup{display:grid;gap:14px;grid-template-columns:1fr;max-width:760px}
 .kv{display:grid;grid-template-columns:1fr auto;gap:4px 12px}
+/* ===== Haal Khata theme: red ledger cover, rickshaw-art bunting, kantha stitches ===== */
+body{font-size:16px;background-color:var(--bg);background-image:linear-gradient(var(--rule) 1px,transparent 1px);background-size:100% 34px}
+h1,h2,h3{font-weight:700;letter-spacing:-.005em}
+h1{font-size:1.75rem}
+h2{font-size:1.18rem}
+.main h2::before,.sheet h2::before{content:"";display:inline-block;width:.42em;height:.42em;margin-right:.55em;vertical-align:.14em;border-radius:2px;background:var(--pink);transform:rotate(45deg);box-shadow:.18em -.18em 0 -.06em var(--marigold)}
+.bunting,.topbar::after,.side::before,.gatecard::before{background:repeating-linear-gradient(90deg,var(--pink) 0 22px,var(--marigold) 22px 44px,var(--accent) 44px 66px,var(--khata) 66px 88px,var(--indigo) 88px 110px);
+  -webkit-mask:conic-gradient(from -45deg at 50% 100%,#000 90deg,#0000 0) 0 0/22px 11px repeat-x;mask:conic-gradient(from -45deg at 50% 100%,#000 90deg,#0000 0) 0 0/22px 11px repeat-x}
+.topbar{background:var(--surface);border-bottom:2px solid var(--khata)}
+.topbar::after{content:"";position:absolute;left:0;right:0;top:100%;height:11px;pointer-events:none}
+.brand-mark{width:40px;height:40px;border-radius:10px;background:var(--khata);color:#FFE7A8;font-size:1.35rem;font-weight:800;padding-top:3px;
+  outline:1.5px dashed rgba(255,215,130,.9);outline-offset:-5px;box-shadow:inset -5px 0 0 var(--khata-deep),0 2px 0 var(--khata-deep)}
+.brand-text b{font-family:var(--font-num);font-size:1.08rem}
+.iconbtn{border-radius:12px;height:42px;min-width:42px;border-color:var(--line-2);transition:transform .15s,background .2s}
+.iconbtn:active{transform:scale(.92)}
+.card,.tile{border-radius:var(--r);border-color:var(--line);box-shadow:var(--shadow)}
+.card{padding:18px}
+.btn{border-radius:14px;min-height:48px;padding:10px 18px;font-weight:700;border-color:var(--line-2);box-shadow:0 2px 0 var(--line-2);transition:transform .12s ease,box-shadow .12s ease,background .2s,filter .2s}
+.btn:active{transform:translateY(2px);box-shadow:0 0 0 var(--line-2)}
+.btn.primary,a.btn.primary{background:var(--accent);border-color:var(--accent);box-shadow:0 3px 0 var(--accent-deep)}
+.btn.primary:hover{filter:brightness(1.06)}
+.btn.primary:active{box-shadow:0 0 0 var(--accent-deep);transform:translateY(3px)}
+.input{border-radius:12px;min-height:48px;border-color:var(--line-2);background:var(--surface);transition:border-color .2s,box-shadow .2s}
+.field label{font-size:.9rem;color:var(--ink)}
+.chip{padding:8px 16px;border-color:var(--line-2);font-weight:600;transition:background .2s,color .2s,transform .12s}
+.chip:active{transform:scale(.95)}
+.chip.on{background:var(--indigo);border-color:var(--indigo);color:#fff}
+.seg{border-radius:12px;border-color:var(--line-2)}
+.seg button{transition:background .2s,color .2s;min-height:44px}
+.seg button.on{background:var(--indigo);color:#fff}
+.pill{padding:2px 10px;font-size:.78rem}
+.pill.ok{background:var(--accent-soft);color:var(--accent)}
+.banner{background:var(--gold-soft);border:0;border-left:6px solid var(--marigold);border-radius:var(--r)}
+/* bottom nav */
+.bottomnav{border-top:2px solid var(--line);box-shadow:0 -8px 24px -16px rgba(60,35,10,.3)}
+.bottomnav a{font-size:.78rem;font-weight:600;padding:9px 2px 8px;transition:color .2s}
+.bottomnav a svg{width:26px;height:26px;padding:2px 10px;box-sizing:content-box;border-radius:999px;transition:background .25s,transform .25s}
+.bottomnav a.on{color:var(--ink)}
+.bottomnav a.on svg{background:var(--gold-soft);color:var(--khata);transform:translateY(-1px)}
+.bottomnav a.sellbtn svg,.bottomnav a.sellbtn.on svg{background:var(--khata);color:#FFE7A8;width:30px;height:30px;padding:10px;margin-top:-22px;border:3px solid var(--surface);box-shadow:0 4px 0 var(--khata-deep);outline:1.5px dashed rgba(255,215,130,.85);outline-offset:-7px;transform:none}
+.bottomnav a.sellbtn{color:var(--khata);font-weight:700}
+@media (min-width:900px){
+  .side{background:var(--surface);border-right:2px solid var(--line);padding-top:30px}
+  .side::before{content:"";position:absolute;left:0;right:0;top:0;height:11px}
+  .side a{border-radius:12px;padding:11px 12px;font-weight:600;transition:background .2s,color .2s,transform .15s}
+  .side a:hover{transform:translateX(3px)}
+  .side a.on{background:var(--khata-soft);color:var(--khata)}
+  .side a.on svg{color:var(--khata)}
+}
+/* tiles with a stitched kantha edge */
+.tile{position:relative;padding:16px;overflow:hidden}
+.tile .lbl{font-size:.88rem;color:var(--ink);font-weight:700;letter-spacing:0;display:flex;align-items:center;gap:6px}
+.tile .val{font-size:1.75rem;line-height:1.15;margin-top:4px}
+.tile .sub{font-size:.82rem}
+.tile::after{content:"";position:absolute;inset:6px;border:1.5px dashed currentColor;border-radius:11px;opacity:.18;pointer-events:none}
+.tile.hero{background:var(--khata);border-color:var(--khata-deep);color:#FFF6E6;box-shadow:0 3px 0 var(--khata-deep)}
+.tile.hero .lbl{color:#FFE7A8}
+.tile.hero::after{border-color:#FFD27A;opacity:.75}
+.tile.t-profit{background:var(--accent-soft);border-color:transparent}
+.tile.t-profit .val{color:var(--accent)}
+.tile.t-exp{background:var(--gold-soft);border-color:transparent}
+.tile.t-exp .val{color:var(--warn)}
+.tile.t-net{background:var(--indigo-soft);border-color:transparent}
+.tile.t-net .val{color:var(--indigo)}
+.tile .val.neg{color:var(--danger)}
+.tile .ico{font-size:1.1rem;line-height:1}
+/* quick actions */
+.qa{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:16px}
+@media (min-width:700px){.qa{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.qa a,.qa button{position:relative;display:flex;align-items:center;gap:12px;min-height:76px;padding:14px 16px;border-radius:var(--r);border:0;text-align:left;text-decoration:none;font-weight:700;font-size:1.05rem;line-height:1.2;color:var(--ink);background:var(--surface);box-shadow:var(--shadow);transition:transform .15s ease,box-shadow .15s ease}
+.qa a:hover,.qa button:hover{transform:translateY(-2px)}
+.qa a:active,.qa button:active{transform:translateY(1px) scale(.98)}
+.qa .qi{width:46px;height:46px;flex:none;border-radius:14px;display:grid;place-items:center}
+.qa .qi svg{width:26px;height:26px}
+.qa .q-sell{background:var(--khata);color:#FFF6E6;box-shadow:0 3px 0 var(--khata-deep)}
+.qa .q-sell .qi{background:rgba(255,231,168,.2);color:#FFE7A8;outline:1.5px dashed rgba(255,215,130,.8);outline-offset:-4px}
+.qa .q-add .qi{background:var(--accent-soft);color:var(--accent)}
+.qa .q-out .qi{background:var(--pink-soft);color:var(--pink)}
+.qa .q-in .qi{background:var(--gold-soft);color:var(--warn)}
+.qa small{display:block;font-weight:500;font-size:.8rem;opacity:.75;margin-top:2px}
+/* lists, bars, products */
+.bar{height:8px;background:var(--surface-2)}
+.bar i{background:linear-gradient(90deg,var(--accent),var(--marigold))}
+.thumb{border-radius:12px;background:var(--gold-soft)}
+.ptile{border-radius:var(--r);box-shadow:var(--shadow);border-color:var(--line);transition:transform .15s ease,box-shadow .15s ease}
+.ptile:hover{transform:translateY(-2px)}
+.ptile:active{transform:scale(.95)}
+.ptile .pic{background:linear-gradient(160deg,var(--gold-soft),var(--pink-soft));font-size:2.5rem}
+.ptile .nm{font-size:.95rem}
+.ptile .pr{color:var(--khata);font-size:1.12rem}
+.ptile .qty{background:var(--marigold);color:#241B45;min-width:30px;height:30px;font-size:.95rem;box-shadow:0 2px 0 rgba(0,0,0,.15);animation:pop .25s ease-out}
+.stepper{border-radius:12px;border-color:var(--line-2)}
+.stepper button{width:40px;height:40px;background:var(--gold-soft);color:var(--ink)}
+.grand{color:var(--khata);font-size:1.5rem}
+.cartbar button{background:var(--khata);border-radius:16px;padding:15px 20px;font-size:1.05rem;box-shadow:0 4px 0 var(--khata-deep),0 12px 24px -10px rgba(140,20,40,.5);animation:rise .3s cubic-bezier(.2,.7,.2,1)}
+.sheet{border-radius:22px 22px 0 0;animation:up .28s cubic-bezier(.2,.7,.2,1)}
+.sheet::before{content:"";display:block;width:44px;height:5px;border-radius:9px;background:var(--line-2);margin:-6px auto 12px}
+@media (min-width:700px){.sheet{border-radius:22px}.sheet::before{display:none}}
+.overlay{animation:fade .2s ease-out;background:rgba(20,12,40,.45)}
+.toast{background:var(--indigo);color:#fff;border-radius:14px;padding:12px 18px;animation:toast .3s cubic-bezier(.2,.9,.3,1.3)}
+.plan.pop{border:2px solid var(--khata);box-shadow:0 4px 0 var(--khata-deep)}
+.price{color:var(--khata)}
+.shophead{background:var(--khata);color:#FFF6E6;position:relative;overflow:hidden}
+.shophead::after{content:"";position:absolute;inset:8px;border:1.5px dashed #FFD27A;border-radius:12px;opacity:.7;pointer-events:none}
+.gnum{background:var(--gold-soft);color:var(--khata);border-radius:12px}
+/* gate screens */
+.gatecard{position:relative;border-radius:22px;border:0;box-shadow:0 2px 0 var(--line-2),0 30px 60px -30px rgba(60,35,10,.45);padding:30px 22px 24px;overflow:hidden;animation:rise .35s cubic-bezier(.2,.7,.2,1)}
+.gatecard::before{content:"";position:absolute;left:0;right:0;top:0;height:11px}
+.tourico{background:var(--khata-soft);color:var(--khata);border-radius:18px;width:60px;height:60px}
+.tourico svg{width:30px;height:30px}
+.tourdots span{height:6px;transition:background .3s}
+.tourdots span.on{background:var(--khata)}
+.timerbig{color:var(--khata)}
+.lockbadge{background:var(--khata-soft);color:var(--khata)}
+/* motion */
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes pop{0%{transform:scale(.4)}70%{transform:scale(1.15)}100%{transform:scale(1)}}
+@keyframes toast{from{opacity:0;transform:translate(-50%,16px) scale(.9)}to{opacity:1;transform:translate(-50%,0)}}
+@keyframes grow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+.main.enter>*{animation:rise .38s cubic-bezier(.2,.7,.2,1) both}
+.main.enter>*:nth-child(2){animation-delay:.05s}.main.enter>*:nth-child(3){animation-delay:.1s}.main.enter>*:nth-child(4){animation-delay:.15s}.main.enter>*:nth-child(5){animation-delay:.2s}
+.main.enter .tiles>*,.main.enter .qa>*,.main.enter .tilegrid>*{animation:rise .4s cubic-bezier(.2,.7,.2,1) both}
+.main.enter .tiles>*:nth-child(2),.main.enter .qa>*:nth-child(2){animation-delay:.06s}
+.main.enter .tiles>*:nth-child(3),.main.enter .qa>*:nth-child(3){animation-delay:.12s}
+.main.enter .tiles>*:nth-child(4),.main.enter .qa>*:nth-child(4){animation-delay:.18s}
+.main.enter .chart rect{transform-box:fill-box;transform-origin:50% 100%;animation:grow .6s cubic-bezier(.2,.7,.2,1) both .15s}
+.scanrow .btn{flex:1 1 150px;padding:10px 12px}
+@media (max-width:520px){.topbar .brand-text span{display:none}.topbar{gap:8px}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
@@ -286,12 +419,14 @@ const I = {
   book:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5"/><path d="M8 7h7"/></svg>',
   star:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z"/></svg>',
   gun:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h13a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-4l-2 7H6l2-7H3z"/><path d="M18 8h3"/><path d="M18 5l3-2M18 11l3 2"/></svg>',
+  out:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v12"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg>',
+  in:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V8"/><path d="M7 13l5-5 5 5"/><path d="M5 4h14"/></svg>',
   globe:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>'
 };
 
 /* ---------- words ---------- */
 const T = {
-en:{home:"Home",sell:"Sell",products:"Products",money:"Money",shop:"My shop",setup:"Setup",tagline:"Stock, sales and cash",
+en:{qaTitle:"Quick actions",qaSell:"Sell now",qaSellS:"Tap products to make a bill",qaAddS:"Name, price and stock",qaOut:"Money out",qaOutS:"Rent, bills, salary",qaIn:"Money in",qaInS:"Any other income",home:"Home",sell:"Sell",products:"Products",money:"Money",shop:"My shop",setup:"Setup",tagline:"Stock, sales and cash",
  today:"Today",d7:"7 days",d30:"30 days",month:"This month",sales:"Sales",profit:"Profit",expenses:"Running costs",net:"Net earnings",otherIncome:"Other income",
  bills:"bills",afterCost:"after product cost",inclIncome:"profit − expenses + other income",stockBought:"Stock bought (not counted)",stockValue:"Stock value",atCost:"at cost price",items:"products",dueTotal:"Customers owe you",
  lowStock:"Running low",topSellers:"Best sellers",salesChart:"Daily sales",noData:"Nothing here yet.",allGood:"Every product has enough stock.",
@@ -354,7 +489,7 @@ en:{home:"Home",sell:"Sell",products:"Products",money:"Money",shop:"My shop",set
  g8t:"Share your online shop",g8b:"My shop shows your products, prices and stock. Customers choose items and send the order to your WhatsApp.",
  g9t:"Keep your plan active",g9b:"Pay with bKash, Nagad or Rocket on the Plans page. Your access code arrives on WhatsApp. Install the app from your browser menu to open it like any other app.",
  rent:"Rent",electricity:"Electricity",salary:"Salary",transport:"Transport",purchase:"Stock purchase",other:"Other",service:"Service",commission:"Commission"},
-bn:{home:"হোম",sell:"বিক্রি",products:"পণ্য",money:"হিসাব",shop:"আমার দোকান",setup:"সেটআপ",tagline:"স্টক, বিক্রি ও টাকার হিসাব",
+bn:{qaTitle:"দ্রুত কাজ",qaSell:"এখনই বিক্রি",qaSellS:"পণ্যে চাপ দিয়ে বিল করুন",qaAddS:"নাম, দাম ও স্টক",qaOut:"টাকা খরচ",qaOutS:"ভাড়া, বিল, বেতন",qaIn:"টাকা আয়",qaInS:"অন্য যেকোনো আয়",home:"হোম",sell:"বিক্রি",products:"পণ্য",money:"হিসাব",shop:"আমার দোকান",setup:"সেটআপ",tagline:"স্টক, বিক্রি ও টাকার হিসাব",
  today:"আজ",d7:"৭ দিন",d30:"৩০ দিন",month:"এই মাস",sales:"বিক্রি",profit:"লাভ",expenses:"চলতি খরচ",net:"নিট আয়",otherIncome:"অন্যান্য আয়",
  bills:"টি বিল",afterCost:"পণ্যের ক্রয়মূল্য বাদে",inclIncome:"লাভ − খরচ + অন্যান্য আয়",stockBought:"মাল কেনা (আলাদা)",stockValue:"স্টকের মূল্য",atCost:"ক্রয়মূল্যে",items:"টি পণ্য",dueTotal:"কাস্টমারের বাকি",
  lowStock:"স্টক কম",topSellers:"বেশি বিক্রিত",salesChart:"দৈনিক বিক্রি",noData:"এখনো কিছু নেই।",allGood:"সব পণ্যের পর্যাপ্ত স্টক আছে।",
@@ -926,7 +1061,8 @@ function render(){
   const open={plans:vPlans,guide:vGuide,code:vCodeEntry,terms:()=>`<div class="page-head"><div><h1>${t("terms")}</h1><p class="small muted">${t("termsUpdated")}</p></div></div><div class="card" style="max-width:760px">${termsList()}</div>`};
   let v=open[S.view]||(curTier()?({home:vHome,sell:vSell,products:vProducts,money:vMoney,shop:vShop,setup:vSetup}[S.view]||vHome):vLocked);
   const banner = S.meta.sample && curTier() && !open[S.view] && S.view!=="shop" ? `<div class="banner"><p>${t("sampleBanner")}</p><button class="btn" data-act="clearSample">${t("clearSample")}</button></div>` : "";
-  $("#main").innerHTML=banner+v();
+  const mainEl=$("#main"); mainEl.innerHTML=banner+v();
+  if(S._lastView!==S.view){ S._lastView=S.view; mainEl.classList.remove("enter"); void mainEl.offsetWidth; mainEl.classList.add("enter"); clearTimeout(S._enterT); S._enterT=setTimeout(()=>mainEl.classList.remove("enter"),900); try{ window.scrollTo({top:0}); }catch(e){} }
   renderGate();
   renderCartbar();
 }
@@ -954,13 +1090,14 @@ function vHome(){
   const tops=Object.values(top).sort((a,b)=>b.amt-a.amt).slice(0,5); const tmax=tops[0]?.amt||1;
   const stockVal=sum(S.products,p=>Math.max(0,p.stock)*p.cost);
   const dueAmt=sum(S.sales.filter(s=>s.method==="due"&&!s.paidAt),s=>s.total);
-  return `<div class="page-head"><div><h1>${t("home")}</h1><p>${t("hello")}</p></div>
+  const qa=`<div class="qa" aria-label="${t("qaTitle")}"><a class="q-sell" href="#sell"><span class="qi">${I.sell}</span><span>${t("qaSell")}<small>${t("qaSellS")}</small></span></a><button class="q-add" data-act="newProduct"><span class="qi">${I.box}</span><span>${t("addProduct")}<small>${t("qaAddS")}</small></span></button><button class="q-out" data-act="newEntry" data-v="expense"><span class="qi">${I.out}</span><span>${t("qaOut")}<small>${t("qaOutS")}</small></span></button><button class="q-in" data-act="newEntry" data-v="income"><span class="qi">${I.in}</span><span>${t("qaIn")}<small>${t("qaInS")}</small></span></button></div>`;
+  return `${qa}<div class="page-head"><div><h1>${t("home")}</h1><p>${t("hello")}</p></div>
     <div class="chips">${["today","7","30","month"].map(p=>(p==="30"||p==="month")&&!can("reports")?`<button class="chip" data-act="upgrade" data-f="reports">${t(p==="30"?"d30":"month")}${lockIc()}</button>`:`<button class="chip ${S.period===p?"on":""}" data-act="period" data-v="${p}">${t(p==="today"?"today":p==="7"?"d7":p==="30"?"d30":"month")}</button>`).join("")}</div></div>
   <div class="tiles">
-    <div class="tile hero"><div class="lbl">${t("sales")}</div><div class="val">${M(st.sales)}</div><div class="sub"><span class="num">${N(st.count)}</span> ${t("bills")}</div></div>
-    <div class="tile"><div class="lbl">${t("profit")}</div><div class="val ${st.profit<0?"neg":""}">${M(st.profit)}</div><div class="sub">${t("afterCost")}</div></div>
-    <div class="tile"><div class="lbl">${t("expenses")}</div><div class="val">${M(st.exp)}</div><div class="sub">${t("stockBought")} ${M(st.buy)}</div></div>
-    <div class="tile"><div class="lbl">${t("net")}</div><div class="val ${st.net<0?"neg":""}">${M(st.net)}</div><div class="sub">${t("inclIncome")} ${M(st.inc)}</div></div>
+    <div class="tile hero"><div class="lbl"><span class="ico">🛒</span>${t("sales")}</div><div class="val">${M(st.sales)}</div><div class="sub"><span class="num">${N(st.count)}</span> ${t("bills")}</div></div>
+    <div class="tile t-profit"><div class="lbl"><span class="ico">📈</span>${t("profit")}</div><div class="val ${st.profit<0?"neg":""}">${M(st.profit)}</div><div class="sub">${t("afterCost")}</div></div>
+    <div class="tile t-exp"><div class="lbl"><span class="ico">🧾</span>${t("expenses")}</div><div class="val">${M(st.exp)}</div><div class="sub">${t("stockBought")} ${M(st.buy)}</div></div>
+    <div class="tile t-net"><div class="lbl"><span class="ico">💰</span>${t("net")}</div><div class="val ${st.net<0?"neg":""}">${M(st.net)}</div><div class="sub">${t("inclIncome")} ${M(st.inc)}</div></div>
   </div>
   <div class="dash">
     <div class="stack">
@@ -1227,14 +1364,14 @@ function saleSheet(s){
   <div class="row"><span class="muted">${t("profit")}</span><span class="num">${M(s.total-sum(s.items,i=>i.qty*i.cost))}</span></div></div>
   <button class="btn danger block" style="margin-top:16px" data-act="delSale" data-id="${s.id}">${t("deleteSale")}</button>`);
 }
-function entryForm(){
-  S.edit={type:"expense"};
+function entryForm(type){
+  type=type==="income"?"income":"expense"; S.edit={type};
   openSheet("entry",`<div class="sheet-head"><h2>${t("addEntry")}</h2><button class="iconbtn" data-act="close" aria-label="${t("cancel")}">${I.x}</button></div>
   <form id="eForm" class="stack">
-    <div class="seg" id="eSeg"><button type="button" class="on" data-act="etype" data-v="expense">${t("expense")}</button><button type="button" data-act="etype" data-v="income">${t("income")}</button></div>
+    <div class="seg" id="eSeg"><button type="button" class="${type==="expense"?"on":""}" data-act="etype" data-v="expense">${t("expense")}</button><button type="button" class="${type==="income"?"on":""}" data-act="etype" data-v="income">${t("income")}</button></div>
     <div class="grid2"><div class="field"><label for="eAmt">${t("amount")} (৳)</label><input class="input num" id="eAmt" type="number" step="any" min="0" inputmode="decimal" required></div>
     <div class="field"><label for="eDate">${t("date")}</label><input class="input" id="eDate" type="date" value="${dayKey(Date.now())}"></div></div>
-    <div class="field"><label for="eCat">${t("category")}</label><select class="input" id="eCat">${catOpts("expense")}</select></div>
+    <div class="field"><label for="eCat">${t("category")}</label><select class="input" id="eCat">${catOpts(type)}</select></div>
     <div class="field"><label for="eNote">${t("note")}</label><input class="input" id="eNote"></div>
     <button class="btn primary block" type="submit">${t("save")}</button>
   </form>`);
@@ -1345,7 +1482,7 @@ const A={
   delSale(el){ if(S.armed!=="s"+el.dataset.id){ S.armed="s"+el.dataset.id; el.textContent=t("tapAgain"); el.classList.add("armed"); return; }
     const s=S.sales.find(x=>x.id===el.dataset.id); s.items.forEach(i=>{const p=S.products.find(x=>x.id===i.pid); if(p){p.stock=Math.round((p.stock+i.qty)*1000)/1000; DB.put("products",p);}});
     S.sales=S.sales.filter(x=>x!==s); DB.del("sales",s.id); closeSheet(); render(); toast(t("stockRestored")); },
-  newEntry(){ entryForm(); },
+  newEntry(el){ entryForm(el&&el.dataset&&el.dataset.v); },
   etype(el){ S.edit.type=el.dataset.v; document.querySelectorAll("#eSeg button").forEach(b=>b.classList.toggle("on",b===el)); $("#eCat").innerHTML=catOpts(el.dataset.v); },
   delEntry(el){ const k="e"+el.dataset.id; if(S.armed!==k){ S.armed=k; render(); return; } S.entries=S.entries.filter(e=>e.id!==el.dataset.id); DB.del("entries",el.dataset.id); S.armed=null; render(); toast(t("deleted")); },
   markPaid(el){ const now=Date.now(); S.sales.filter(s=>s.method==="due"&&!s.paidAt&&(s.customer||"?")===el.dataset.v).forEach(s=>{s.paidAt=now;DB.put("sales",s);}); render(); toast(t("saved")); },
