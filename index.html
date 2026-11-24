@@ -246,6 +246,9 @@ video.scan{width:100%;border-radius:12px;background:#000;aspect-ratio:4/3;object
 .terms li:last-child{border-bottom:0}
 .terms h3{font-size:1rem;margin:0 0 2px}
 .terms p{margin:0;color:var(--muted)}
+.tourdots{display:flex;gap:6px}.tourdots span{flex:1;height:5px;border-radius:3px;background:var(--line)}.tourdots span.on{background:var(--accent)}
+.tourico{width:52px;height:52px;flex:none;border-radius:16px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center}.tourico svg{width:26px;height:26px}
+.tourlist{font-size:1.02rem;gap:10px}
 .timerbig{font-size:3rem;font-weight:700;color:var(--accent);line-height:1}
 body.gated{overflow:hidden}
 .scanbar{display:flex;align-items:center;gap:12px;background:var(--accent-soft);border:1px solid var(--accent);border-radius:12px;padding:10px 14px}
@@ -423,6 +426,56 @@ bn:{home:"হোম",sell:"বিক্রি",products:"পণ্য",money:"�
  g9t:"প্ল্যান চালু রাখুন",g9b:"প্ল্যান পেজে বিকাশ, নগদ বা রকেটে পেমেন্ট করুন। অ্যাক্সেস কোড হোয়াটসঅ্যাপে আসবে। ব্রাউজার মেনু থেকে অ্যাপ ইনস্টল করলে অন্য অ্যাপের মতো খুলবে।",
  rent:"ভাড়া",electricity:"বিদ্যুৎ",salary:"বেতন",transport:"পরিবহন",purchase:"মাল কেনা",other:"অন্যান্য",service:"সার্ভিস",commission:"কমিশন"}
 };
+Object.assign(T.en,{
+ authTitle:"Welcome to Dokan Khata",authSub:"Log in, or create a free account to start your 10-minute trial.",tabLogin:"Log in",tabSignup:"Create account",
+ loginLabel:"Email or phone number",loginPh:"you@email.com or 017XXXXXXXX",password:"Password",passwordPh:"At least 6 characters",showPw:"Show",hidePw:"Hide",
+ loginBtn:"Log in",signupBtn:"Create account",agreeTerms:"I have read and agree to the terms",readTerms:"Read the terms",hideTerms:"Hide the terms",forgot:"Forgot password?",
+ errLogin:"Wrong email/phone or password.",errExists:"An account with this email or phone already exists. Log in instead.",errLoginFmt:"Type a valid email, or a Bangladesh mobile number like 017XXXXXXXX.",
+ errPw:"Your password must be at least 6 characters.",errTerms:"Tick the box to agree to the terms.",errNet:"Could not connect. Check your internet and try again.",errTooMany:"Too many tries. Wait 15 minutes and try again.",
+ resetT:"Reset your password",resetSub:"Type the email or phone number you signed up with.",resetSend:"Send reset code",resetEmailSent:"We emailed a 6-digit code to {login}. It works for 30 minutes.",
+ resetCode:"6-digit code from the email",newPw:"New password",resetSave:"Save new password",resetOwner:"Accounts made with a phone number are reset by our team. Message us on WhatsApp at {num} from the number you signed up with.",
+ resetDone:"Password changed. You are logged in.",backLogin:"Back to log in",errCode:"That code is wrong or has expired.",
+ storeT:"What is your shop called?",storeSub:"This name shows at the top of the app, on your bills and on your online shop. You can change it later in Setup.",storePh:"e.g. Rahman General Store",next:"Next",back:"Back",errStore:"Type your shop name.",
+ tourOf:"Step {n} of {total}",tourStart:"Start my 10-minute trial",tourDone:"Done",tourAgain:"Watch the walkthrough again",
+ tour1t:"Welcome to Dokan Khata",tour1b:"Keep your products, stock, sales and money in one place.|Works on phone, tablet and computer, in Bangla or English.|Everything is saved to your account, so you can log in from any device.|This short walkthrough shows how each part works.",
+ tour2t:"Add your products",tour2b:"Open Products and press Add product.|Type the product name. You can add a Bangla name too.|Add a photo so you can find the product fast while selling.|Type a category, like Rice or Snacks, to keep your list tidy.",
+ tour3t:"Set prices and stock",tour3b:"Selling price is what the customer pays.|Buying cost is what you paid. The app works out your profit from these two.|In stock is how many you have now. Pick the unit: pcs, kg, litre and more.|Warn me when stock is at: the app warns you when stock falls to this number.|When new stock arrives, press + Add stock on the product.",
+ tour4t:"Log a sale",tour4b:"Open Sell. Tap a product picture to add it to the bill. Tap again to add one more.|On the bill, use + and − to change amounts, or add a discount.|Choose how the customer paid: cash, bKash, Nagad, Rocket or card.|Press Complete sale. The sale is saved and stock goes down by itself.",
+ tour5t:"Connect a barcode scanner",tour5b:"Plug a USB scanner into your computer, or pair a Bluetooth scanner with your phone or tablet.|On the Sell page, press Barcode scanner. Each scan adds that item to the bill with a beep.|To link a barcode to a product, open the product and scan into its Barcode box.|If you scan a code the app does not know, it offers to add it as a new product.|No scanner? Press Scan with camera to use your phone camera.",
+ tour6t:"Track income and expenses",tour6b:"Open Money, then Income & expenses, and press Add.|Write rent, electricity, salaries or any extra income.|The Sales tab lists every bill by day. Tap a bill to see it or delete it.",
+ tour7t:"Read your reports",tour7b:"Home shows sales, profit, running costs and net earnings.|Switch between Today, 7 days, 30 days and This month.|See your best sellers, products running low and the value of your stock.",
+ tour8t:"Pro tools",tour8b:"Due (baki): choose Due on the bill and write the customer's name. Mark it paid later under Money.|My shop: share a page of your products. Customers choose items and send the order to your WhatsApp.|Backup and Excel: download your data and your sales list from Setup.",
+ tour9t:"Your trial and plans",tour9b:"Next you get 10 minutes to try every feature yourself.|When the time is up, choose a plan: Shuru ৳350, Bepsha ৳500 or Pro ৳1,000 a month.|Pay with bKash, Nagad or Rocket, then enter the access code we send you.|Your plan opens on every device you log in from.",
+ trialOverT:"Your 10-minute trial has ended.",trialOverB:"Choose the plan that fits your shop. Everything you added is saved and comes back when your plan starts.",
+ codeT:"Enter your access code",codeB:"We are checking your {plan} payment. Once it is confirmed, we send your access code by WhatsApp or SMS to {phone}. Type it below to unlock your plan.",
+ codeB2:"This usually takes a few hours, between 9 AM and 10 PM.",choosePlanAgain:"Choose a different plan",errCodeUsed:"This code is already used on another account.",
+ account:"Account",logout:"Log out",loggedInAs:"Logged in as {login}"
+});
+Object.assign(T.bn,{
+ authTitle:"দোকান খাতায় স্বাগতম",authSub:"লগ ইন করুন, অথবা ফ্রি অ্যাকাউন্ট খুলে ১০ মিনিটের ট্রায়াল শুরু করুন।",tabLogin:"লগ ইন",tabSignup:"অ্যাকাউন্ট খুলুন",
+ loginLabel:"ইমেইল বা ফোন নম্বর",loginPh:"you@email.com বা 017XXXXXXXX",password:"পাসওয়ার্ড",passwordPh:"কমপক্ষে ৬ অক্ষর",showPw:"দেখান",hidePw:"লুকান",
+ loginBtn:"লগ ইন",signupBtn:"অ্যাকাউন্ট খুলুন",agreeTerms:"আমি শর্তাবলি পড়েছি এবং মেনে নিচ্ছি",readTerms:"শর্তাবলি পড়ুন",hideTerms:"শর্তাবলি লুকান",forgot:"পাসওয়ার্ড ভুলে গেছেন?",
+ errLogin:"ইমেইল/ফোন বা পাসওয়ার্ড ভুল।",errExists:"এই ইমেইল বা ফোন দিয়ে আগেই অ্যাকাউন্ট আছে। লগ ইন করুন।",errLoginFmt:"সঠিক ইমেইল, বা 017XXXXXXXX এর মতো বাংলাদেশি মোবাইল নম্বর লিখুন।",
+ errPw:"পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।",errTerms:"শর্তাবলি মেনে নিতে বক্সে টিক দিন।",errNet:"সংযোগ হয়নি। ইন্টারনেট দেখে আবার চেষ্টা করুন।",errTooMany:"অনেকবার চেষ্টা হয়েছে। ১৫ মিনিট পরে আবার চেষ্টা করুন।",
+ resetT:"পাসওয়ার্ড রিসেট করুন",resetSub:"যে ইমেইল বা ফোন নম্বর দিয়ে অ্যাকাউন্ট খুলেছেন তা লিখুন।",resetSend:"রিসেট কোড পাঠান",resetEmailSent:"{login} এ ৬ সংখ্যার কোড পাঠানো হয়েছে। এটি ৩০ মিনিট কাজ করবে।",
+ resetCode:"ইমেইলের ৬ সংখ্যার কোড",newPw:"নতুন পাসওয়ার্ড",resetSave:"নতুন পাসওয়ার্ড সেভ করুন",resetOwner:"ফোন নম্বরের অ্যাকাউন্ট আমাদের টিম রিসেট করে। যে নম্বর দিয়ে অ্যাকাউন্ট খুলেছেন সেখান থেকে {num} নম্বরে হোয়াটসঅ্যাপ করুন।",
+ resetDone:"পাসওয়ার্ড বদলানো হয়েছে। আপনি লগ ইন করেছেন।",backLogin:"লগ ইনে ফিরে যান",errCode:"কোডটি ভুল বা মেয়াদ শেষ।",
+ storeT:"আপনার দোকানের নাম কী?",storeSub:"এই নাম অ্যাপের উপরে, বিলে ও অনলাইন দোকানে দেখা যাবে। পরে সেটআপ থেকে বদলাতে পারবেন।",storePh:"যেমন: রহমান জেনারেল স্টোর",next:"পরের ধাপ",back:"আগের ধাপ",errStore:"দোকানের নাম লিখুন।",
+ tourOf:"ধাপ {n} / {total}",tourStart:"আমার ১০ মিনিটের ট্রায়াল শুরু করুন",tourDone:"শেষ",tourAgain:"পরিচিতি আবার দেখুন",
+ tour1t:"দোকান খাতায় স্বাগতম",tour1b:"পণ্য, স্টক, বিক্রি ও টাকার হিসাব এক জায়গায় রাখুন।|ফোন, ট্যাবলেট ও কম্পিউটারে চলে, বাংলা বা ইংরেজিতে।|সব তথ্য আপনার অ্যাকাউন্টে সেভ থাকে, তাই যেকোনো ডিভাইস থেকে লগ ইন করতে পারবেন।|এই ছোট পরিচিতিতে দেখানো হবে প্রতিটি অংশ কীভাবে কাজ করে।",
+ tour2t:"পণ্য যোগ করুন",tour2b:"পণ্য পেজ খুলে পণ্য যোগ করুন চাপুন।|পণ্যের নাম লিখুন। চাইলে বাংলা নামও দিন।|ছবি দিন, যাতে বিক্রির সময় দ্রুত খুঁজে পান।|চাল বা স্ন্যাকসের মতো ক্যাটাগরি লিখুন, তালিকা গোছানো থাকবে।",
+ tour3t:"দাম ও স্টক ঠিক করুন",tour3b:"বিক্রয়মূল্য হলো কাস্টমার যা দেবেন।|ক্রয়মূল্য হলো আপনি যা দিয়ে কিনেছেন। এই দুটি থেকে অ্যাপ আপনার লাভ হিসাব করে।|কতটি আছে মানে এখন আপনার কাছে কত আছে। একক বাছুন: পিস, কেজি, লিটার ইত্যাদি।|স্টক কমার সতর্কতা: স্টক এই সংখ্যায় নামলে অ্যাপ আপনাকে জানাবে।|নতুন মাল এলে পণ্যে + স্টক যোগ চাপুন।",
+ tour4t:"বিক্রি লিখুন",tour4b:"বিক্রি পেজ খুলুন। পণ্যের ছবিতে চাপ দিলে বিলে যোগ হবে। আবার চাপলে আরেকটি যোগ হবে।|বিলে + ও − দিয়ে পরিমাণ বদলান, বা ছাড় দিন।|কাস্টমার কীভাবে দিলেন বাছুন: নগদ টাকা, বিকাশ, নগদ, রকেট বা কার্ড।|বিক্রি সম্পন্ন চাপুন। বিক্রি সেভ হবে এবং স্টক নিজে থেকে কমবে।",
+ tour5t:"বারকোড স্ক্যানার লাগান",tour5b:"কম্পিউটারে USB স্ক্যানার লাগান, অথবা ফোন বা ট্যাবলেটের সাথে ব্লুটুথ স্ক্যানার যুক্ত করুন।|বিক্রি পেজে বারকোড স্ক্যানার চাপুন। প্রতিটি স্ক্যানে বিপ শব্দসহ পণ্যটি বিলে যোগ হবে।|কোনো পণ্যের সাথে বারকোড যুক্ত করতে পণ্যটি খুলে বারকোড বক্সে স্ক্যান করুন।|অচেনা কোড স্ক্যান করলে অ্যাপ সেটিকে নতুন পণ্য হিসেবে যোগ করতে বলবে।|স্ক্যানার নেই? ক্যামেরায় স্ক্যান চাপুন, ফোনের ক্যামেরা ব্যবহার হবে।",
+ tour6t:"আয় ও খরচ লিখুন",tour6b:"হিসাব খুলে আয় ও খরচ এ যান, তারপর যোগ চাপুন।|ভাড়া, বিদ্যুৎ, বেতন বা বাড়তি আয় লিখুন।|বিক্রি ট্যাবে দিন অনুযায়ী সব বিল থাকে। বিলে চাপ দিয়ে দেখুন বা মুছুন।",
+ tour7t:"রিপোর্ট দেখুন",tour7b:"হোমে বিক্রি, লাভ, চলতি খরচ ও নিট আয় দেখবেন।|আজ, ৭ দিন, ৩০ দিন ও এই মাস বদলে দেখুন।|বেশি বিক্রিত পণ্য, কমে আসা স্টক ও স্টকের মূল্য দেখুন।",
+ tour8t:"প্রো ফিচার",tour8b:"বাকি: বিলে বাকি বেছে কাস্টমারের নাম লিখুন। পরে হিসাব থেকে পরিশোধ হয়েছে চাপুন।|আমার দোকান: আপনার পণ্যের একটি পেজ শেয়ার করুন। কাস্টমার পণ্য বেছে আপনার হোয়াটসঅ্যাপে অর্ডার পাঠাবে।|ব্যাকআপ ও এক্সেল: সেটআপ থেকে তথ্য ও বিক্রির তালিকা ডাউনলোড করুন।",
+ tour9t:"ট্রায়াল ও প্ল্যান",tour9b:"এরপর ১০ মিনিট নিজে সব ফিচার ব্যবহার করে দেখবেন।|সময় শেষ হলে একটি প্ল্যান বাছুন: শুরু ৳৩৫০, ব্যবসা ৳৫০০ বা প্রো ৳১,০০০ প্রতি মাসে।|বিকাশ, নগদ বা রকেটে পেমেন্ট করে আমাদের পাঠানো অ্যাক্সেস কোড দিন।|যে ডিভাইসেই লগ ইন করুন, আপনার প্ল্যান চালু থাকবে।",
+ trialOverT:"আপনার ১০ মিনিটের ট্রায়াল শেষ।",trialOverB:"আপনার দোকানের জন্য একটি প্ল্যান বাছুন। আপনার যোগ করা সব তথ্য সেভ আছে, প্ল্যান চালু হলেই ফিরে পাবেন।",
+ codeT:"অ্যাক্সেস কোড দিন",codeB:"আমরা আপনার {plan} প্ল্যানের পেমেন্ট দেখছি। নিশ্চিত হলে {phone} নম্বরে হোয়াটসঅ্যাপ বা এসএমএসে অ্যাক্সেস কোড পাঠাব। প্ল্যান চালু করতে কোডটি নিচে লিখুন।",
+ codeB2:"সাধারণত কয়েক ঘণ্টার মধ্যে, সকাল ৯টা থেকে রাত ১০টার মধ্যে।",choosePlanAgain:"অন্য প্ল্যান বাছুন",errCodeUsed:"এই কোড অন্য একটি অ্যাকাউন্টে ব্যবহার হয়ে গেছে।",
+ account:"অ্যাকাউন্ট",logout:"লগ আউট",loggedInAs:"{login} হিসেবে লগ ইন করা আছে"
+});
 
 /* ---------- state ---------- */
 const S = {
@@ -430,7 +483,7 @@ const S = {
   meta:{id:"settings",shopName:"",phone:"",lang:"en",sample:false,showCount:true},
   view:"home", period:"7", moneyTab:"sales", pf:"all", q:"", cat:"",
   cart:[], co:{discount:"",method:"cash",customer:"",note:""},
-  shopCart:{}, access:null, sheet:null, armed:null, scanStream:null, scanTarget:null, edit:null
+  shopCart:{}, access:null, auth:null, gateTab:"login", tourStep:0, tourOpen:false, noSync:false, sheet:null, armed:null, scanStream:null, scanTarget:null, edit:null
 };
 const t = (k,v) => { let s=(T[S.meta.lang]||T.en)[k] ?? T.en[k] ?? k; if(v) for(const x in v) s=s.replace("{"+x+"}",v[x]); return s; };
 const $ = (s,r=document) => r.querySelector(s);
@@ -466,27 +519,27 @@ const GAS = !!(window.google && google.script && google.script.run);
 const gs = (fn,...args) => new Promise((res,rej)=>{ google.script.run.withSuccessHandler(res).withFailureHandler(rej)[fn](...args); });
 const Sync = {
   q:[], timer:null, busy:false, state:"idle",
-  on(){ return GAS && S.access && S.access.server && S.access.exp>=Date.now() && !S.meta.sample; },
+  on(){ return GAS && !!S.auth && !S.meta.sample && !S.noSync && ((S.access&&S.access.exp>=Date.now()) || inDemo()); },
   load(){ try{ this.q=JSON.parse(localStorage.getItem("dk-queue")||"[]"); }catch(e){ this.q=[]; } },
   keep(){ try{ localStorage.setItem("dk-queue",JSON.stringify(this.q)); }catch(e){} },
-  push(op){ if(!this.on()) return; this.q.push(op); this.keep(); this.later(1200); },
+  push(op){ if(S.noSync||!this.on()) return; this.q.push(op); this.keep(); this.later(1200); },
   later(ms){ clearTimeout(this.timer); this.timer=setTimeout(()=>this.flush(),ms); },
   async flush(){
     if(this.busy||!this.q.length||!this.on()) return;
     this.busy=true; this.state="saving"; syncLabel();
     const batch=this.q.slice(0,40);
-    try{ await gs("saveBatch",S.access.code,batch); this.q.splice(0,batch.length); this.keep(); this.state=this.q.length?"saving":"saved"; }
+    try{ await gs("saveBatch",S.auth.token,batch); this.q.splice(0,batch.length); this.keep(); this.state=this.q.length?"saving":"saved"; }
     catch(e){ this.state="waiting"; this.busy=false; syncLabel(); this.later(15000); return; }
     this.busy=false; syncLabel(); if(this.q.length) this.later(200);
   },
   async pull(){
-    if(!this.on()&&!(GAS&&S.access&&S.access.server&&S.meta.sample)) return;
-    let d; try{ d=await gs("loadAll",S.access.code); }catch(e){ return; }
+    if(!GAS||!S.auth) return;
+    let d; try{ d=await gs("loadAll",S.auth.token); }catch(e){ return; }
     const has=d.products.length||d.sales.length||d.entries.length;
     if(has){
       ["products","sales","entries"].forEach(st=>{ DB.clear(st); S[st]=d[st]; d[st].forEach(o=>DB.put(st,o)); });
       const m=(d.meta||[]).find(x=>x.id==="settings");
-      if(m){ const keep={lang:S.meta.lang,access:S.meta.access,demoStart:S.meta.demoStart,termsOk:S.meta.termsOk,guideSeen:S.meta.guideSeen,scanMode:S.meta.scanMode,scanSound:S.meta.scanSound}; S.meta=Object.assign(S.meta,m,keep); }
+      if(m){ const keep={acct:S.meta.acct,paySent:S.meta.paySent,shopName:S.meta.shopName,lang:S.meta.lang,access:S.meta.access,demoStart:S.meta.demoStart,termsOk:S.meta.termsOk,guideSeen:S.meta.guideSeen,scanMode:S.meta.scanMode,scanSound:S.meta.scanSound}; S.meta=Object.assign(S.meta,m,keep); }
       S.meta.sample=false; DB.put("meta",S.meta); S.cart=[]; shell(); render();
     } else if(!S.meta.sample && (S.products.length||S.sales.length||S.entries.length)){
       // first time online with this code: upload what is on the device
@@ -573,7 +626,7 @@ async function verifyCode(raw){
 }
 const lsGet=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
 const lsSet=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
-function demoEnd(){ const st=+S.meta.demoStart||+lsGet("dk-demo")||0; return st?st+CONFIG.demoSeconds*1000:0; }
+function demoEnd(){ if(GAS) return S.auth&&S.auth.trialStart?S.auth.trialStart+CONFIG.demoSeconds*1000:0; const st=+S.meta.demoStart||+lsGet("dk-demo")||0; return st?st+CONFIG.demoSeconds*1000:0; }
 function curTier(){
   if(S.access&&S.access.exp>=Date.now()) return S.access.tier;
   if(!S.access&&Date.now()<demoEnd()) return "pro";
@@ -591,11 +644,18 @@ function upgradeSheet(f){
   <a class="btn primary block" href="#plans">${t("seePlans")}</a>`);
 }
 async function activate(raw,quiet){
-  const a=await verifyCode(raw);
+  let a=null;
+  if(GAS){
+    let code=String(raw||"").trim(); const m=code.match(/code=([^&\s#]+)/); if(m) code=decodeURIComponent(m[1]);
+    if(!code) return false;
+    if(!S.auth){ S.pendingCode=code; lsSet("dk-pending",code); return false; }
+    try{ a=await gs("redeemCode",S.auth.token,code); }catch(e){ if(!quiet) toast(errText(e)); return false; }
+    S.auth.access=a; saveAuth(); S.meta.paySent=null;
+  } else a=await verifyCode(raw);
   if(!a){ if(!quiet) toast(t("badCode")); return false; }
   if(a.exp<Date.now()){ if(!quiet) toast(t("codeExpired")); }
   clearInterval(demoTimer); S.access=a; S.meta.access=a.code; if(a.biz&&(!S.meta.shopName||S.meta.sample)) S.meta.shopName=a.biz; saveMeta(); lsSet("dk-access",a.code);
-  if(!quiet){ shell(); location.hash="#home"; render(); toast(t("unlocked",{plan:t("tier_"+a.tier)})); if(GAS) Sync.pull(); }
+  if(!quiet){ shell(); location.hash="#home"; render(); toast(t("unlocked",{plan:t("tier_"+a.tier)})); if(GAS){ await Sync.pull(); Sync.flush(); } }
   return true;
 }
 function tierChip(){
@@ -619,6 +679,8 @@ function codeBox(g){
 }
 function vLocked(){
   const expired=S.access&&S.access.exp<Date.now();
+  if(GAS){ if(S.meta.paySent) return vCodeEntry();
+    return `<div class="banner"><p><b>${expired?t("planEnded"):t("trialOverT")}</b> ${expired?t("planEndedBody",{date:fdate(S.access.exp,{day:"numeric",month:"long",year:"numeric"})}):t("trialOverB")}</p></div>`+vPlans(); }
   return `<div class="lockwrap"><div class="card stack lockcard">
     <div class="lockbadge">${I.lock}</div>
     <h1>${expired?t("planEnded"):t("demoOver")}</h1>
@@ -669,7 +731,7 @@ function submitPayment(){
   if(!trx||!shop||!ph){ toast(t("payFill")); return; }
   const k=S.edit.tier;
   if(GAS){ const btn=$("#payForm button[type=submit]"); if(btn) btn.disabled=true;
-    gs("submitPayment",{tier:k,method:S.edit.method,trx,shop,phone:ph}).then(()=>{ closeSheet(); toast(t("paySent")); }).catch(()=>{ if(btn) btn.disabled=false; toast(t("payFail")); }); return; }
+    gs("submitPayment",S.auth.token,{tier:k,method:S.edit.method,trx,shop,phone:ph}).then(()=>{ closeSheet(); S.meta.paySent={tier:k,phone:ph,at:Date.now()}; saveMeta(); toast(t("paySent")); location.hash="#code"; route(); }).catch(()=>{ if(btn) btn.disabled=false; toast(t("payFail")); }); return; }
   const msg=`Dokan Khata plan payment\nPlan: ${T.en["tier_"+k]} (৳${TIERS[k].price}/month)\nPaid with: ${T.en[S.edit.method]}\nTransaction ID: ${trx}\nShop: ${shop}\nPhone: ${ph}`;
   let d=CONFIG.ownerWhatsApp.replace(/\D/g,""); if(d.startsWith("0")) d="88"+d;
   const a=document.createElement("a"); a.href=`https:\/\/wa.me/${d}?text=${encodeURIComponent(msg)}`; a.target="_blank"; a.rel="noopener"; document.body.appendChild(a); a.click(); a.remove();
@@ -681,17 +743,146 @@ const GUIDE=[["g1","setup"],["g2","products"],["g3","sell"],["g4","sell"],["g5",
 function vGuide(){
   return `<div class="page-head"><div><h1>${t("guide")}</h1><p>${t("guideSub")}</p></div>
     <div class="seg" style="min-width:200px"><button class="${S.meta.lang==="en"?"on":""}" data-act="setLang" data-v="en">English</button><button class="${S.meta.lang==="bn"?"on":""}" data-act="setLang" data-v="bn">বাংলা</button></div></div>
-  <p style="margin:0 0 12px"><a class="linkbtn" href="#terms">${t("terms")} →</a></p><ol class="guide">${GUIDE.map(([g,v])=>`<li class="card"><div class="gnum num">${N(+g.slice(1))}</div><div style="min-width:0"><h2>${t(g+"t")}</h2><p>${t(g+"b")}</p>${curTier()||v==="plans"?`<a class="linkbtn" href="#${v}">${t("tryIt")} →</a>`:""}</div></li>`).join("")}</ol>`;
+  <p class="row" style="margin:0 0 12px"><a class="linkbtn" href="#terms">${t("terms")} →</a>${GAS&&S.auth?`<button class="btn" data-act="tourAgain">${t("tourAgain")}</button>`:""}</p><ol class="guide">${GUIDE.map(([g,v])=>`<li class="card"><div class="gnum num">${N(+g.slice(1))}</div><div style="min-width:0"><h2>${t(g+"t")}</h2><p>${t(g+"b")}</p>${curTier()||v==="plans"?`<a class="linkbtn" href="#${v}">${t("tryIt")} →</a>`:""}</div></li>`).join("")}</ol>`;
 }
+
+/* ---------- accounts (Apps Script version): log in, shop name, walkthrough, trial ---------- */
+const TOUR=[["book","tour1"],["box","tour2"],["money","tour3"],["sell","tour4"],["gun","tour5"],["money","tour6"],["home","tour7"],["star","tour8"],["lock","tour9"]];
+function saveAuth(){ try{ if(S.auth) localStorage.setItem("dk-auth",JSON.stringify(S.auth)); else localStorage.removeItem("dk-auth"); }catch(e){} }
+function loadAuth(){ try{ return JSON.parse(localStorage.getItem("dk-auth")||"null"); }catch(e){ return null; } }
+function applyState(st){
+  const off=st.now?Date.now()-st.now:0, token=st.token||(S.auth&&S.auth.token);
+  S.auth={token,id:st.id,login:st.login,store:st.store,trialStart:st.trialStart?st.trialStart+off:0,access:st.access||null};
+  S.access=st.access||null; saveAuth();
+}
+function localOnly(fn){ S.noSync=true; try{ fn(); }finally{ S.noSync=false; } }
+function adoptAccount(){
+  if(S.meta.acct!==S.auth.id){
+    localOnly(()=>wipe()); Sync.q=[]; Sync.keep();
+    S.meta={id:"settings",shopName:"",phone:"",lang:S.meta.lang,sample:false,showCount:true,seeded:true,termsOk:S.meta.termsOk,acct:S.auth.id};
+  }
+  if(S.auth.store) S.meta.shopName=S.auth.store;
+  S.meta.access=S.access?S.access.code:""; S.meta.sample=false;
+  localOnly(()=>saveMeta());
+}
+function errText(e){
+  const m=String(e&&e.message||e), map={EXISTS:"errExists",WRONG:"errLogin",LOGIN_FORMAT:"errLoginFmt",PASSWORD_SHORT:"errPw",TOO_MANY:"errTooMany",BAD_RESET:"errCode",STORE:"errStore",BAD_CODE:"badCode",CODE_USED:"errCodeUsed"};
+  for(const k in map) if(m.includes(k)) return t(map[k]);
+  return t("errNet");
+}
+function gateAuth(langSeg){
+  const tab=S.gateTab||"login", reset=tab==="reset", codeStage=reset&&S.resetStage==="code";
+  const pw=(id,label)=>`<div class="field"><label for="${id}">${label}</label><div class="row" style="flex-wrap:nowrap"><input class="input" id="${id}" type="password" autocomplete="${tab==="login"?"current-password":"new-password"}" placeholder="${t("passwordPh")}"><button type="button" class="btn" data-act="togglePw" data-v="${id}">${t("showPw")}</button></div></div>`;
+  return `<div class="gate"><div class="gatecard" role="dialog" aria-modal="true" aria-labelledby="gateTitle" style="max-width:480px">
+    <div class="row between"><div class="brand"><div class="brand-mark">দ</div><div class="brand-text"><b>Dokan Khata</b><span>${t("tagline")}</span></div></div>${langSeg}</div>
+    <div><h1 id="gateTitle">${t(reset?"resetT":"authTitle")}</h1><p class="muted" style="margin:4px 0 0">${t(reset?"resetSub":"authSub")}</p></div>
+    ${reset?"":`<div class="seg"><button type="button" class="${tab==="login"?"on":""}" data-act="authTab" data-v="login">${t("tabLogin")}</button><button type="button" class="${tab==="signup"?"on":""}" data-act="authTab" data-v="signup">${t("tabSignup")}</button></div>`}
+    <form id="authForm" class="stack" novalidate>
+      <div class="field"><label for="aLogin">${t("loginLabel")}</label><input class="input" id="aLogin" autocomplete="username" placeholder="${t("loginPh")}" value="${esc(S.authLogin||"")}" ${codeStage?"readonly":""}></div>
+      ${S.resetMsg?`<p class="small" style="margin:0">${esc(S.resetMsg)}</p>`:""}
+      ${codeStage?`<div class="field"><label for="aCode">${t("resetCode")}</label><input class="input num" id="aCode" inputmode="numeric" autocomplete="one-time-code"></div>`+pw("aPw",t("newPw")):""}
+      ${reset?"":pw("aPw",t("password"))}
+      ${tab==="signup"?`<label class="row" style="gap:10px;flex-wrap:nowrap;font-weight:600"><input type="checkbox" id="aTerms" style="width:22px;height:22px;flex:none"> <span>${t("agreeTerms")}</span></label>
+        <div><button type="button" class="linkbtn" data-act="authTerms">${t(S.showTerms?"hideTerms":"readTerms")}</button></div>${S.showTerms?`<div class="termsbox" tabindex="0">${termsList()}</div>`:""}`:""}
+      <p class="small" id="authErr" role="alert" style="margin:0;color:var(--danger)"></p>
+      <button class="btn primary block" id="authBtn" type="submit" style="min-height:50px">${t(tab==="login"?"loginBtn":tab==="signup"?"signupBtn":codeStage?"resetSave":"resetSend")}</button>
+    </form>
+    <div class="row between">${tab==="login"?`<button type="button" class="linkbtn" data-act="authTab" data-v="reset">${t("forgot")}</button>`:reset?`<button type="button" class="linkbtn" data-act="authTab" data-v="login">${t("backLogin")}</button>`:"<span></span>"}</div>
+  </div></div>`;
+}
+function gateStore(langSeg){
+  return `<div class="gate"><div class="gatecard" role="dialog" aria-modal="true" aria-labelledby="gateTitle" style="max-width:480px">
+    <div class="row between"><div class="tourico">${I.shop}</div>${langSeg}</div>
+    <div><h1 id="gateTitle">${t("storeT")}</h1><p class="muted" style="margin:4px 0 0">${t("storeSub")}</p></div>
+    <form id="storeForm" class="stack" novalidate>
+      <div class="field"><label for="aStore">${t("shopName")}</label><input class="input" id="aStore" maxlength="80" placeholder="${t("storePh")}" value="${esc(S.meta.shopName||"")}"></div>
+      <p class="small" id="authErr" role="alert" style="margin:0;color:var(--danger)"></p>
+      <button class="btn primary block" id="authBtn" type="submit" style="min-height:50px">${t("next")}</button>
+    </form>
+  </div></div>`;
+}
+function gateTour(langSeg){
+  const i=Math.min(S.tourStep||0,TOUR.length-1), [ic,k]=TOUR[i], last=i===TOUR.length-1, started=!!(S.auth.trialStart||S.access);
+  return `<div class="gate"><div class="gatecard" role="dialog" aria-modal="true" aria-labelledby="gateTitle" style="max-width:600px">
+    <div class="row between"><span class="small muted" style="font-weight:600">${t("tourOf",{n:N(i+1),total:N(TOUR.length)})}</span>${langSeg}</div>
+    <div class="tourdots" aria-hidden="true">${TOUR.map((_,x)=>`<span class="${x<=i?"on":""}"></span>`).join("")}</div>
+    <div class="row" style="flex-wrap:nowrap;gap:14px"><div class="tourico">${I[ic]}</div><h1 id="gateTitle" style="margin:0">${t(k+"t")}</h1></div>
+    <ol class="steps tourlist">${t(k+"b").split("|").map(x=>`<li>${esc(x)}</li>`).join("")}</ol>
+    <p class="small" id="authErr" role="alert" style="margin:0;color:var(--danger)"></p>
+    <div class="row between"><button type="button" class="btn" data-act="tourBack" ${i?"":"disabled"}>${t("back")}</button>
+      <button type="button" class="btn primary" id="authBtn" data-act="tourNext" style="min-height:48px">${last?t(started?"tourDone":"tourStart"):t("next")}</button></div>
+  </div></div>`;
+}
+function authErr(m){ const e=$("#authErr"); if(e) e.textContent=m; const b=$("#authBtn"); if(b) b.disabled=false; }
+async function afterAuth(st){
+  applyState(st); S.gateTab="login"; S.resetStage=null; S.resetMsg=""; S.showTerms=false; adoptAccount();
+  const pend=S.pendingCode||lsGet("dk-pending"); if(pend){ S.pendingCode=null; lsSet("dk-pending",""); await activate(pend,true); }
+  await Sync.pull(); Sync.flush();
+  if(inDemo()) startDemoTicker();
+  shell(); location.hash="#home"; route();
+}
+async function doAuth(){
+  const tab=S.gateTab||"login", login=($("#aLogin")||{}).value?.trim()||"", pw=($("#aPw")||{}).value||"";
+  S.authLogin=login; authErr("");
+  if(tab==="signup"&&!$("#aTerms").checked) return authErr(t("errTerms"));
+  if((tab!=="reset"||S.resetStage==="code")&&tab!=="login"&&pw.length<6) return authErr(t("errPw"));
+  const b=$("#authBtn"); if(b) b.disabled=true;
+  try{
+    if(tab==="login") return await afterAuth(await gs("logIn",{login,password:pw}));
+    if(tab==="signup"){ const st=await gs("signUp",{login,password:pw}); S.meta.termsOk=Date.now(); lsSet("dk-terms",String(S.meta.termsOk)); return await afterAuth(st); }
+    if(S.resetStage!=="code"){ const r=await gs("resetStart",login);
+      if(r.via==="owner") S.resetMsg=t("resetOwner",{num:CONFIG.pay.bkash}); else { S.resetStage="code"; S.resetMsg=t("resetEmailSent",{login}); }
+      renderGate(); return; }
+    const st=await gs("resetFinish",{login,code:$("#aCode").value,password:pw}); toast(t("resetDone")); await afterAuth(st);
+  }catch(e){ authErr(errText(e)); }
+}
+async function doStore(){
+  const name=$("#aStore").value.trim(); if(!name) return authErr(t("errStore"));
+  const b=$("#authBtn"); if(b) b.disabled=true;
+  try{ applyState(await gs("setStore",S.auth.token,name)); S.meta.shopName=name; saveMeta(); S.tourStep=0; shell(); render(); }
+  catch(e){ authErr(errText(e)); }
+}
+function vCodeEntry(){
+  const ps=S.meta.paySent||{};
+  return `<div class="lockwrap"><div class="card stack lockcard">
+    <div class="lockbadge" style="background:var(--accent-soft);color:var(--accent)">${I.lock}</div>
+    <h1>${t("codeT")}</h1>
+    ${ps.tier?`<p style="margin:0">${t("codeB",{plan:t("tier_"+ps.tier),phone:esc(ps.phone||"")})}</p><p class="small muted" style="margin:0">${t("codeB2")}</p>`:""}
+    ${codeBox()}
+    <div class="row"><a class="btn" href="#plans" data-act="payAgain">${t("choosePlanAgain")}</a><button class="btn" data-act="lang">${I.globe}${t("lang")}</button></div>
+  </div></div>`;
+}
+const AUTH_ACTS={
+  authTab(el){ S.gateTab=el.dataset.v; S.resetStage=null; S.resetMsg=""; S.authLogin=($("#aLogin")||{}).value||S.authLogin; renderGate(); },
+  authTerms(){ S.showTerms=!S.showTerms; const c=$("#aTerms")?.checked, l=$("#aLogin")?.value, p=$("#aPw")?.value; S.authLogin=l; renderGate(); if($("#aTerms")) $("#aTerms").checked=c; if($("#aPw")) $("#aPw").value=p||""; },
+  togglePw(el){ const i=$("#"+el.dataset.v); if(!i) return; const show=i.type==="password"; i.type=show?"text":"password"; el.textContent=t(show?"hidePw":"showPw"); },
+  tourBack(){ S.tourStep=Math.max(0,(S.tourStep||0)-1); renderGate(); },
+  async tourNext(){
+    if((S.tourStep||0)<TOUR.length-1){ S.tourStep=(S.tourStep||0)+1; renderGate(); return; }
+    if(S.tourOpen||S.auth.trialStart||S.access){ S.tourOpen=false; S.tourStep=0; render(); return; }
+    const b=$("#authBtn"); if(b) b.disabled=true;
+    try{ applyState(await gs("startTrial",S.auth.token)); }catch(e){ return authErr(errText(e)); }
+    S.tourStep=0; startDemoTicker(); shell(); location.hash="#home"; route();
+  },
+  tourAgain(){ S.tourOpen=true; S.tourStep=0; render(); },
+  payAgain(){ S.meta.paySent=null; saveMeta(); },
+  logout(){
+    localOnly(()=>wipe()); Sync.q=[]; Sync.keep(); clearInterval(demoTimer);
+    S.meta={id:"settings",shopName:"",phone:"",lang:S.meta.lang,sample:false,showCount:true,seeded:true,termsOk:S.meta.termsOk};
+    localOnly(()=>saveMeta()); S.auth=null; S.access=null; saveAuth(); lsSet("dk-access",""); S.gateTab="login";
+    shell(); location.hash="#home"; route();
+  }
+};
 
 /* ---------- first-open gate: terms, then trial notice ---------- */
 function termsList(){ return `<ol class="terms">${t("tm").map(([h,b])=>`<li><h3>${esc(h)}</h3><p>${esc(b)}</p></li>`).join("")}</ol>`; }
-function gateNeeded(){ if(!S.meta.termsOk) return "terms"; if(!S.access&&!S.meta.demoStart&&!(S.peek&&(S.view==="plans"||S.view==="guide"||S.view==="terms"))) return "intro"; return null; }
+function gateNeeded(){ if(GAS){ if(!S.auth) return "auth"; if(!S.auth.store) return "store"; if(S.tourOpen||(!S.auth.trialStart&&!S.access)) return "tour"; return null; } if(!S.meta.termsOk) return "terms"; if(!S.access&&!S.meta.demoStart&&!(S.peek&&(S.view==="plans"||S.view==="guide"||S.view==="terms"))) return "intro"; return null; }
 function renderGate(){
   const g=gateNeeded(), root=$("#gateRoot");
   if(!g){ root.innerHTML=""; document.body.classList.remove("gated"); return; }
   document.body.classList.add("gated");
   const langSeg=`<div class="seg" style="max-width:220px"><button class="${S.meta.lang==="en"?"on":""}" data-act="gateLang" data-v="en">English</button><button class="${S.meta.lang==="bn"?"on":""}" data-act="gateLang" data-v="bn">বাংলা</button></div>`;
+  if(g==="auth"||g==="store"||g==="tour"){ root.innerHTML=(g==="auth"?gateAuth:g==="store"?gateStore:gateTour)(langSeg); return; }
   root.innerHTML = g==="terms" ? `<div class="gate"><div class="gatecard" role="dialog" aria-modal="true" aria-labelledby="gateTitle">
       <div class="row between"><div class="brand"><div class="brand-mark">দ</div><div class="brand-text"><b>Dokan Khata</b><span>${t("tagline")}</span></div></div>${langSeg}</div>
       <div><h1 id="gateTitle">${t("terms")}</h1><p class="muted" style="margin:4px 0 0">${t("termsSub")} <span class="small">${t("termsUpdated")}</span></p></div>
@@ -740,7 +931,7 @@ function shell(){
 function render(){
   document.documentElement.lang=S.meta.lang==="bn"?"bn":"en";
   document.querySelectorAll("[data-nav]").forEach(a=>a.classList.toggle("on",a.dataset.nav===S.view));
-  const open={plans:vPlans,guide:vGuide,terms:()=>`<div class="page-head"><div><h1>${t("terms")}</h1><p class="small muted">${t("termsUpdated")}</p></div></div><div class="card" style="max-width:760px">${termsList()}</div>`};
+  const open={plans:vPlans,guide:vGuide,code:vCodeEntry,terms:()=>`<div class="page-head"><div><h1>${t("terms")}</h1><p class="small muted">${t("termsUpdated")}</p></div></div><div class="card" style="max-width:760px">${termsList()}</div>`};
   let v=open[S.view]||(curTier()?({home:vHome,sell:vSell,products:vProducts,money:vMoney,shop:vShop,setup:vSetup}[S.view]||vHome):vLocked);
   const banner = S.meta.sample && curTier() && !open[S.view] && S.view!=="shop" ? `<div class="banner"><p>${t("sampleBanner")}</p><button class="btn" data-act="clearSample">${t("clearSample")}</button></div>` : "";
   $("#main").innerHTML=banner+v();
@@ -1091,6 +1282,7 @@ function vShop(){
 function vSetup(){
   return `<div class="page-head"><div><h1>${t("setup")}</h1><p>${t("dataHere")}</p></div></div>
   <div class="setup">
+    ${GAS&&S.auth?`<section class="card stack"><h2>${t("account")}</h2><p class="muted" style="margin:0">${t("loggedInAs",{login:esc(S.auth.login)})}</p><div class="row"><button class="btn" data-act="tourAgain">${t("tourAgain")}</button><button class="btn danger" data-act="logout">${t("logout")}</button></div></section>`:""}
     <section class="card stack">
       <div class="field"><label for="sName">${t("shopName")}</label><input class="input" id="sName" data-meta="shopName" value="${esc(S.meta.shopName)}"></div>
       <div class="field"><label for="sPhone">${t("whatsapp")}</label><input class="input num" id="sPhone" data-meta="phone" inputmode="tel" placeholder="017XXXXXXXX" value="${esc(S.meta.phone)}"></div>
@@ -1194,6 +1386,7 @@ document.addEventListener("click",ev=>{
   fn(el,ev);
 });
 document.addEventListener("submit",ev=>{ ev.preventDefault(); const f=ev.target;
+  if(f.id==="authForm"){ doAuth(); return; } if(f.id==="storeForm"){ doStore(); return; }
   if(f.id==="codeForm"||f.id==="gateCodeForm") activate($(f.id==="codeForm"?"#codeIn":"#gateCodeIn").value); else if(f.id==="payForm") submitPayment(); else if(f.id==="pForm") saveProduct(f); else if(f.id==="rForm") saveRestock(f); else if(f.id==="eForm") saveEntry(); });
 document.addEventListener("input",ev=>{
   const el=ev.target;
@@ -1216,7 +1409,8 @@ document.addEventListener("keydown",ev=>{
   if(ev.key==="Enter"&&ev.target.id==="scanInput"){ ev.preventDefault(); handleBarcode(ev.target.value); ev.target.value=""; }
   if(ev.key==="Escape"&&S.sheet) closeSheet();
 });
-const VIEWS=["home","sell","products","money","shop","setup","plans","guide","terms"];
+const VIEWS=["home","sell","products","money","shop","setup","plans","guide","terms","code"];
+Object.assign(A,AUTH_ACTS);
 function route(){ const h=location.hash.replace("#",""); S.view=VIEWS.includes(h)?h:"home"; if(S.view==="guide"&&!S.meta.guideSeen){ S.meta.guideSeen=true; saveMeta(); } S.q=""; S.cat=""; S.armed=null; if(S.sheet) closeSheet(); render(); window.scrollTo(0,0); }
 addEventListener("hashchange",route);
 let wasWide=wide(); addEventListener("resize",()=>{ const w=wide(); if(w!==wasWide){ wasWide=w; if(S.sheet==="cart") closeSheet(); if(S.view==="sell") render(); } });
@@ -1226,10 +1420,24 @@ let wasWide=wide(); addEventListener("resize",()=>{ const w=wide(); if(w!==wasWi
   const ok=await DB.open();
   if(ok){ const [p,s,e,m]=await Promise.all(["products","sales","entries","meta"].map(x=>DB.all(x)));
     S.products=p; S.sales=s; S.entries=e; const st=m.find(x=>x.id==="settings"); if(st) S.meta=Object.assign(S.meta,st); }
-  if(!S.products.length&&!S.sales.length&&!S.meta.shopName&&!S.meta.seeded){ seed(); S.meta.seeded=true; saveMeta(); }
+  if(!GAS&&!S.products.length&&!S.sales.length&&!S.meta.shopName&&!S.meta.seeded){ seed(); S.meta.seeded=true; saveMeta(); }
   Sync.load();
   let urlCode=new URLSearchParams(location.search).get("code");
   if(GAS&&!urlCode){ urlCode=await new Promise(r=>{ try{ google.script.url.getLocation(l=>r((l.parameter||{}).code||null)); }catch(e){ r(null); } setTimeout(()=>r(null),3000); }); }
+  if(GAS){
+    if(urlCode){ S.pendingCode=urlCode; lsSet("dk-pending",urlCode); try{ history.replaceState(null,"",location.pathname+(location.hash||"#home")); }catch(e){} }
+    const cached=loadAuth();
+    if(cached&&cached.token){
+      S.auth=cached; S.access=cached.access||null;
+      try{ applyState(await gs("session",cached.token)); }
+      catch(e){ if(String(e&&e.message||e).includes("AUTH")){ S.auth=null; S.access=null; saveAuth(); } }
+    }
+    if(S.auth){ adoptAccount(); const pend=S.pendingCode||lsGet("dk-pending"); if(pend){ S.pendingCode=null; lsSet("dk-pending",""); await activate(pend,true); } }
+    if(inDemo()) startDemoTicker();
+    shell(); route();
+    if(S.auth){ await Sync.pull(); Sync.flush(); }
+    return;
+  }
   const saved=S.meta.access||lsGet("dk-access");
   if(urlCode){ await activate(urlCode,true); try{ history.replaceState(null,"",location.pathname+(location.hash||"#home")); }catch(e){} }
   else if(saved){ S.access=await verifyCode(saved); }
