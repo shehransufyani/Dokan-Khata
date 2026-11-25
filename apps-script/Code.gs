@@ -27,7 +27,7 @@ var PRICES = { basic: 500, standard: 800, pro: 1200, yearly: 10000 };
 function doGet(e) {
   if (e && e.parameter && e.parameter.feed) return catalogFeed_(e.parameter.feed);
   if (e && e.parameter && e.parameter.admin) return HtmlService.createHtmlOutputFromFile('Admin').setTitle('Store Flow Admin')
-    .addMetaTag('viewport', 'width=device-width, initial-scale=1').addMetaTag('robots', 'noindex');
+    .addMetaTag('viewport', 'width=device-width, initial-scale=1');
   return HtmlService.createHtmlOutputFromFile('Index')
     .setTitle('Store Flow')
     .addMetaTag('viewport', 'width=device-width, initial-scale=1, viewport-fit=cover')
