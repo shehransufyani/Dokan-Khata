@@ -177,7 +177,7 @@ function aiCallOne_(p, messages, maxTokens, json) {
   var body = { model: p.model, messages: messages, max_tokens: maxTokens, temperature: 0.4 };
   if (json) body.response_format = { type: 'json_object' };
   var headers = { Authorization: 'Bearer ' + p.key };
-  if (p.id === 'openrouter') { headers['X-Title'] = 'Store Flow'; headers['HTTP-Referer'] = 'https://shehransufyani.github.io/Dokan-Khata/'; }
+  if (p.id === 'openrouter') { headers['X-Title'] = 'Store Flow'; headers['HTTP-Referer'] = 'https://shehransufyani.github.io/StoreFlow/'; }
   var res = UrlFetchApp.fetch(p.url, { method: 'post', contentType: 'application/json', headers: headers, payload: JSON.stringify(body), muteHttpExceptions: true });
   var code = res.getResponseCode(), out = {};
   try { out = JSON.parse(res.getContentText()); } catch (e) {}

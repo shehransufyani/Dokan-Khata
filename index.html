@@ -766,10 +766,22 @@ const methodLabel = m => t(m);
 /* ---------- storage (IndexedDB, falls back to memory) ---------- */
 const DB = {
   db:null,
-  open(){ return new Promise(res=>{ try{ const r=indexedDB.open("dokan-khata",2);
-    r.onupgradeneeded=()=>{const d=r.result;["products","sales","entries","orders","meta"].forEach(s=>{if(!d.objectStoreNames.contains(s))d.createObjectStore(s,{keyPath:"id"})})};
-    r.onsuccess=()=>{DB.db=r.result;res(true)}; r.onerror=()=>res(false); r.onblocked=()=>res(false);
-    setTimeout(()=>res(false),2500); }catch(e){res(false)} }); },
+  stores:["products","sales","entries","orders","meta"],
+  open(){ return new Promise(res=>{ try{ const r=indexedDB.open("store-flow",1);
+    r.onupgradeneeded=()=>{const d=r.result;DB.stores.forEach(s=>{if(!d.objectStoreNames.contains(s))d.createObjectStore(s,{keyPath:"id"})})};
+    r.onsuccess=()=>{DB.db=r.result;DB.moveOld().then(()=>res(true),()=>res(true))}; r.onerror=()=>res(false); r.onblocked=()=>res(false);
+    setTimeout(()=>res(false),6000); }catch(e){res(false)} }); },
+  /* one-time copy of shop data saved under the app's old database name */
+  moveOld(){ const OLD="dokan-khata"; return new Promise(res=>{ try{
+    if(localStorage.getItem("sf-db-moved")) return res();
+    const done=()=>{ try{localStorage.setItem("sf-db-moved","1")}catch(e){} res(); };
+    const r=indexedDB.open(OLD); r.onerror=()=>res(); r.onblocked=()=>res();
+    r.onsuccess=()=>{ const od=r.result, have=DB.stores.filter(s=>od.objectStoreNames.contains(s));
+      if(!have.length){ od.close(); try{indexedDB.deleteDatabase(OLD)}catch(e){} return done(); }
+      let left=have.length; const rows={};
+      have.forEach(s=>{ const q=od.transaction(s).objectStore(s).getAll(); q.onsuccess=()=>{ rows[s]=q.result||[]; if(!--left) copy(); }; q.onerror=()=>{ od.close(); res(); }; });
+      const copy=()=>{ od.close(); const tx=DB.db.transaction(have,"readwrite"); have.forEach(s=>{ const st=tx.objectStore(s); rows[s].forEach(o=>{ try{st.put(o)}catch(e){} }); }); tx.oncomplete=done; tx.onerror=()=>res(); };
+    }; }catch(e){res()} }); },
   all(s){ if(!this.db) return Promise.resolve([]); return new Promise(res=>{ setTimeout(()=>res([]),2500); try{ const q=this.db.transaction(s).objectStore(s).getAll(); q.onsuccess=()=>res(q.result||[]); q.onerror=()=>res([]);}catch(e){res([])} }); },
   put(s,o){ Sync.push({op:"put",store:s,obj:o}); if(!this.db) return; try{ this.db.transaction(s,"readwrite").objectStore(s).put(o);}catch(e){} },
   del(s,id){ Sync.push({op:"del",store:s,id}); if(!this.db) return; try{ this.db.transaction(s,"readwrite").objectStore(s).delete(id);}catch(e){} },
@@ -2033,8 +2045,8 @@ function fbCsv(){
   const L=[["id","title","description","availability","condition","price","link","image_link","brand","product_type","quantity_to_sell_on_facebook"].join(",")];
   S.products.filter(p=>p.name&&+p.price>0).forEach(p=>{ const title=p.name+(p.nameBn?" ("+p.nameBn+")":"");
     L.push([p.id,title.slice(0,150),title+" from "+shop+(p.unit?", per "+p.unit:"")+". Order on WhatsApp.",p.stock>0?"in stock":"out of stock","new",(+p.price).toFixed(2)+" BDT",
-      num?"https:\/\/api.whatsapp.com/send?phone="+num+"&text="+encodeURIComponent("Hi "+shop+", I want to order: "+p.name):"https:\/\/shehransufyani.github.io/Dokan-Khata/",
-      /^https?:/.test(p.photo||"")?p.photo:"https:\/\/shehransufyani.github.io/Dokan-Khata/icons/icon-512.png",shop,p.category||"",Math.max(0,Math.floor(+p.stock||0))].map(q).join(",")); });
+      num?"https:\/\/api.whatsapp.com/send?phone="+num+"&text="+encodeURIComponent("Hi "+shop+", I want to order: "+p.name):"https:\/\/shehransufyani.github.io/StoreFlow/",
+      /^https?:/.test(p.photo||"")?p.photo:"https:\/\/shehransufyani.github.io/StoreFlow/icons/icon-512.png",shop,p.category||"",Math.max(0,Math.floor(+p.stock||0))].map(q).join(",")); });
   download("facebook-catalog.csv","﻿"+L.join("\r\n"),"text/csv");
 }
 function vShop(){
@@ -2150,7 +2162,7 @@ const A={
   sdec(el){ const id=el.dataset.id; S.shopCart[id]=(S.shopCart[id]||0)-1; if(S.shopCart[id]<=0) delete S.shopCart[id]; render(); },
   clearSample(){ wipe(); S.meta.sample=false; if(!GAS){ S.meta.shopName=""; S.meta.phone=""; } saveMeta(); if(GAS) Sync.pull(); shell(); render(); toast(t("cleared")); },
   reset(){ if(S.armed!=="reset"){ S.armed="reset"; render(); return; } wipe(); S.meta={id:"settings",shopName:"",phone:"",lang:S.meta.lang,sample:false,showCount:true,seeded:true,access:S.meta.access,demoStart:S.meta.demoStart,guideSeen:S.meta.guideSeen}; saveMeta(); S.armed=null; shell(); render(); toast(t("deleted")); },
-  exportJson(){ download("dokan-khata-backup-"+dayKey(Date.now())+".json",JSON.stringify({app:"dokan-khata",v:2,meta:S.meta,products:S.products,sales:S.sales,entries:S.entries,orders:S.orders}),"application/json"); },
+  exportJson(){ download("store-flow-backup-"+dayKey(Date.now())+".json",JSON.stringify({app:"store-flow",v:2,meta:S.meta,products:S.products,sales:S.sales,entries:S.entries,orders:S.orders}),"application/json"); },
   exportCsv(){ const q=v=>'"'+String(v??"").replace(/"/g,'""')+'"';
     const rows=[["date","time","items","total","discount","payment","customer","profit"]].concat([...S.sales].sort((a,b)=>a.at-b.at).map(s=>[dayKey(s.at),new Date(s.at).toTimeString().slice(0,5),s.items.map(i=>i.name+" x"+i.qty).join("; "),s.total,s.discount,s.method,s.customer,s.total-sum(s.items,i=>i.qty*i.cost)]));
     download("sales-"+dayKey(Date.now())+".csv","﻿"+rows.map(r=>r.map(q).join(",")).join("\n"),"text/csv"); },
@@ -2208,7 +2220,7 @@ document.addEventListener("change",async ev=>{
   if(el.id==="oPreChk"){ const w=$("#oPreWrap"); if(w) w.style.display=el.checked?"":"none"; }
   if(el.id==="oDel"||el.id==="oAdv"){ renderOLines(); }
   if(el.id==="pPhoto"&&el.files[0]){ S.edit.photo=await resizeImage(el.files[0]); if(S.edit.photo) $("#pPhotoPrev").innerHTML=`<img src="${S.edit.photo}" alt="">`; }
-  if(el.id==="importFile"&&el.files[0]){ try{ const d=JSON.parse(await el.files[0].text()); if(d.app!=="dokan-khata"||!Array.isArray(d.products)) throw 0;
+  if(el.id==="importFile"&&el.files[0]){ try{ const d=JSON.parse(await el.files[0].text()); if(!["store-flow","dokan-khata"].includes(d.app)||!Array.isArray(d.products)) throw 0;
       wipe(); S.products=d.products; S.sales=d.sales||[]; S.entries=d.entries||[]; S.orders=d.orders||[]; S.meta=Object.assign(S.meta,d.meta||{},{id:"settings"});
       S.products.forEach(p=>DB.put("products",p)); S.sales.forEach(s=>DB.put("sales",s)); S.entries.forEach(e=>DB.put("entries",e)); S.orders.forEach(o=>DB.put("orders",o)); saveMeta(); shell(); render(); toast(t("imported"));
     }catch(e){ toast(t("badFile")); } el.value=""; }

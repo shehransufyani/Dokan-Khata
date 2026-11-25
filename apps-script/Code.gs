@@ -31,7 +31,7 @@ function doGet(e) {
   return HtmlService.createHtmlOutputFromFile('Index')
     .setTitle('Store Flow')
     .addMetaTag('viewport', 'width=device-width, initial-scale=1, viewport-fit=cover')
-    .setFaviconUrl('https://shehransufyani.github.io/Dokan-Khata/icons/icon-192.png')
+    .setFaviconUrl('https://shehransufyani.github.io/StoreFlow/icons/icon-192.png')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
@@ -639,12 +639,12 @@ function catalogFeed_(raw) {
     try { if (r[1] === 'products') products.push(JSON.parse(r[4])); else if (r[1] === 'meta') meta = JSON.parse(r[4]); } catch (e) {}
   });
   var shop = a.store || meta.shopName || 'Shop', phone = phone_(meta.phone || '');
-  var img = 'https://shehransufyani.github.io/Dokan-Khata/icons/icon-512.png';
+  var img = 'https://shehransufyani.github.io/StoreFlow/icons/icon-512.png';
   var q = function (v) { return '"' + String(v == null ? '' : v).replace(/"/g, '""').replace(/[\r\n]+/g, ' ') + '"'; };
   var lines = [['id', 'title', 'description', 'availability', 'condition', 'price', 'link', 'image_link', 'brand', 'product_type', 'quantity_to_sell_on_facebook'].join(',')];
   products.filter(function (p) { return p && p.name && +p.price > 0; }).forEach(function (p) {
     var title = p.name + (p.nameBn ? ' (' + p.nameBn + ')' : '');
-    var link = (phone && waUrl_(phone, 'Hi ' + shop + ', I want to order: ' + p.name)) || 'https://shehransufyani.github.io/Dokan-Khata/';
+    var link = (phone && waUrl_(phone, 'Hi ' + shop + ', I want to order: ' + p.name)) || 'https://shehransufyani.github.io/StoreFlow/';
     var photo = /^https?:\/\//.test(String(p.photo || '')) ? p.photo : img;
     lines.push([q(p.id), q(title.slice(0, 150)), q(title + ' from ' + shop + (p.unit ? ', per ' + p.unit : '') + '. Order on WhatsApp.'),
       q(p.stock > 0 ? 'in stock' : 'out of stock'), q('new'), q((+p.price).toFixed(2) + ' BDT'), q(link), q(photo), q(shop), q(p.category || ''),

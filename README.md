@@ -1,4 +1,4 @@
-# Dokan Khata
+# Store Flow
 
 A stock, sales and cash app for shops of any size. Works on phones, tablets, laptops and PCs, installs like an app (PWA), and keeps working offline. English and Bangla.
 

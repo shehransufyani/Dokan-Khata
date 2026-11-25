@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
-<title>Dokan Khata Admin</title>
+<title>Store Flow Admin</title>
 <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
 <style>
@@ -32,7 +32,7 @@ th,td{text-align:left;padding:8px;border-bottom:1px solid var(--line);vertical-a
 </style>
 </head>
 <body><main>
-<h1>Dokan Khata Admin</h1>
+<h1>Store Flow Admin</h1>
 <p class="muted">Create personal access codes for businesses after they pay. Only someone with your private key file can create codes.</p>
 
 <section class="card" id="keyCard">
@@ -74,7 +74,7 @@ const PLAN={basic:"Shuru",standard:"Bepsha",pro:"Pro"};
 let key=null;
 async function loadKey(jwk){ key=await crypto.subtle.importKey("jwk",jwk,{name:"ECDSA",namedCurve:"P-256"},false,["sign"]); $("#keyStatus").textContent="Key loaded. You can create codes."; }
 (async()=>{ const k=ls.get("dk-admin-key"); if(k){ try{ await loadKey(JSON.parse(k)); }catch(e){ ls.del("dk-admin-key"); } } renderHist(); })();
-$("#keyFile").onchange=async e=>{ try{ const d=JSON.parse(await e.target.files[0].text()); if(d.app!=="dokan-khata-admin") throw 0; await loadKey(d.privateKey); ls.set("dk-admin-key",JSON.stringify(d.privateKey)); }catch(err){ $("#keyStatus").textContent="That is not the admin key file."; } };
+$("#keyFile").onchange=async e=>{ try{ const d=JSON.parse(await e.target.files[0].text()); if(!["store-flow-admin","dokan-khata-admin"].includes(d.app)) throw 0; await loadKey(d.privateKey); ls.set("dk-admin-key",JSON.stringify(d.privateKey)); }catch(err){ $("#keyStatus").textContent="That is not the admin key file."; } };
 $("#forgetKey").onclick=()=>{ ls.del("dk-admin-key"); key=null; $("#keyStatus").textContent="No key loaded on this browser."; };
 const appUrl=()=>new URL("./",location.href).href;
 $("#make").onclick=async()=>{
