@@ -169,11 +169,80 @@ function submitPayment(token, p) {
   } finally { lock.releaseLock(); }
   try {
     var owner = Session.getEffectiveUser().getEmail();
-    if (owner) MailApp.sendEmail(owner, 'Store Flow payment: ' + shop + ' (' + PAY_PLANS[tier] + ')',
-      'New plan payment to check.\n\nPlan: ' + PAY_PLANS[tier] + (terms.months === 12 ? ' (code lasts 12 months)' : '') + '\nPaid with: ' + method + '\nTransaction ID: ' + trx +
-      '\nShop: ' + shop + '\nPhone: ' + phone + '\nAccount: ' + a.login + '\n\nAccess code for this payment: ' + res.code + '\n\nCheck the money arrived in your ' + method + ' app, then send this code to ' + phone + '. If the money did not arrive, set the code to "off" in the Codes sheet.\n' + ss_().getUrl());
+    var mName = { bkash: 'bKash', nagad: 'Nagad', rocket: 'Rocket' }[method] || method;
+    if (owner) mail_(owner, 'Store Flow payment: ' + shop + ' (' + PAY_PLANS[tier] + ')', {
+      pre: shop + ' paid for ' + PAY_PLANS[tier] + ' by ' + mName + '. Check the money, then send the code.',
+      title: 'New payment to check',
+      intro: ['<b>' + esc_(shop) + '</b> says they paid for a plan. Check the money arrived in your ' + esc_(mName) + ' app, then send them this access code.'],
+      code: res.code, codeNote: 'Access code for this payment',
+      rows: [['Plan', esc_(PAY_PLANS[tier]) + (terms.months === 12 ? ' (12 months)' : '')], ['Paid with', esc_(mName)], ['Transaction ID', esc_(trx)],
+        ['Shop', esc_(shop)], ['Phone', esc_(phone)], ['Account', esc_(a.login)]],
+      button: { url: phone ? waUrl_(phone, 'Assalamu alaikum! Your payment is received. Your Store Flow access code: ' + res.code + ' ' + appLink_(res.code)) : ss_().getUrl(), label: phone ? 'Send code on WhatsApp' : 'Open owner sheet' },
+      note: 'If the money did not arrive, set this code to <b>off</b> in the Codes sheet. <a href="' + esc_(ss_().getUrl()) + '" style="color:#1E9E63">Open owner sheet</a>',
+      plain: 'New plan payment to check.\n\nPlan: ' + PAY_PLANS[tier] + (terms.months === 12 ? ' (code lasts 12 months)' : '') + '\nPaid with: ' + method + '\nTransaction ID: ' + trx +
+      '\nShop: ' + shop + '\nPhone: ' + phone + '\nAccount: ' + a.login + '\n\nAccess code for this payment: ' + res.code + '\n\nCheck the money arrived in your ' + method + ' app, then send this code to ' + phone + '. If the money did not arrive, set the code to "off" in the Codes sheet.\n' + ss_().getUrl() });
   } catch (e) {}
   return true;
+}
+
+/* ---------- branded emails: HTML with a plain-text fallback ---------- */
+function esc_(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+/** Sends a Store Flow email. o = { pre, title, intro:[html], code, codeNote, rows:[[label, value]], list:[html], button:{url,label},
+    bnTitle, bn:[html], note, plain }. Text values must already be escaped with esc_(). Replies go to the owner's Gmail. */
+function mail_(to, subject, o) {
+  var F = "font-family:'Segoe UI',Roboto,Helvetica,Arial,'Noto Sans Bengali','Hind Siliguri',sans-serif;";
+  var P = 'margin:0 0 14px;font-size:15px;line-height:1.6;color:#1F2D27;';
+  var h = '<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
+    '<meta name="color-scheme" content="light"><title>' + esc_(subject) + '</title></head>' +
+    '<body style="margin:0;padding:0;background:#EEF3F0;' + F + '">' +
+    '<div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent">' + (o.pre || '') + '</div>' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#EEF3F0"><tr><td align="center" style="padding:24px 12px">' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:560px;background:#FFFFFF;border-radius:14px;overflow:hidden;border:1px solid #DCE7E1">' +
+    // header
+    '<tr><td style="background:#0A1712;padding:20px 28px"><table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>' +
+    '<td style="vertical-align:middle;padding-right:12px"><img src="https://shehransufyani.github.io/StoreFlow/icons/icon-192.png" width="40" height="40" alt="" style="display:block;border:0;border-radius:10px"></td>' +
+    '<td style="vertical-align:middle;' + F + 'font-size:20px;font-weight:700;color:#FFFFFF;letter-spacing:.2px">Store Flow' +
+    '<div style="font-size:12px;font-weight:400;color:#9BB8A8;letter-spacing:0;margin-top:2px">Sales, stock and baki for your shop</div></td></tr></table></td></tr>' +
+    '<tr><td style="height:4px;background:#3DDC97;line-height:4px;font-size:0">&nbsp;</td></tr>' +
+    '<tr><td style="padding:28px 28px 8px;' + F + '">';
+  if (o.title) h += '<h1 style="margin:0 0 16px;font-size:22px;line-height:1.3;color:#0A1712;font-weight:700">' + o.title + '</h1>';
+  (o.intro || []).forEach(function (t) { h += '<p style="' + P + '">' + t + '</p>'; });
+  if (o.code) {
+    h += '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:6px 0 18px"><tr><td align="center" style="background:#E8F7EF;border:1px solid #A8F0CB;border-radius:12px;padding:20px 12px">' +
+      '<div style="font-family:\'SFMono-Regular\',Consolas,\'Courier New\',monospace;font-size:' + (String(o.code).length > 7 ? '24px;letter-spacing:2px' : '34px;letter-spacing:8px') + ';white-space:nowrap;font-weight:700;color:#05281A">' + esc_(o.code) + '</div>' +
+      (o.codeNote ? '<div style="' + F + 'font-size:13px;color:#1E9E63;margin-top:8px;font-weight:600">' + o.codeNote + '</div>' : '') + '</td></tr></table>';
+  }
+  if (o.rows && o.rows.length) {
+    h += '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 18px;border:1px solid #DCE7E1;border-radius:10px;border-collapse:separate">';
+    o.rows.forEach(function (r, i) {
+      var bt = i ? 'border-top:1px solid #EEF3F0;' : '';
+      h += '<tr><td style="' + F + bt + 'padding:10px 14px;font-size:14px;color:#5B7366">' + r[0] + '</td>' +
+        '<td align="right" style="' + F + bt + 'padding:10px 14px;font-size:14px;color:#0A1712;font-weight:600">' + r[1] + '</td></tr>';
+    });
+    h += '</table>';
+  }
+  if (o.list && o.list.length) {
+    h += '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 18px">';
+    o.list.forEach(function (t) { h += '<tr><td style="' + F + 'padding:10px 14px;font-size:14px;line-height:1.5;color:#1F2D27;background:#F6FAF8;border-left:3px solid #3DDC97;border-bottom:6px solid #FFFFFF">' + t + '</td></tr>'; });
+    h += '</table>';
+  }
+  if (o.button && o.button.url) {
+    h += '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 22px"><tr><td style="background:#1E9E63;border-radius:10px">' +
+      '<a href="' + esc_(o.button.url) + '" style="display:inline-block;padding:13px 24px;' + F + 'font-size:15px;font-weight:700;color:#FFFFFF;text-decoration:none">' + o.button.label + '</a></td></tr></table>';
+  }
+  if (o.bn && o.bn.length) {
+    h += '<div style="border-top:1px solid #DCE7E1;margin:8px 0 18px"></div>';
+    if (o.bnTitle) h += '<p style="margin:0 0 10px;font-size:16px;font-weight:700;color:#0A1712">' + o.bnTitle + '</p>';
+    o.bn.forEach(function (t) { h += '<p style="' + P + '">' + t + '</p>'; });
+  }
+  if (o.note) h += '<p style="margin:6px 0 18px;padding:12px 14px;background:#FFF8E6;border-radius:10px;font-size:13px;line-height:1.55;color:#6B5418">' + o.note + '</p>';
+  h += '</td></tr>' +
+    '<tr><td style="background:#F6FAF8;border-top:1px solid #DCE7E1;padding:18px 28px;' + F + 'font-size:12px;line-height:1.6;color:#6F8679">' +
+    'Need help? Just reply to this email. · সাহায্য লাগলে এই ইমেইলের উত্তর দিন।<br>' +
+    'Store Flow · Made for shops in Bangladesh</td></tr></table></td></tr></table></body></html>';
+  var msg = { to: to, subject: subject, body: o.plain, htmlBody: h, name: 'Store Flow' };
+  try { var owner = Session.getEffectiveUser().getEmail(); if (owner && owner !== to) msg.replyTo = owner; } catch (e) {}
+  MailApp.sendEmail(msg);
 }
 
 /* ---------- owner menu in the Sheet ---------- */
@@ -363,7 +432,19 @@ function resetStart(raw) {
   if (a) {
     var code = String(Math.floor(100000 + Math.random() * 900000));
     sheet_('accounts').getRange(a.row, 10).setValue(hash_(code, a.salt) + '|' + (Date.now() + 10 * 60000));
-    MailApp.sendEmail(login, 'Store Flow password reset code', 'Your Store Flow reset code is ' + code + '\n\nIt works for 10 minutes. If you did not ask for this, ignore this email.');
+    mail_(login, 'Your Store Flow password reset code', {
+      pre: 'Your code is ' + code + '. It expires in 10 minutes.',
+      title: 'Reset your password',
+      intro: ['Hello' + (a.store ? ' ' + esc_(a.store) : '') + ',',
+        'We got a request to reset the password for your Store Flow account <b>' + esc_(login) + '</b>. Enter this code in the app to choose a new password:'],
+      code: code, codeNote: 'Expires in 10 minutes &middot; ১০ মিনিট পর্যন্ত কাজ করবে',
+      bnTitle: 'পাসওয়ার্ড রিসেট কোড',
+      bn: ['আপনার Store Flow অ্যাকাউন্টের নতুন পাসওয়ার্ড দিতে উপরের ৬ সংখ্যার কোডটি অ্যাপে লিখুন। কোডটি ১০ মিনিট পর্যন্ত কাজ করবে।'],
+      note: '<b>Didn\'t ask for this?</b> You can ignore this email. Your password will not change. Never share this code with anyone, even someone who says they work for Store Flow.<br><br>' +
+        'আপনি অনুরোধ না করে থাকলে ইমেইলটি এড়িয়ে যান, পাসওয়ার্ড বদলাবে না। কোডটি কখনো কাউকে দেবেন না।',
+      plain: 'Reset your Store Flow password\n\nYour reset code is: ' + code + '\nIt expires in 10 minutes.\n\nIf you did not ask for this, ignore this email. Your password will not change. Never share this code with anyone.\n\n' +
+        'আপনার রিসেট কোড: ' + code + '। কোডটি ১০ মিনিট কাজ করবে। কাউকে দেবেন না।\n\nNeed help? Reply to this email.\nStore Flow'
+    });
   }
   return { via: 'email' };
 }
@@ -512,7 +593,11 @@ function buildDashboard_() {
 /** Emails shops whose plan ends in 3 days or 1 day (email logins), and sends the owner one summary. Each reminder goes once. */
 function sendReminders_(d) {
   d = d || ownerData_();
-  var pr = PropertiesService.getScriptProperties(), sent = 0, ownerLines = [];
+  var pr = PropertiesService.getScriptProperties(), sent = 0, ownerLines = [], ownerHtml = [];
+  var row = function (title, detail, phone, msg, login) {
+    return '<b>' + esc_(title) + '</b><br><span style="color:#5B7366">' + esc_(detail) + '</span><br>' +
+      (phone ? '<a href="' + esc_(waUrl_(phone, msg)) + '" style="color:#1E9E63;font-weight:700;text-decoration:none">WhatsApp ' + esc_(phone) + ' &rarr;</a>' : '<span style="color:#5B7366">' + esc_(login) + '</span>');
+  };
   d.ending.forEach(function (p) {
     var stage = p.daysLeft <= 1 ? '1' : p.daysLeft <= 3 ? '3' : '';
     if (!stage) return;
@@ -520,25 +605,40 @@ function sendReminders_(d) {
     if (pr.getProperty(key)) return;
     if (p.login.indexOf('@') > 0) {
       try {
-        MailApp.sendEmail(p.login, 'Your Store Flow plan ends ' + (stage === '1' ? 'tomorrow' : 'in 3 days'),
-          renewMsg_(p) + '\n\nআপনার Store Flow প্ল্যান ' + fmt_(p.exp) + ' তারিখে শেষ হবে। চালু রাখতে বিকাশ, নগদ বা রকেটে পেমেন্ট করে অ্যাপের Plans পেজে Transaction ID দিন। ধন্যবাদ!');
+        var when = stage === '1' ? 'tomorrow' : 'in 3 days', bnMsg = 'আপনার Store Flow প্ল্যান ' + fmt_(p.exp) + ' তারিখে শেষ হবে। চালু রাখতে বিকাশ, নগদ বা রকেটে পেমেন্ট করে অ্যাপের Plans পেজে Transaction ID দিন। ধন্যবাদ!';
+        mail_(p.login, 'Your Store Flow plan ends ' + when, {
+          pre: 'Renew by ' + fmt_(p.exp) + ' to keep using Store Flow without a break.',
+          title: 'Your plan ends ' + when,
+          intro: ['Assalamu alaikum!', 'Your Store Flow plan for <b>' + esc_(p.shop) + '</b> ends on <b>' + esc_(fmt_(p.exp)) + '</b>. Renew to keep selling, tracking stock and baki without a break. All your data stays safe.'],
+          rows: [['Shop', esc_(p.shop)], ['Plan', esc_(PAY_PLANS[p.tier] || p.tier)], ['Ends on', esc_(fmt_(p.exp))]],
+          list: ['<b>1.</b> Send the plan fee by bKash, Nagad or Rocket.', '<b>2.</b> Open Store Flow, go to <b>Plans</b> and enter the Transaction ID.', '<b>3.</b> You get your new code as soon as the payment is checked.'],
+          button: { url: PropertiesService.getScriptProperties().getProperty('APP_URL') || '', label: 'Open Store Flow' },
+          bnTitle: 'প্ল্যান নবায়ন করুন', bn: [bnMsg],
+          plain: renewMsg_(p) + '\n\n' + bnMsg });
         sent++;
       } catch (e) {}
     }
+    ownerHtml.push(row(p.shop, (PAY_PLANS[p.tier] || p.tier) + ' ends ' + fmt_(p.exp), p.phone, renewMsg_(p), p.login));
     ownerLines.push('• ' + p.shop + ' (' + (PAY_PLANS[p.tier] || p.tier) + ') ends ' + fmt_(p.exp) + ' · ' + (p.phone ? p.phone + ' · ' + waUrl_(p.phone, renewMsg_(p)) : p.login));
     pr.setProperty(key, String(Date.now()));
   });
   d.trialsEnding.forEach(function (t) {
     var key = 'TRI|' + t.login + '|' + t.end;
     if (t.hoursLeft > 24 || pr.getProperty(key)) return;
+    ownerHtml.push(row(t.shop || t.login, 'Free trial ends ' + fmt_(t.end), t.phone, trialMsg_(t), t.login));
     ownerLines.push('• Trial: ' + (t.shop || t.login) + ' ends ' + fmt_(t.end) + ' · ' + (t.phone ? t.phone + ' · ' + waUrl_(t.phone, trialMsg_(t)) : t.login));
     pr.setProperty(key, String(Date.now()));
   });
   if (ownerLines.length) {
     try {
       var owner = Session.getEffectiveUser().getEmail();
-      if (owner) MailApp.sendEmail(owner, 'Store Flow: ' + ownerLines.length + ' shop(s) to remind today',
-        'These shops have a plan or free trial ending soon. Tap a WhatsApp link to send them a ready-made reminder.\n\n' + ownerLines.join('\n') + '\n\nOwner dashboard: ' + ss_().getUrl());
+      if (owner) mail_(owner, 'Store Flow: ' + ownerLines.length + ' shop(s) to remind today', {
+        pre: ownerLines.length + ' shop(s) have a plan or free trial ending soon.',
+        title: ownerLines.length + ' shop' + (ownerLines.length > 1 ? 's' : '') + ' to remind today',
+        intro: ['These shops have a plan or free trial ending soon. Tap <b>WhatsApp</b> to send a ready-made reminder.'],
+        list: ownerHtml,
+        button: { url: ss_().getUrl(), label: 'Open owner dashboard' },
+        plain: 'These shops have a plan or free trial ending soon. Tap a WhatsApp link to send them a ready-made reminder.\n\n' + ownerLines.join('\n') + '\n\nOwner dashboard: ' + ss_().getUrl() });
     } catch (e) {}
   }
   return { emailed: sent, listed: ownerLines.length };
@@ -590,8 +690,22 @@ function sendDailySummaries_() {
     var bn = ['গতকালের হিসাব (' + day + ')', 'বিক্রি: ' + tk(sales) + ' (' + b.sales.length + 'টি বিল)', 'বিক্রিত মালের লাভ: ' + tk(profit), 'খরচ: ' + tk(exp),
       'দিনের নিট: ' + tk(profit + inc - exp), 'মোট বাকি পাওনা: ' + tk(dueAll)];
     try {
-      MailApp.sendEmail(b.a.login, 'Store Flow: yesterday ' + tk(sales) + ' sales, ' + tk(profit + inc - exp) + ' net',
-        en.join('\n') + '\n\n' + bn.join('\n') + '\n\nTo stop these emails, open Store Flow > Setup and switch off the daily summary.');
+      var net = profit + inc - exp, rowsH = [['Sales (' + b.sales.length + ' bill' + (b.sales.length === 1 ? '' : 's') + ')', tk(sales)], ['Profit on goods sold', tk(profit)], ['Running costs', tk(exp)]];
+      if (inc) rowsH.push(['Other income', tk(inc)]);
+      rowsH.push(['<b style="color:#0A1712">Net for the day</b>', '<span style="color:' + (net < 0 ? '#C0392B' : '#1E9E63') + ';font-size:16px">' + tk(net) + '</span>'],
+        ['New baki (due)', tk(dueNew)], ['Total still owed to you', tk(dueAll)]);
+      var extra = [];
+      if (best.length) extra.push('<b>Best sellers:</b> ' + esc_(best.join(', ')));
+      if (low.length) extra.push('<b style="color:#B7791F">Low or out of stock:</b> ' + esc_(low.join(', ')));
+      mail_(b.a.login, 'Store Flow: yesterday ' + tk(sales) + ' sales, ' + tk(net) + ' net', {
+        pre: 'Sales ' + tk(sales) + ', net ' + tk(net) + ' on ' + day + '.',
+        title: 'Yesterday at ' + esc_(shop),
+        intro: ['Here is how ' + esc_(shop) + ' did on <b>' + esc_(day) + '</b>.'],
+        rows: rowsH, list: extra,
+        button: { url: PropertiesService.getScriptProperties().getProperty('APP_URL') || '', label: 'Open Store Flow' },
+        bnTitle: bn[0], bn: [bn.slice(1).map(esc_).join('<br>')],
+        note: 'To stop these emails, open Store Flow &rsaquo; Setup and switch off the daily summary.',
+        plain: en.join('\n') + '\n\n' + bn.join('\n') + '\n\nTo stop these emails, open Store Flow > Setup and switch off the daily summary.' });
       sent++;
     } catch (e) { console.error('summary mail: ' + e); }
   });
@@ -764,10 +878,18 @@ function adminEmailCode(key, code, to) {
   to = String(to || '').trim();
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(to)) throw new Error('NO_EMAIL');
   var plan = PAY_PLANS[c.tier === 'pro' && /yearly/i.test(String(sheet_('codes').getRange(c.row, 8).getValue())) ? 'yearly' : c.tier] || c.tier;
-  MailApp.sendEmail(to, 'Your Store Flow access code: ' + c.code,
-    'Assalamu alaikum!\n\nYour Store Flow access code' + (c.biz ? ' for ' + c.biz : '') + ' is: ' + c.code + '\nPlan: ' + plan + '\nValid until: ' + fmt_(c.exp) +
+  var bnMsg = 'আপনার স্টোর ফ্লো অ্যাক্সেস কোড: ' + c.code + '। মেয়াদ ' + fmt_(c.exp) + ' পর্যন্ত। লিংকে চাপ দিন অথবা অ্যাপের Plans পেজে কোডটি দিন।';
+  mail_(to, 'Your Store Flow access code: ' + c.code, {
+    pre: 'Your ' + plan + ' plan is ready. Valid until ' + fmt_(c.exp) + '.',
+    title: 'Your plan is ready',
+    intro: ['Assalamu alaikum!', 'Thank you for choosing Store Flow' + (c.biz ? ' for <b>' + esc_(c.biz) + '</b>' : '') + '. Here is your access code:'],
+    code: c.code, codeNote: 'Tap the button below, or enter it in the app under Plans',
+    rows: [['Plan', esc_(plan)], ['Valid until', esc_(fmt_(c.exp))]],
+    button: { url: appLink_(c.code), label: 'Start using Store Flow' },
+    bnTitle: 'আপনার অ্যাক্সেস কোড', bn: [esc_(bnMsg)],
+    plain: 'Assalamu alaikum!\n\nYour Store Flow access code' + (c.biz ? ' for ' + c.biz : '') + ' is: ' + c.code + '\nPlan: ' + plan + '\nValid until: ' + fmt_(c.exp) +
     '\n\nOpen this link to start: ' + appLink_(c.code) + '\nOr open the app, go to Plans and enter the code.\n\n' +
-    'আপনার স্টোর ফ্লো অ্যাক্সেস কোড: ' + c.code + '। মেয়াদ ' + fmt_(c.exp) + ' পর্যন্ত। লিংকে চাপ দিন অথবা অ্যাপের Plans পেজে কোডটি দিন।\n\nThank you,\nStore Flow');
+    bnMsg + '\n\nThank you,\nStore Flow' });
   return true;
 }
 
