@@ -264,15 +264,17 @@ function cleanLogin_(raw) {
   if (/^01[3-9]\d{8}$/.test(d)) return d;
   return null;
 }
+/** The Sheet turns phone logins like 01712345678 into the number 1712345678. Compare logins in one form. */
+function loginKey_(v) { var s = String(v || '').trim(); return s.indexOf('@') >= 0 ? s.toLowerCase() : phone_(s); }
 function findAccount_(by, value) {
   var sh = sheet_('accounts'), last = sh.getLastRow();
   if (last < 2) return null;
   var rows = sh.getRange(2, 1, last - 1, 10).getValues();
   for (var i = 0; i < rows.length; i++) {
     var r = rows[i];
-    if (String(by === 'id' ? r[0] : r[1]) !== String(value)) continue;
+    if (by === 'id' ? String(r[0]) !== String(value) : loginKey_(r[1]) !== loginKey_(value)) continue;
     var ts = r[4] instanceof Date ? r[4].getTime() : (r[4] ? new Date(r[4]).getTime() : 0);
-    return { row: i + 2, id: String(r[0]), login: String(r[1]), store: String(r[2] || ''), trialStart: ts || 0,
+    return { row: i + 2, id: String(r[0]), login: loginKey_(r[1]), store: String(r[2] || ''), trialStart: ts || 0,
              code: norm_(r[5]), hash: String(r[7]), salt: String(r[8]), reset: String(r[9] || '') };
   }
   return null;
@@ -312,7 +314,7 @@ function signUp(p) {
   try {
     if (findAccount_('login', login)) throw new Error('EXISTS');
     var id = 'A-' + Utilities.getUuid().slice(0, 8).toUpperCase(), salt = Utilities.getUuid();
-    sheet_('accounts').appendRow([id, login, '', new Date(), '', '', new Date(), hash_(pw, salt), salt, '']);
+    sheet_('accounts').appendRow([id, login.indexOf('@') < 0 ? "'" + login : login, '', new Date(), '', '', new Date(), hash_(pw, salt), salt, '']);
   } finally { lock.releaseLock(); }
   var a = findAccount_('id', id);
   return state_(a, token_(id));
