@@ -362,8 +362,8 @@ function resetStart(raw) {
   var a = findAccount_('login', login);
   if (a) {
     var code = String(Math.floor(100000 + Math.random() * 900000));
-    sheet_('accounts').getRange(a.row, 10).setValue(hash_(code, a.salt) + '|' + (Date.now() + 30 * 60000));
-    MailApp.sendEmail(login, 'Store Flow password reset code', 'Your Store Flow reset code is ' + code + '\n\nIt works for 30 minutes. If you did not ask for this, ignore this email.');
+    sheet_('accounts').getRange(a.row, 10).setValue(hash_(code, a.salt) + '|' + (Date.now() + 10 * 60000));
+    MailApp.sendEmail(login, 'Store Flow password reset code', 'Your Store Flow reset code is ' + code + '\n\nIt works for 10 minutes. If you did not ask for this, ignore this email.');
   }
   return { via: 'email' };
 }
