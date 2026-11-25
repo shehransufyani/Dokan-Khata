@@ -9,6 +9,9 @@
  */
 
 var PLANS = { basic: 'Shuru (৳500)', standard: 'Bepsha (৳800)', pro: 'Pro (৳1200)' };
+/** Payment options people can pay for. Pro Yearly gives a 12-month Pro code. */
+var PAY_PLANS = { basic: PLANS.basic, standard: PLANS.standard, pro: PLANS.pro, yearly: 'Pro Yearly (৳12000)' };
+function payTerms_(opt) { return opt === 'yearly' ? { tier: 'pro', months: 12, note: 'Yearly · ' } : { tier: opt, months: 1, note: '' }; }
 var SHEETS = {
   codes:    ['Code', 'Business', 'Phone', 'Plan', 'Expires', 'Status', 'Created', 'Note', 'Account'],
   payments: ['Paid at', 'Package', 'Method', 'Transaction ID', 'Store name', 'Phone', 'Status', 'Access code', 'Account'],
@@ -18,7 +21,7 @@ var SHEETS = {
 var SHEET_NAMES = { codes: 'Codes', payments: 'Payments', data: 'Data', accounts: 'Accounts' };
 var TRIAL_MS = 7 * 24 * 60 * 60 * 1000; // 7-day free trial
 var STORES = ['products', 'sales', 'entries', 'orders', 'meta'];
-var PRICES = { basic: 500, standard: 800, pro: 1200 };
+var PRICES = { basic: 500, standard: 800, pro: 1200, yearly: 12000 };
 
 /* ---------- web app ---------- */
 function doGet() {
@@ -147,7 +150,8 @@ function submitPayment(token, p) {
   var a = auth_(token);
   p = p || {};
   var tier = String(p.tier || ''), method = String(p.method || '');
-  if (!PLANS[tier] || ['bkash', 'nagad', 'rocket'].indexOf(method) < 0) throw new Error('Choose a plan and a payment method');
+  if (!PAY_PLANS[tier] || ['bkash', 'nagad', 'rocket'].indexOf(method) < 0) throw new Error('Choose a plan and a payment method');
+  var terms = payTerms_(tier);
   var trx = String(p.trx || '').slice(0, 60), shop = String(p.shop || '').slice(0, 120), phone = String(p.phone || '').slice(0, 30);
   if (!trx || !shop || !phone) throw new Error('Transaction ID, shop name and phone are needed');
   var lock = LockService.getScriptLock(); lock.waitLock(20000);
@@ -157,13 +161,13 @@ function submitPayment(token, p) {
     var used = last > 1 ? ps.getRange(2, 4, last - 1, 1).getValues() : [];
     for (var i = 0; i < used.length; i++) if (norm_(used[i][0]) === norm_(trx)) throw new Error('DUP_TRX');
     // A unique code for this payment, already tied to the paying account and plan. Send it once the money has arrived.
-    res = addCode_(shop, phone, tier, 1, 'TrxID ' + trx + ' via ' + method + ' for ' + a.login, a.id);
-    ps.appendRow([new Date(), PLANS[tier], method, "'" + trx, shop, "'" + phone, 'check money, then send code', res.code, a.login]);
+    res = addCode_(shop, phone, terms.tier, terms.months, terms.note + 'TrxID ' + trx + ' via ' + method + ' for ' + a.login, a.id);
+    ps.appendRow([new Date(), PAY_PLANS[tier], method, "'" + trx, shop, "'" + phone, 'check money, then send code', res.code, a.login]);
   } finally { lock.releaseLock(); }
   try {
     var owner = Session.getEffectiveUser().getEmail();
-    if (owner) MailApp.sendEmail(owner, 'Store Flow payment: ' + shop + ' (' + PLANS[tier] + ')',
-      'New plan payment to check.\n\nPlan: ' + PLANS[tier] + '\nPaid with: ' + method + '\nTransaction ID: ' + trx +
+    if (owner) MailApp.sendEmail(owner, 'Store Flow payment: ' + shop + ' (' + PAY_PLANS[tier] + ')',
+      'New plan payment to check.\n\nPlan: ' + PAY_PLANS[tier] + (terms.months === 12 ? ' (code lasts 12 months)' : '') + '\nPaid with: ' + method + '\nTransaction ID: ' + trx +
       '\nShop: ' + shop + '\nPhone: ' + phone + '\nAccount: ' + a.login + '\n\nAccess code for this payment: ' + res.code + '\n\nCheck the money arrived in your ' + method + ' app, then send this code to ' + phone + '. If the money did not arrive, set the code to "off" in the Codes sheet.\n' + ss_().getUrl());
   } catch (e) {}
   return true;
@@ -190,8 +194,8 @@ function ask_(ui, title, prompt) {
   return r.getSelectedButton() === ui.Button.OK ? r.getResponseText().trim() : null;
 }
 function askPlan_(ui) {
-  var t = ask_(ui, 'Plan', 'Type 1 for Shuru (৳500), 2 for Bepsha (৳800) or 3 for Pro (৳1200)');
-  return t === null ? null : ({ '1': 'basic', '2': 'standard', '3': 'pro' })[t] || null;
+  var t = ask_(ui, 'Plan', 'Type 1 for Shuru (৳500), 2 for Bepsha (৳800), 3 for Pro (৳1200) or 4 for Pro Yearly (৳12000, 12 months)');
+  return t === null ? null : ({ '1': 'basic', '2': 'standard', '3': 'pro', '4': 'yearly' })[t] || null;
 }
 function showCode_(ui, res, biz) {
   ui.alert('Code created',
@@ -203,6 +207,7 @@ function menuCreateCode() {
   var biz = ask_(ui, 'New access code', 'Business name'); if (!biz) return;
   var phone = ask_(ui, 'New access code', 'Their WhatsApp number (optional)'); if (phone === null) return;
   var tier = askPlan_(ui); if (!tier) return;
+  if (tier === 'yearly') { showCode_(ui, addCode_(biz, phone, 'pro', 12, 'Yearly'), biz); return; }
   var months = parseInt(ask_(ui, 'Length', 'How many months? (1, 3, 6 or 12)'), 10) || 1;
   showCode_(ui, addCode_(biz, phone, tier, months, ''), biz);
 }
@@ -211,11 +216,11 @@ function menuApprovePayment() {
   if (sh.getName() !== SHEET_NAMES.payments || sh.getActiveRange().getRow() < 2) { ui.alert('Open the Payments sheet and click a payment row first.'); return; }
   var r = sh.getActiveRange().getRow(), v = sh.getRange(r, 1, 1, 9).getValues()[0];
   if (v[7]) { sh.getRange(r, 7).setValue('code sent'); ui.alert('Code for ' + v[4], 'Send this code to ' + v[5] + ':\n\n' + v[7] + '\n\nThe row is now marked "code sent".', ui.ButtonSet.OK); return; }
-  var months = parseInt(ask_(ui, 'Approve ' + v[4], 'Payment checked? How many months to give? (usually 1)'), 10);
-  if (!months) return;
-  var tier = PLANS[String(v[1])] ? String(v[1]) : Object.keys(PLANS).filter(function (k) { return PLANS[k] === String(v[1]); })[0];
-  if (!tier) { ui.alert('Unknown package in this row: ' + v[1]); return; }
-  var res = addCode_(String(v[4]), String(v[5]), tier, months, 'TrxID ' + v[3] + ' via ' + v[2] + (v[8] ? ' for ' + v[8] : ''));
+  var opt = PAY_PLANS[String(v[1])] ? String(v[1]) : Object.keys(PAY_PLANS).filter(function (k) { return PAY_PLANS[k] === String(v[1]); })[0];
+  if (!opt) { ui.alert('Unknown package in this row: ' + v[1]); return; }
+  var terms = payTerms_(opt), months = terms.months;
+  if (opt !== 'yearly') { months = parseInt(ask_(ui, 'Approve ' + v[4], 'Payment checked? How many months to give? (usually 1)'), 10); if (!months) return; }
+  var res = addCode_(String(v[4]), String(v[5]), terms.tier, months, terms.note + 'TrxID ' + v[3] + ' via ' + v[2] + (v[8] ? ' for ' + v[8] : ''));
   sh.getRange(r, 7, 1, 2).setValues([['approved', res.code]]);
   showCode_(ui, res, String(v[4]));
 }
@@ -411,7 +416,7 @@ function ownerData_() {
   var byId = {}; accounts.forEach(function (a) { byId[a.id] = a; });
   var codes = rows_('codes', 9).map(function (r) {
     var exp = r[4] instanceof Date ? r[4].getTime() : new Date(r[4]).getTime();
-    return { code: norm_(r[0]), biz: String(r[1] || ''), phone: phone_(r[2]), tier: String(r[3] || '').toLowerCase(), exp: exp,
+    return { code: norm_(r[0]), biz: String(r[1] || ''), phone: phone_(r[2]), tier: String(r[3] || '').toLowerCase() === 'pro' && /yearly/i.test(String(r[7] || '')) ? 'yearly' : String(r[3] || '').toLowerCase(), exp: exp,
              active: String(r[5] || 'active').toLowerCase() === 'active', master: /^master/i.test(String(r[7] || '')), account: String(r[8] || '') };
   });
   var paying = [], ending = [];
@@ -448,7 +453,7 @@ function ownerData_() {
   return { accounts: accounts, paying: paying, ending: ending, trials: trials, trialsEnding: trialsEnding, revMonth: revMonth, revAll: revAll, waiting: waiting, byPlan: byPlan };
 }
 function renewMsg_(p) {
-  return 'Assalamu alaikum! Your Store Flow ' + (PLANS[p.tier] || p.tier) + ' plan for ' + p.shop + ' ends on ' + fmt_(p.exp) +
+  return 'Assalamu alaikum! Your Store Flow ' + (PAY_PLANS[p.tier] || p.tier) + ' plan for ' + p.shop + ' ends on ' + fmt_(p.exp) +
     '. To keep using it, send the plan fee by bKash, Nagad or Rocket and enter the Transaction ID in the app (Plans page). Thank you!';
 }
 function trialMsg_(t) {
@@ -471,7 +476,7 @@ function buildDashboard_() {
   head('Plans ending in the next 7 days (send a reminder)');
   cols(['Shop', 'Login', 'Plan', 'Ends', 'Days left', 'Phone', 'Remind']);
   if (!d.ending.length) row(['None right now.']);
-  d.ending.forEach(function (p) { row([p.shop, txt_(p.login), PLANS[p.tier] || p.tier, fmt_(p.exp), p.daysLeft, p.phone ? "'" + p.phone : '', waCell_(p.phone, renewMsg_(p))]); });
+  d.ending.forEach(function (p) { row([p.shop, txt_(p.login), PAY_PLANS[p.tier] || p.tier, fmt_(p.exp), p.daysLeft, p.phone ? "'" + p.phone : '', waCell_(p.phone, renewMsg_(p))]); });
   head('Free trials ending in the next 2 days');
   cols(['Shop', 'Login', 'Trial ends', 'Hours left', '', 'Phone', 'Remind']);
   if (!d.trialsEnding.length) row(['None right now.']);
@@ -483,7 +488,7 @@ function buildDashboard_() {
   head('All paying shops');
   cols(['Shop', 'Login', 'Plan', 'Ends', 'Days left', 'Code', 'Last login']);
   if (!d.paying.length) row(['No paying shops yet.']);
-  d.paying.forEach(function (p) { row([p.shop, txt_(p.login), PLANS[p.tier] || p.tier, fmt_(p.exp), p.daysLeft, p.code, p.last ? fmt_(p.last) : '']); });
+  d.paying.forEach(function (p) { row([p.shop, txt_(p.login), PAY_PLANS[p.tier] || p.tier, fmt_(p.exp), p.daysLeft, p.code, p.last ? fmt_(p.last) : '']); });
   sh.getRange(1, 1, out.length, 7).setValues(out);
   sh.getRange(1, 1).setFontSize(16).setFontWeight('bold');
   sh.getRange(3, 1, 2, 7).setHorizontalAlignment('center');
@@ -513,7 +518,7 @@ function sendReminders_(d) {
         sent++;
       } catch (e) {}
     }
-    ownerLines.push('• ' + p.shop + ' (' + (PLANS[p.tier] || p.tier) + ') ends ' + fmt_(p.exp) + ' · ' + (p.phone ? p.phone + ' · ' + waUrl_(p.phone, renewMsg_(p)) : p.login));
+    ownerLines.push('• ' + p.shop + ' (' + (PAY_PLANS[p.tier] || p.tier) + ') ends ' + fmt_(p.exp) + ' · ' + (p.phone ? p.phone + ' · ' + waUrl_(p.phone, renewMsg_(p)) : p.login));
     pr.setProperty(key, String(Date.now()));
   });
   d.trialsEnding.forEach(function (t) {

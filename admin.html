@@ -48,7 +48,7 @@ th,td{text-align:left;padding:8px;border-bottom:1px solid var(--line);vertical-a
   <div class="grid">
     <div><label for="biz">Business name</label><input id="biz" placeholder="Rahman General Store"></div>
     <div><label for="phone">Their WhatsApp number</label><input id="phone" inputmode="tel" placeholder="017XXXXXXXX"></div>
-    <div><label for="tier">Plan</label><select id="tier"><option value="basic">Shuru · ৳500</option><option value="standard" selected>Bepsha · ৳800</option><option value="pro">Pro · ৳1200</option></select></div>
+    <div><label for="tier">Plan</label><select id="tier"><option value="basic">Shuru · ৳500</option><option value="standard" selected>Bepsha · ৳800</option><option value="pro">Pro · ৳1200</option><option value="yearly">Pro Yearly · ৳12000 (12 months)</option></select></div>
     <div><label for="months">Length</label><select id="months"><option value="1">1 month</option><option value="3">3 months</option><option value="6">6 months</option><option value="12">12 months</option></select></div>
     <div><label for="trx">Transaction ID (for your records)</label><input id="trx"></div>
   </div>
@@ -81,16 +81,17 @@ $("#make").onclick=async()=>{
   $("#msg").textContent="";
   if(!key){ $("#msg").textContent="Load your key file first."; return; }
   const biz=$("#biz").value.trim(); if(!biz){ $("#msg").textContent="Enter the business name."; return; }
-  const end=new Date(); end.setMonth(end.getMonth()+ +$("#months").value); end.setHours(23,59,59,0);
-  const payload={i:Math.random().toString(36).slice(2,8),b:biz,t:$("#tier").value,e:end.getTime()};
+  const yearly=$("#tier").value==="yearly";
+  const end=new Date(); end.setMonth(end.getMonth()+(yearly?12:+$("#months").value)); end.setHours(23,59,59,0);
+  const payload={i:Math.random().toString(36).slice(2,8),b:biz,t:yearly?"pro":$("#tier").value,e:end.getTime()};
   const bytes=new TextEncoder().encode(JSON.stringify(payload));
   const sig=await crypto.subtle.sign({name:"ECDSA",hash:"SHA-256"},key,bytes);
   const code=b64u(bytes)+"."+b64u(sig);
   const link=appUrl()+"?code="+code;
   $("#link").textContent=link; $("#result").hidden=false;
   let ph=$("#phone").value.replace(/\D/g,""); if(ph.startsWith("0")) ph="88"+ph;
-  const text=`Assalamu alaikum! Your Dokan Khata ${PLAN[payload.t]} plan is active until ${end.toLocaleDateString("en-GB")}.\nTap this link to open your shop app:\n${link}`;
-  $("#wa").href=(ph?`https://wa.me/${ph}`:"https://wa.me/")+"?text="+encodeURIComponent(text);
+  const text=`Assalamu alaikum! Your Store Flow ${yearly?"Pro Yearly":PLAN[payload.t]} plan is active until ${end.toLocaleDateString("en-GB")}.\nTap this link to open your shop app:\n${link}`;
+  $("#wa").href="https://api.whatsapp.com/send?"+(ph?"phone="+ph+"&":"")+"text="+encodeURIComponent(text);
   const h=JSON.parse(ls.get("dk-admin-hist")||"[]"); h.unshift({at:Date.now(),biz,phone:$("#phone").value,tier:payload.t,end:payload.e,trx:$("#trx").value,link}); ls.set("dk-admin-hist",JSON.stringify(h.slice(0,500))); renderHist();
 };
 $("#copy").onclick=async()=>{ try{ await navigator.clipboard.writeText($("#link").textContent); $("#copy").textContent="Copied"; }catch(e){ const r=document.createRange(); r.selectNodeContents($("#link")); getSelection().removeAllRanges(); getSelection().addRange(r); } setTimeout(()=>$("#copy").textContent="Copy link",1500); };
