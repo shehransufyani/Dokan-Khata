@@ -26,6 +26,8 @@ var PRICES = { basic: 500, standard: 800, pro: 1200, yearly: 10000 };
 /* ---------- web app ---------- */
 function doGet(e) {
   if (e && e.parameter && e.parameter.feed) return catalogFeed_(e.parameter.feed);
+  if (e && e.parameter && e.parameter.admin) return HtmlService.createHtmlOutputFromFile('Admin').setTitle('Store Flow Admin')
+    .addMetaTag('viewport', 'width=device-width, initial-scale=1').addMetaTag('robots', 'noindex');
   return HtmlService.createHtmlOutputFromFile('Index')
     .setTitle('Store Flow')
     .addMetaTag('viewport', 'width=device-width, initial-scale=1, viewport-fit=cover')
@@ -185,6 +187,7 @@ function onOpen() {
     .addItem('Update owner dashboard', 'menuDashboard')
     .addItem('Send renewal reminders now', 'menuReminders')
     .addSeparator()
+    .addItem('Open admin panel', 'menuAdmin')
     .addItem('Show app link', 'menuAppLink')
     .addItem('Set app link', 'menuSetAppLink')
     .addItem('Set up sheets', 'setup');
@@ -648,5 +651,123 @@ function catalogFeed_(raw) {
       q(Math.max(0, Math.floor(+p.stock || 0)))].join(','));
   });
   return out.setContent(lines.join('\n'));
+}
+
+/* ---------- admin panel (web page at the app link + ?admin=1) ---------- */
+/* Only someone with the admin key can read or change anything. The key lives in Script Properties (ADMIN_KEY);
+   the owner sees it from the Sheet menu: Store Flow > Open admin panel. */
+function adminKey_() {
+  var pr = PropertiesService.getScriptProperties(), k = pr.getProperty('ADMIN_KEY');
+  if (!k) { k = Utilities.getUuid().replace(/-/g, '').slice(0, 20); pr.setProperty('ADMIN_KEY', k); }
+  return k;
+}
+function adminAuth_(key) {
+  var c = CacheService.getScriptCache(), n = +(c.get('adminfail') || 0);
+  if (n >= 10) throw new Error('TOO_MANY');
+  if (!key || String(key) !== adminKey_()) { c.put('adminfail', String(n + 1), 900); throw new Error('ADMIN_KEY'); }
+}
+function adminUrl_() {
+  var url = PropertiesService.getScriptProperties().getProperty('APP_URL') || '';
+  if (!url) { try { url = ScriptApp.getService().getUrl(); } catch (e) {} }
+  return url + '?admin=1';
+}
+function menuAdmin() {
+  var ui = SpreadsheetApp.getUi();
+  ui.alert('Admin panel', 'Open this link (bookmark it):\n' + adminUrl_() + '\n\nYour admin key (keep it private, do not share it):\n' + adminKey_() +
+    '\n\nThe panel asks for the key once on each device.', ui.ButtonSet.OK);
+}
+function ms_(v) { return v instanceof Date ? v.getTime() : (v ? new Date(v).getTime() : 0) || 0; }
+/** Called by the admin page. Everything the panel shows. */
+function adminData(key) {
+  adminAuth_(key);
+  var now = Date.now(), month = new Date(); month.setDate(1); month.setHours(0, 0, 0, 0);
+  var codes = rows_('codes', 9).map(function (r, i) {
+    return { row: i + 2, code: norm_(r[0]), biz: String(r[1] || ''), phone: phone_(r[2]), tier: String(r[3] || '').toLowerCase(), exp: ms_(r[4]),
+             active: String(r[5] || 'active').toLowerCase() === 'active', created: ms_(r[6]), note: String(r[7] || ''), master: /^master/i.test(String(r[7] || '')), account: String(r[8] || '') };
+  });
+  var byCode = {}; codes.forEach(function (c) { byCode[c.code] = c; });
+  var pays = rows_('payments', 9).map(function (r, i) {
+    return { row: i + 2, at: ms_(r[0]), plan: String(r[1] || ''), amount: price_(r[1]), method: String(r[2] || ''), trx: String(r[3] || ''), shop: String(r[4] || ''),
+             phone: phone_(r[5]), status: String(r[6] || ''), code: norm_(r[7]), login: loginKey_(r[8]) };
+  });
+  var shops = rows_('accounts', 10).map(function (r) {
+    var login = loginKey_(r[1]), email = login.indexOf('@') > 0 ? login : '';
+    var a = { id: String(r[0]), login: login, email: email, shop: String(r[2] || ''), created: ms_(r[3]), trialStart: ms_(r[4]), code: norm_(r[5]), last: ms_(r[6]) };
+    var c = byCode[a.code] || null;
+    var myPays = pays.filter(function (p) { return (p.login && p.login === login) || (p.code && codes.some(function (x) { return x.code === p.code && x.account === a.id; })); });
+    var phone = (c && c.phone) || (myPays[0] && myPays[0].phone) || (email ? '' : login);
+    var trialEnd = a.trialStart ? a.trialStart + TRIAL_MS : 0;
+    var status = c && c.master ? 'owner' : c && c.active && c.exp > now ? 'paid' : c && !c.active ? 'off' : trialEnd > now && !c ? 'trial' : c ? 'ended' : a.trialStart ? 'trial-ended' : 'new';
+    var paid = myPays.filter(function (p) { return !/^(off|refunded|rejected)/i.test(p.status) && !/^check/i.test(p.status); });
+    return { id: a.id, shop: a.shop || (c && c.biz) || '', login: login, email: email, phone: phone, created: a.created, last: a.last, trialEnd: trialEnd,
+             code: a.code, tier: c ? (c.tier === 'pro' && /yearly/i.test(c.note) ? 'yearly' : c.tier) : '', exp: c ? c.exp : 0, codeActive: c ? c.active : false,
+             status: status, payments: myPays, paidTotal: paid.reduce(function (s, p) { return s + p.amount; }, 0), lastPaid: myPays.length ? Math.max.apply(null, myPays.map(function (p) { return p.at; })) : 0 };
+  });
+  var used = {}; shops.forEach(function (x) { if (x.code) used[x.code] = 1; });
+  var spare = codes.filter(function (c) { return !used[c.code] && !c.master; }).map(function (c) {
+    return { code: c.code, biz: c.biz, phone: c.phone, tier: c.tier === 'pro' && /yearly/i.test(c.note) ? 'yearly' : c.tier, exp: c.exp, active: c.active, created: c.created, note: c.note, account: c.account };
+  });
+  var revMonth = 0, revAll = 0;
+  pays.forEach(function (p) { if (/^(off|refunded|rejected|check)/i.test(p.status)) return; revAll += p.amount; if (p.at >= month.getTime()) revMonth += p.amount; });
+  var waiting = pays.filter(function (p) { return /^check/i.test(p.status); }).sort(function (a, b) { return b.at - a.at; });
+  return { now: now, appUrl: adminUrl_().replace('?admin=1', ''), shops: shops, spare: spare, waiting: waiting, revMonth: revMonth, revAll: revAll, prices: PRICES, plans: PAY_PLANS };
+}
+/** Make a new code. If an account is given, the shop gets it straight away. */
+function adminCreateCode(key, o) {
+  adminAuth_(key); o = o || {};
+  var opt = String(o.plan || ''); if (!PAY_PLANS[opt]) throw new Error('PLAN');
+  var terms = payTerms_(opt), months = Math.max(1, Math.min(36, parseInt(o.months, 10) || terms.months));
+  var a = o.account ? findAccount_('id', o.account) : null;
+  var biz = String(o.biz || (a && a.store) || '').slice(0, 120);
+  var res = addCode_(biz, String(o.phone || '').slice(0, 30), terms.tier, months, terms.note + 'Made in admin panel', a ? a.id : '');
+  if (a) sheet_('accounts').getRange(a.row, 6).setValue(res.code);
+  return { code: res.code, exp: res.exp.getTime(), link: res.link };
+}
+/** Change a code: plan, end date, or switch it on/off. */
+function adminUpdateCode(key, code, o) {
+  adminAuth_(key); o = o || {};
+  var c = findCode_(code); if (!c) throw new Error('NO_CODE');
+  var sh = sheet_('codes');
+  if (o.plan) {
+    if (!PAY_PLANS[o.plan]) throw new Error('PLAN');
+    var tier = o.plan === 'yearly' ? 'pro' : o.plan, note = String(sh.getRange(c.row, 8).getValue() || '');
+    note = o.plan === 'yearly' ? (/yearly/i.test(note) ? note : 'Yearly · ' + note) : note.replace(/Yearly · /i, '');
+    sh.getRange(c.row, 4).setValue(tier); sh.getRange(c.row, 8).setValue(note);
+  }
+  if (o.exp) { var d = new Date(+o.exp); d.setHours(23, 59, 59, 0); sh.getRange(c.row, 5).setValue(d); }
+  if (o.active === true || o.active === false) sh.getRange(c.row, 6).setValue(o.active ? 'active' : 'off');
+  return true;
+}
+/** Approve or reject a payment waiting to be checked. Approving gives the shop its code straight away. */
+function adminPayment(key, row, action) {
+  adminAuth_(key);
+  var ps = sheet_('payments'); row = parseInt(row, 10);
+  if (!(row >= 2) || row > ps.getLastRow()) throw new Error('ROW');
+  var v = ps.getRange(row, 1, 1, 9).getValues()[0], c = findCode_(v[7]);
+  if (action === 'approve') {
+    ps.getRange(row, 7).setValue('approved');
+    if (c) {
+      sheet_('codes').getRange(c.row, 6).setValue('active');
+      var a = c.account ? findAccount_('id', c.account) : (v[8] ? findAccount_('login', v[8]) : null);
+      if (a) sheet_('accounts').getRange(a.row, 6).setValue(c.code);
+    }
+  } else if (action === 'reject') {
+    ps.getRange(row, 7).setValue('rejected');
+    if (c) sheet_('codes').getRange(c.row, 6).setValue('off');
+  } else throw new Error('ACTION');
+  return true;
+}
+/** Email a shop its code. */
+function adminEmailCode(key, code, to) {
+  adminAuth_(key);
+  var c = findCode_(code); if (!c) throw new Error('NO_CODE');
+  to = String(to || '').trim();
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(to)) throw new Error('NO_EMAIL');
+  var plan = PAY_PLANS[c.tier === 'pro' && /yearly/i.test(String(sheet_('codes').getRange(c.row, 8).getValue())) ? 'yearly' : c.tier] || c.tier;
+  MailApp.sendEmail(to, 'Your Store Flow access code: ' + c.code,
+    'Assalamu alaikum!\n\nYour Store Flow access code' + (c.biz ? ' for ' + c.biz : '') + ' is: ' + c.code + '\nPlan: ' + plan + '\nValid until: ' + fmt_(c.exp) +
+    '\n\nOpen this link to start: ' + appLink_(c.code) + '\nOr open the app, go to Plans and enter the code.\n\n' +
+    'আপনার স্টোর ফ্লো অ্যাক্সেস কোড: ' + c.code + '। মেয়াদ ' + fmt_(c.exp) + ' পর্যন্ত। লিংকে চাপ দিন অথবা অ্যাপের Plans পেজে কোডটি দিন।\n\nThank you,\nStore Flow');
+  return true;
 }
 

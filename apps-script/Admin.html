@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<base target="_top">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Hind+Siliguri:wght@400;500;600&display=swap">
+<style>
+:root{--bg:#0B1A14;--surface:#11251C;--surface-2:#173126;--line:#24443A;--ink:#E6F4EC;--muted:#94B3A4;--accent:#3DDC97;--accent-ink:#05281A;--gold:#F2C14E;--warn:#F5A35C;--bad:#F07A6A;--ok:#3DDC97;
+ --font:"Hind Siliguri",system-ui,sans-serif;--head:"Poppins","Hind Siliguri",system-ui,sans-serif}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--font)}
+button,input,select{font:inherit;color:inherit}
+main{max-width:1180px;margin:0 auto;padding:20px 16px 60px}
+h1,h2,h3{font-family:var(--head);margin:0}
+h1{font-size:1.5rem}h2{font-size:1.1rem}
+.muted{color:var(--muted)}.small{font-size:.85rem}
+.num{font-family:var(--head);font-variant-numeric:tabular-nums}
+.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.top .grow{flex:1;min-width:180px}
+.mark{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#3DDC97,#1B8C7E);display:grid;place-items:center;color:#05281A;font-weight:700;font-family:var(--head)}
+.btn{border:1px solid var(--line);background:var(--surface-2);border-radius:10px;padding:8px 14px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;min-height:38px;text-decoration:none;color:var(--ink);white-space:nowrap}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.wa{background:#1F9D55;border-color:#1F9D55;color:#fff}
+.btn.bad{color:var(--bad)}
+.btn.sm{padding:4px 10px;min-height:32px;font-size:.85rem}
+.btn:disabled{opacity:.5;cursor:default}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:18px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px}
+.tile .v{font-family:var(--head);font-size:1.5rem;font-weight:700;margin-top:2px}
+.tile.hl{background:linear-gradient(135deg,#1E8F63,#13685E);border-color:transparent}
+.tile.hl .muted{color:#CFF3E2}
+.input{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 12px;min-height:40px;width:100%}
+.input:focus{outline:2px solid var(--accent);outline-offset:0;border-color:transparent}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:transparent;border-radius:999px;padding:6px 14px;cursor:pointer;font-weight:500}
+.chip.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:0 0 12px}
+.bar .input{max-width:320px}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-weight:600;color:var(--muted);font-size:.8rem;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:10px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+.pill{display:inline-block;border-radius:999px;padding:1px 10px;font-size:.78rem;font-weight:600;white-space:nowrap}
+.p-paid{background:rgba(61,220,151,.15);color:var(--ok)}.p-trial{background:rgba(242,193,78,.15);color:var(--gold)}
+.p-ended,.p-trial-ended{background:rgba(240,122,106,.15);color:var(--bad)}.p-off{background:rgba(148,179,164,.15);color:var(--muted)}
+.p-new{background:rgba(148,179,164,.12);color:var(--muted)}.p-owner{background:rgba(61,220,151,.1);color:var(--muted)}
+.code{font-family:ui-monospace,Menlo,monospace;font-size:.85rem;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:1px 6px;white-space:nowrap}
+.acts{display:flex;gap:6px;flex-wrap:wrap}
+.soon{color:var(--warn);font-weight:600}
+.section{margin-top:22px}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.pay{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:10px 0;border-top:1px solid var(--line)}
+.pay:first-child{border-top:0}.pay .grow{flex:1;min-width:200px}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:16px;z-index:9}
+.sheet{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;width:100%;max-width:520px;max-height:90vh;overflow:auto}
+.field{margin-top:12px}.field label{display:block;font-size:.85rem;font-weight:600;color:var(--muted);margin-bottom:4px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--accent);color:var(--accent-ink);padding:10px 18px;border-radius:12px;font-weight:600;z-index:20;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.toast.err{background:var(--bad);color:#fff}
+.login{max-width:420px;margin:12vh auto 0}
+.hist{font-size:.82rem;color:var(--muted);margin-top:4px}
+@media (max-width:820px){
+  thead{display:none}
+  table,tbody,tr,td{display:block;width:100%}
+  tr{border:1px solid var(--line);border-radius:14px;padding:6px 4px;margin-bottom:10px;background:var(--surface)}
+  td{border:0;padding:5px 10px}
+  td[data-l]::before{content:attr(data-l);display:block;font-size:.75rem;color:var(--muted)}
+  .tablecard{background:none;border:0;padding:0}
+}
+</style>
+</head>
+<body>
+<main id="app"><div class="login card"><p class="muted">Loading…</p></div></main>
+<div id="sheetRoot"></div><div id="toastRoot"></div>
+<script>
+var KEY = "", D = null, F = { q: "", tab: "all" }, LANG = "en";
+var PLAN_NAME = { basic: "Shuru ৳500", standard: "Bepsha ৳800", pro: "Pro ৳1,200", yearly: "Pro Yearly ৳10,000" };
+var STATUS = { paid: "Paying", trial: "Free trial", ended: "Plan ended", "trial-ended": "Trial ended", off: "Code off", "new": "Not started", owner: "Owner" };
+function $(s) { return document.querySelector(s); }
+function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+function tk(n) { return "৳" + Math.round(n || 0).toLocaleString("en-US"); }
+function fd(ms) { return ms ? new Date(ms).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "—"; }
+function iso(ms) { var d = new Date(ms || Date.now()); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
+function daysLeft(ms) { return Math.ceil((ms - Date.now()) / 864e5); }
+function toast(m, err) { $("#toastRoot").innerHTML = '<div class="toast' + (err ? " err" : "") + '">' + esc(m) + "</div>"; clearTimeout(toast.t); toast.t = setTimeout(function () { $("#toastRoot").innerHTML = ""; }, 3000); }
+function call(fn) {
+  var args = Array.prototype.slice.call(arguments, 1);
+  return new Promise(function (res, rej) { google.script.run.withSuccessHandler(res).withFailureHandler(rej)[fn].apply(null, [KEY].concat(args)); });
+}
+function errMsg(e) { var m = String(e && e.message || e); return /ADMIN_KEY/.test(m) ? "Wrong admin key." : /TOO_MANY/.test(m) ? "Too many wrong tries. Wait 15 minutes." : /NO_EMAIL/.test(m) ? "That email address does not look right." : "Something went wrong: " + m; }
+function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+function lsSet(k, v) { try { if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {} }
+
+function waLink(phone, text) {
+  var d = String(phone || "").replace(/[^\d]/g, "");
+  if (d.indexOf("01") === 0) d = "88" + d; else if (/^1\d{9}$/.test(d)) d = "880" + d;
+  return "https:\/\/api.whatsapp.com/send?" + (d ? "phone=" + d + "&" : "") + "text=" + encodeURIComponent(text);
+}
+function codeMsg(s) {
+  var link = D.appUrl + "?code=" + encodeURIComponent(s.code);
+  return "Assalamu alaikum! Your Store Flow access code" + (s.shop ? " for " + s.shop : "") + " is " + s.code + " (" + (PLAN_NAME[s.tier] || s.tier) + ", valid until " + fd(s.exp) + ").\nTap to open: " + link +
+    "\n\nআপনার স্টোর ফ্লো অ্যাক্সেস কোড: " + s.code + "। মেয়াদ " + fd(s.exp) + " পর্যন্ত। লিংকে চাপ দিন অথবা অ্যাপের Plans পেজে কোডটি দিন।";
+}
+
+function loginView(msg) {
+  $("#app").innerHTML = '<div class="login card"><div class="row" style="margin-bottom:12px"><div class="mark">SF</div><div><h1>Store Flow Admin</h1><p class="muted small" style="margin:0">Owner only</p></div></div>' +
+    '<form id="loginForm"><div class="field"><label for="key">Admin key</label><input class="input" id="key" type="password" autocomplete="current-password" required></div>' +
+    (msg ? '<p style="color:var(--bad);margin:10px 0 0">' + esc(msg) + "</p>" : "") +
+    '<button class="btn primary" style="margin-top:14px;width:100%;justify-content:center" type="submit">Open panel</button></form>' +
+    '<p class="muted small" style="margin:14px 0 0">Find the key in your Google Sheet: Store Flow menu, then Open admin panel.</p></div>';
+  setTimeout(function () { var k = $("#key"); if (k) k.focus(); }, 50);
+}
+function load(quiet) {
+  if (!quiet) $("#app").innerHTML = '<div class="login card"><p class="muted">Loading your businesses…</p></div>';
+  return call("adminData").then(function (d) { D = d; lsSet("sf-admin", KEY); render(); }).catch(function (e) {
+    if (/ADMIN_KEY|TOO_MANY/.test(String(e && e.message || e))) { lsSet("sf-admin", null); KEY = ""; loginView(errMsg(e)); } else { toast(errMsg(e), true); if (!D) loginView(errMsg(e)); }
+  });
+}
+
+function filtered() {
+  var q = F.q.trim().toLowerCase(), now = Date.now();
+  return D.shops.filter(function (s) {
+    if (s.status === "owner") return false;
+    if (F.tab === "paid" && s.status !== "paid") return false;
+    if (F.tab === "trial" && s.status !== "trial") return false;
+    if (F.tab === "soon" && !(s.status === "paid" && s.exp - now <= 7 * 864e5)) return false;
+    if (F.tab === "ended" && ["ended", "trial-ended", "off"].indexOf(s.status) < 0) return false;
+    if (q && (s.shop + " " + s.login + " " + s.code + " " + s.phone).toLowerCase().indexOf(q) < 0) return false;
+    return true;
+  }).sort(function (a, b) {
+    var rank = { paid: 0, trial: 1, ended: 2, "trial-ended": 3, off: 4, "new": 5 };
+    return (rank[a.status] - rank[b.status]) || ((a.exp || a.trialEnd) - (b.exp || b.trialEnd));
+  });
+}
+function render() {
+  var shops = D.shops.filter(function (s) { return s.status !== "owner"; }), now = Date.now();
+  var cnt = function (st) { return shops.filter(function (s) { return s.status === st; }).length; };
+  var soon = shops.filter(function (s) { return s.status === "paid" && s.exp - now <= 7 * 864e5; }).length;
+  var tabs = [["all", "All", shops.length], ["paid", "Paying", cnt("paid")], ["trial", "Free trial", cnt("trial")], ["soon", "Ending in 7 days", soon], ["ended", "Ended or off", cnt("ended") + cnt("trial-ended") + cnt("off")]];
+  var rows = filtered().map(function (s) {
+    var end = s.status === "paid" || s.status === "ended" || s.status === "off" ? s.exp : s.trialEnd, dl = end ? daysLeft(end) : null;
+    var endTxt = end ? fd(end) + (dl !== null && dl >= 0 && dl <= 7 ? ' <span class="soon">(' + dl + " day" + (dl === 1 ? "" : "s") + " left)</span>" : "") : "—";
+    var last = s.payments.length ? s.payments.slice().sort(function (a, b) { return b.at - a.at; })[0] : null;
+    var hist = s.payments.length > 1 ? '<div class="hist">' + s.payments.map(function (p) { return fd(p.at) + " · " + tk(p.amount) + " · " + esc(p.method); }).join("<br>") + "</div>" : "";
+    var acts = s.code ? '<button class="btn sm" data-act="email" data-id="' + esc(s.id) + '">Email code</button><a class="btn sm wa" target="_blank" rel="noopener" href="' + esc(waLink(s.phone, codeMsg(s))) + '">WhatsApp code</a>' : "";
+    return "<tr>" +
+      '<td data-l="Business"><b>' + esc(s.shop || "(no shop name)") + '</b><div class="small muted">' + esc(s.login) + (s.phone && s.phone !== s.login ? " · " + esc(s.phone) : "") + "</div></td>" +
+      '<td data-l="Status"><span class="pill p-' + s.status + '">' + STATUS[s.status] + "</span></td>" +
+      '<td data-l="Plan">' + (s.tier ? esc(PLAN_NAME[s.tier] || s.tier) : s.status === "trial" ? "Free trial" : "—") + "</td>" +
+      '<td data-l="Code">' + (s.code ? '<span class="code">' + esc(s.code) + "</span>" : '<span class="muted">—</span>') + "</td>" +
+      '<td data-l="Ends">' + endTxt + "</td>" +
+      '<td data-l="Paid" class="num">' + (s.paidTotal ? tk(s.paidTotal) : "—") + hist + "</td>" +
+      '<td data-l="Last paid">' + (last ? fd(last.at) + '<div class="small muted">' + esc(last.method) + "</div>" : "—") + "</td>" +
+      '<td data-l="Actions"><div class="acts">' + acts + '<button class="btn sm" data-act="edit" data-id="' + esc(s.id) + '">' + (s.code ? "Change" : "Give a plan") + "</button></div></td></tr>";
+  }).join("");
+  var waiting = D.waiting.map(function (p) {
+    return '<div class="pay"><div class="grow"><b>' + esc(p.shop) + '</b> <span class="muted small">' + esc(p.phone) + '</span><div class="small muted">' + fd(p.at) + " · " + esc(PLAN_NAME[p.plan] || p.plan) + " · " + esc(p.method) + " · TrxID <span class=\"code\">" + esc(p.trx.replace(/^'/, "")) + "</span>" + (p.code ? " · code <span class=\"code\">" + esc(p.code) + "</span>" : "") + '</div></div><b class="num">' + tk(p.amount) + '</b><div class="acts"><button class="btn sm primary" data-act="approve" data-row="' + p.row + '">Money received, approve</button><button class="btn sm bad" data-act="reject" data-row="' + p.row + '">Not received</button></div></div>';
+  }).join("");
+  var spare = D.spare.filter(function (c) { return c.active && c.exp > now; });
+  $("#app").innerHTML =
+    '<div class="top"><div class="mark">SF</div><div class="grow"><h1>Store Flow Admin</h1><p class="muted small" style="margin:0">Updated ' + new Date(D.now).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }) + "</p></div>" +
+    '<button class="btn primary" data-act="newCode">+ Make a code</button><button class="btn" data-act="refresh">Refresh</button><button class="btn" data-act="logout">Log out</button></div>' +
+    '<div class="tiles">' +
+      '<div class="tile hl"><div class="muted small">Businesses using the app</div><div class="v num">' + shops.length + "</div></div>" +
+      '<div class="tile"><div class="muted small">Paying now</div><div class="v num" style="color:var(--ok)">' + cnt("paid") + "</div></div>" +
+      '<div class="tile"><div class="muted small">On free trial</div><div class="v num" style="color:var(--gold)">' + cnt("trial") + "</div></div>" +
+      '<div class="tile"><div class="muted small">Ending in 7 days</div><div class="v num" style="color:var(--warn)">' + soon + "</div></div>" +
+      '<div class="tile"><div class="muted small">Money this month</div><div class="v num">' + tk(D.revMonth) + "</div></div>" +
+      '<div class="tile"><div class="muted small">Money all time</div><div class="v num">' + tk(D.revAll) + "</div></div>" +
+    "</div>" +
+    (D.waiting.length ? '<div class="card section"><div class="section-head"><h2>Payments to check (' + D.waiting.length + ')</h2><span class="muted small">Check the money arrived in your bKash, Nagad or Rocket app first.</span></div>' + waiting + "</div>" : "") +
+    '<div class="section"><div class="section-head"><h2>Businesses</h2></div>' +
+    '<div class="bar"><input class="input" id="q" type="search" placeholder="Search shop, phone, email or code" value="' + esc(F.q) + '"><div class="chips">' +
+      tabs.map(function (t) { return '<button class="chip' + (F.tab === t[0] ? " on" : "") + '" data-act="tab" data-v="' + t[0] + '">' + t[1] + ' <span class="num">' + t[2] + "</span></button>"; }).join("") + "</div></div>" +
+    '<div class="card tablecard"><table><thead><tr><th>Business</th><th>Status</th><th>Plan</th><th>Code</th><th>Ends</th><th>Paid</th><th>Last paid</th><th>Actions</th></tr></thead><tbody>' +
+      (rows || '<tr><td colspan="8" class="muted">No businesses match.</td></tr>') + "</tbody></table></div></div>" +
+    (spare.length ? '<div class="card section"><div class="section-head"><h2>Codes not used yet (' + spare.length + ')</h2></div>' + spare.map(function (c) {
+      var s = { code: c.code, shop: c.biz, tier: c.tier, exp: c.exp, phone: c.phone };
+      return '<div class="pay"><div class="grow"><span class="code">' + esc(c.code) + "</span> <b>" + esc(c.biz || "") + '</b><div class="small muted">' + esc(PLAN_NAME[c.tier] || c.tier) + " · ends " + fd(c.exp) + (c.phone ? " · " + esc(c.phone) : "") + '</div></div><div class="acts"><a class="btn sm wa" target="_blank" rel="noopener" href="' + esc(waLink(c.phone, codeMsg(s))) + '">WhatsApp code</a><button class="btn sm bad" data-act="codeOff" data-code="' + esc(c.code) + '">Switch off</button></div></div>';
+    }).join("") + "</div>" : "");
+}
+
+function shopById(id) { return D.shops.filter(function (s) { return s.id === id; })[0]; }
+function openSheet(html) { $("#sheetRoot").innerHTML = '<div class="overlay" data-act="overlay"><div class="sheet">' + html + "</div></div>"; }
+function closeSheet() { $("#sheetRoot").innerHTML = ""; }
+function planOpts(sel) { return Object.keys(PLAN_NAME).map(function (k) { return '<option value="' + k + '"' + (k === sel ? " selected" : "") + ">" + PLAN_NAME[k] + "</option>"; }).join(""); }
+function editSheet(s) {
+  if (!s.code) return newCodeSheet(s);
+  openSheet('<div class="row" style="justify-content:space-between"><h2>' + esc(s.shop || s.login) + '</h2><button class="btn sm" data-act="close">Close</button></div>' +
+    '<p class="muted small" style="margin:6px 0 0">' + esc(s.login) + ' · code <span class="code">' + esc(s.code) + "</span></p>" +
+    '<form id="editForm" data-code="' + esc(s.code) + '"><div class="field"><label for="ePlan">Plan</label><select class="input" id="ePlan">' + planOpts(s.tier) + "</select></div>" +
+    '<div class="field"><label for="eExp">Plan ends on</label><input class="input" id="eExp" type="date" value="' + iso(s.exp) + '"></div>' +
+    '<div class="row" style="margin-top:8px"><button type="button" class="btn sm" data-act="addMonths" data-v="1">+1 month</button><button type="button" class="btn sm" data-act="addMonths" data-v="3">+3 months</button><button type="button" class="btn sm" data-act="addMonths" data-v="12">+12 months</button></div>' +
+    '<div class="field"><label><input type="checkbox" id="eOn" ' + (s.codeActive ? "checked" : "") + ' style="width:18px;height:18px;vertical-align:-3px"> Code is on (untick to block this shop)</label></div>' +
+    '<div class="row" style="margin-top:16px"><button class="btn primary" type="submit">Save</button></div></form>' +
+    '<div class="field"><label for="eMail">Email the code to</label><div class="row"><input class="input" id="eMail" type="email" value="' + esc(s.email) + '" placeholder="name@example.com" style="flex:1;min-width:180px"><button class="btn" data-act="sendMail" data-code="' + esc(s.code) + '">Send email</button></div></div>');
+}
+function newCodeSheet(s) {
+  s = s || {};
+  openSheet('<div class="row" style="justify-content:space-between"><h2>' + (s.id ? "Give a plan to " + esc(s.shop || s.login) : "Make a code") + '</h2><button class="btn sm" data-act="close">Close</button></div>' +
+    '<form id="newForm" data-account="' + esc(s.id || "") + '">' +
+    (s.id ? '<p class="muted small" style="margin:6px 0 0">The shop gets this plan straight away. No need to type the code.</p>' :
+      '<div class="field"><label for="nAcc">For an existing account (optional)</label><select class="input" id="nAcc"><option value="">No, make a code to send</option>' +
+      D.shops.filter(function (x) { return x.status !== "owner"; }).map(function (x) { return '<option value="' + esc(x.id) + '">' + esc((x.shop || "(no name)") + " · " + x.login) + "</option>"; }).join("") + "</select></div>" +
+      '<div class="field"><label for="nBiz">Shop name</label><input class="input" id="nBiz"></div><div class="field"><label for="nPhone">Phone</label><input class="input" id="nPhone" inputmode="tel" placeholder="01XXXXXXXXX"></div>') +
+    '<div class="field"><label for="nPlan">Plan</label><select class="input" id="nPlan">' + planOpts("pro") + "</select></div>" +
+    '<div class="field"><label for="nMonths">Months</label><input class="input" id="nMonths" type="number" min="1" max="36" value="1"></div>' +
+    '<div class="row" style="margin-top:16px"><button class="btn primary" type="submit">Make code</button></div></form><div id="newOut"></div>');
+}
+
+var A = {
+  refresh: function () { load(true).then(function () { toast("Updated"); }); },
+  logout: function () { lsSet("sf-admin", null); KEY = ""; D = null; loginView(); },
+  tab: function (el) { F.tab = el.dataset.v; render(); },
+  edit: function (el) { editSheet(shopById(el.dataset.id)); },
+  newCode: function () { newCodeSheet(); },
+  close: closeSheet,
+  overlay: function (el, ev) { if (ev.target === el) closeSheet(); },
+  addMonths: function (el) { var i = $("#eExp"), d = new Date((i.value || iso()) + "T12:00"); if (d.getTime() < Date.now()) d = new Date(); d.setMonth(d.getMonth() + (+el.dataset.v)); i.value = iso(d.getTime()); },
+  email: function (el) { var s = shopById(el.dataset.id); if (!s.email) { editSheet(s); setTimeout(function () { var m = $("#eMail"); if (m) m.focus(); }, 50); toast("This shop logs in with a phone number. Type an email address to send to.", true); return; } sendMail(s.code, s.email, el); },
+  sendMail: function (el) { sendMail(el.dataset.code, $("#eMail").value, el); },
+  approve: function (el) { busy(el, call("adminPayment", +el.dataset.row, "approve").then(function () { toast("Approved. The shop has its plan now."); return load(true); })); },
+  reject: function (el) { if (!confirmTwice(el, "Tap again to reject")) return; busy(el, call("adminPayment", +el.dataset.row, "reject").then(function () { toast("Marked as not received. The code is off."); return load(true); })); },
+  codeOff: function (el) { if (!confirmTwice(el, "Tap again to switch off")) return; busy(el, call("adminUpdateCode", el.dataset.code, { active: false }).then(function () { toast("Code switched off"); return load(true); })); }
+};
+function confirmTwice(el, label) { if (el.dataset.armed) return true; el.dataset.armed = "1"; el.textContent = label; return false; }
+function busy(el, p) { el.disabled = true; return p.catch(function (e) { toast(errMsg(e), true); }).then(function () { el.disabled = false; }); }
+function sendMail(code, to, el) { busy(el, call("adminEmailCode", code, to).then(function () { toast("Email sent to " + to); })); }
+
+document.addEventListener("click", function (ev) { var el = ev.target.closest("[data-act]"); if (!el || !A[el.dataset.act]) return; if (el.tagName === "BUTTON") ev.preventDefault(); A[el.dataset.act](el, ev); });
+document.addEventListener("input", function (ev) { if (ev.target.id === "q") { F.q = ev.target.value; var pos = ev.target.selectionStart; render(); var q = $("#q"); q.focus(); q.setSelectionRange(pos, pos); } });
+document.addEventListener("keydown", function (ev) { if (ev.key === "Escape") closeSheet(); });
+document.addEventListener("submit", function (ev) {
+  ev.preventDefault(); var f = ev.target, btn = f.querySelector("[type=submit]");
+  if (f.id === "loginForm") { KEY = $("#key").value.trim(); load(); return; }
+  if (f.id === "editForm") {
+    var o = { plan: $("#ePlan").value, exp: new Date($("#eExp").value + "T12:00").getTime(), active: $("#eOn").checked };
+    busy(btn, call("adminUpdateCode", f.dataset.code, o).then(function () { closeSheet(); toast("Saved"); return load(true); }));
+  }
+  if (f.id === "newForm") {
+    var acc = f.dataset.account || ($("#nAcc") ? $("#nAcc").value : "");
+    var o2 = { account: acc, plan: $("#nPlan").value, months: +$("#nMonths").value, biz: $("#nBiz") ? $("#nBiz").value : "", phone: $("#nPhone") ? $("#nPhone").value : "" };
+    busy(btn, call("adminCreateCode", o2).then(function (r) {
+      var s = { code: r.code, shop: o2.biz || ((shopById(acc) || {}).shop || ""), tier: o2.plan, exp: r.exp, phone: o2.phone || ((shopById(acc) || {}).phone || "") };
+      $("#newOut").innerHTML = '<div class="card" style="margin-top:14px"><p style="margin:0">Code <span class="code">' + esc(r.code) + "</span> ends " + fd(r.exp) + (acc ? ". The shop already has it." : ".") + '</p><div class="row" style="margin-top:10px"><a class="btn wa" target="_blank" rel="noopener" href="' + esc(waLink(s.phone, codeMsg(s))) + '">Send on WhatsApp</a></div></div>';
+      f.querySelector("[type=submit]").textContent = "Make another"; return load(true);
+    }));
+  }
+});
+(function start() {
+  if (!(window.google && google.script && google.script.run)) { loginView("Open this page from your Store Flow app link with ?admin=1 at the end."); return; }
+  KEY = lsGet("sf-admin") || "";
+  if (KEY) load(); else loginView();
+})();
+</script>
+</body>
+</html>
