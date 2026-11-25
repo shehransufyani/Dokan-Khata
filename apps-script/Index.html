@@ -212,6 +212,9 @@ video.scan{width:100%;border-radius:12px;background:#000;aspect-ratio:4/3;object
 .aiform{display:flex;gap:8px;align-items:stretch}.aiform textarea{flex:1;min-width:0;resize:none;min-height:48px}.aiform .btn{flex:none}
 @media (max-width:520px){.aiform .btn span{display:none}}
 .aifoot{margin:0}
+@media (max-width:600px){.d-inl{display:none}}
+.fbcat summary{cursor:pointer;list-style:revert}
+.qbprev{margin:12px 0;display:flex;flex-direction:column;gap:6px}.qbl{display:flex;gap:10px;align-items:center;padding:8px 10px;border-radius:10px;background:var(--surface-2)}.qbl>span:first-child{color:var(--accent);font-weight:700}.qbl.miss>span:first-child{color:var(--gold)}.qbl.miss{color:var(--muted)}
 .statusban.aiban{background:linear-gradient(135deg,#1B8C7E,#13685E);color:#DFFBF2;margin-top:12px}
 .lockwrap{display:grid;place-items:center;min-height:60vh}
 .lockcard{max-width:520px;width:100%;padding:24px}
@@ -501,6 +504,7 @@ body::before{background:var(--bg)}
 "use strict";
 /* ---------- icons ---------- */
 const I = {
+  mic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v4"/></svg>',
   spark:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/><path d="M5 3l.6 1.4L7 5l-1.4.6L5 7l-.6-1.4L3 5l1.4-.6z"/></svg>',
   home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg>',
   sell:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.6 12.2a1 1 0 0 0 1 .8h9.6a1 1 0 0 0 1-.8L21 7H6"/></svg>',
@@ -598,7 +602,7 @@ en:{custW:"Customer",tier_yearly:"Pro Yearly",orYearly:"Or ৳{price} for a whol
  payFill:"Fill in the Transaction ID, shop name and phone number",paySent:"Payment details sent. We will check it and send your code on WhatsApp.",
  tier_basic:"Shuru",tier_standard:"Bepsha",tier_pro:"Pro",tierd_basic:"For a small shop starting out",tierd_standard:"For a growing shop",tierd_pro:"Sell online too",
  b_sell:"Sell by tapping product pictures",b_products:"Up to 50 products",b_cashbook:"Income and expense book",b_reports:"Today and 7-day reports",b_low:"Low stock alerts",b_lang:"Bangla and English, works offline",
- f_unlimited:"Unlimited products",f_barcode:"Barcode scanning",f_photos:"Product photos",f_due:"Due (baki) tracking",f_reports:"30-day and monthly reports, best sellers",f_export:"Backup and Excel export",f_shop:"Online shop with WhatsApp orders",f_ai:"Flow AI business assistant",fd_ai:"Ask anything about your shop: what to restock, what sells best, pricing and who owes you money.",ai:"Flow AI",aiSub:"Your business assistant. It reads your shop's numbers and tells you how to earn more.",aiAsk:"Ask Flow AI about your shop…",aiSend:"Send",aiThinking:"Flow AI is looking at your numbers…",aiHello:"Hi! I'm Flow AI. I can see your sales, stock, costs and dues. Ask me anything, or tap a question below.",aiS1:"What should I restock this week?",aiS2:"Which products make me the most profit?",aiS3:"Which items are not selling, and what should I do?",aiS4:"Who owes me money and how do I collect it?",aiS5:"How can I increase sales this month?",aiS6:"Are any of my prices too low?",aiOff:"Flow AI is being set up and will be ready soon.",aiLimit:"You have used all of today's Flow AI questions. More tomorrow.",aiErr:"Flow AI could not answer right now. Please try again in a minute.",aiLeft:"{n} questions left today",aiNote:"Flow AI can make mistakes. Check important numbers in your reports.",aiWeb:"Flow AI works in the online app after you log in.",aiBanT:"Ask Flow AI",aiBanS:"What to restock, what sells best, who owes you",aiTrialNote:"Free trial: {n} questions a day. Pro gives 50.",
+ f_unlimited:"Unlimited products",f_barcode:"Barcode scanning",f_photos:"Product photos",f_due:"Due (baki) tracking",f_reports:"30-day and monthly reports, best sellers",f_export:"Backup and Excel export",f_shop:"Online shop with WhatsApp orders",fbTitle:"Facebook and Instagram catalog",fbFree:"free",fbSteps:"Tap Get my catalog link and copy it.|Open business.facebook.com/commerce and create a catalog for your Facebook Page (free).|Go to Catalog, then Data sources, then Add items, then Data feed, then Scheduled feed.|Paste the link and choose Daily. Your products, prices and stock update there every day by themselves.|Turn on Shops for Facebook and Instagram, or tag your products in posts.",fbLinkBtn:"Get my catalog link",fbCsvBtn:"Download catalog file",fbPhotoNote:"Meta needs a picture for every product. Products show the Store Flow logo until you add real photos in Commerce Manager. Customers who tap a product message you on WhatsApp.",fbErr:"Could not get the link. Check your internet and try again.",copy:"Copy",copied:"Copied",courierHelp:"Free with your own {c} merchant account: copy the parcel details, paste them in the courier panel, then type the tracking ID here.",copyParcel:"Copy parcel details",openPanel:"Open merchant panel",trackPh:"Tracking / consignment ID",trackBtn:"Track",sendTrack:"Send tracking link to customer",trackMsg:"Hi {name}, your order from {shop} is on the way with {c}. Tracking ID: {id}. Track it here: {url}",parcelCopied:"Parcel details copied",codAmount:"Cash to collect (COD)",parcelItems:"Items",reportTab:"Monthly report",repLock:"A month-by-month sales and VAT report you can send to your accountant. Part of the Bepsha and Pro plans.",vatRate:"VAT %",vatIncl:"My prices include VAT",repBills:"Bills",repGross:"Gross sales",repNet:"Net sales",repVat:"VAT ({r}%)",repExVat:"Sales without VAT",repPay:"Paid by",repBuy:"Stock bought",repExp:"Running costs",repOtherInc:"Other income",repProfit:"Net profit",repCsv:"Download for accountant (Excel CSV)",repShare:"Send summary",repNote:"VAT is worked out from your sales at the rate you set. Ask your accountant which rate applies to your shop.",repShareMsg:"{shop} monthly report, {mon}: {bills} bills, net sales {net}, VAT at {r}% {vat}, stock bought {buy}.",dailyEmail:"Email me a summary of yesterday every morning (free)",yBanT:"Yesterday: {sales} sales, {net} net",yBanS:"Tap to send the full summary to your WhatsApp",custPhone:"Customer phone (for reminders)",owesYou:"Owes you",remind:"Remind",remindT:"Remind {name}",remindMsgL:"Message (you can change it)",remindMsg:"Assalamu alaikum {name}. This is {shop}. A friendly reminder: you have {amt} due from {n} bill(s) since {date}.",remindPay:"You can pay at the shop or by bKash/Nagad to {num}.",remindThanks:"Thank you!",remindFree:"Free: the message goes from your own WhatsApp or phone. Nothing is charged by Store Flow.",remindedOn:"reminded {d}",remBanT:"{n} customer(s) to remind about baki",remBanS:"{amt} unpaid for over a week. Tap to send a reminder.",needPhone:"Add the customer's phone number first.",qbBtn:"Quick bill",qbTitle:"Quick bill by voice or text",qbHelp:"Type or say what the customer is buying, separated by commas. Example: 2 kg rice 140 taka, 1 soap, half kg onion",qbPh:"2 kg rice 140 taka, 1 soap…",qbSpeak:"Speak",qbListening:"Listening… speak now",qbAdd:"Add to bill",qbNone:"Nothing matched your products yet.",qbMiss:"Not found",qbAdded:"Added {n} item(s) to the bill",qbMicErr:"The microphone is not available here. Tap the mic on your phone keyboard instead.",qbCap:"only {n} in stock",f_ai:"Flow AI business assistant",fd_ai:"Ask anything about your shop: what to restock, what sells best, pricing and who owes you money.",ai:"Flow AI",aiSub:"Your business assistant. It reads your shop's numbers and tells you how to earn more.",aiAsk:"Ask Flow AI about your shop…",aiSend:"Send",aiThinking:"Flow AI is looking at your numbers…",aiHello:"Hi! I'm Flow AI. I can see your sales, stock, costs and dues. Ask me anything, or tap a question below.",aiS1:"What should I restock this week?",aiS2:"Which products make me the most profit?",aiS3:"Which items are not selling, and what should I do?",aiS4:"Who owes me money and how do I collect it?",aiS5:"How can I increase sales this month?",aiS6:"Are any of my prices too low?",aiOff:"Flow AI is being set up and will be ready soon.",aiLimit:"You have used all of today's Flow AI questions. More tomorrow.",aiErr:"Flow AI could not answer right now. Please try again in a minute.",aiLeft:"{n} questions left today",aiNote:"Flow AI can make mistakes. Check important numbers in your reports.",aiWeb:"Flow AI works in the online app after you log in.",aiBanT:"Ask Flow AI",aiBanS:"What to restock, what sells best, who owes you",aiTrialNote:"Free trial: {n} questions a day. Pro gives 50.",
  fd_unlimited:"Add as many products as you stock.",fd_barcode:"Scan with a USB scanner or the phone camera to add items to the bill.",fd_photos:"Show a photo on each product so you find it fast.",fd_due:"Record sales on credit and see who owes you.",fd_reports:"See longer reports and your best-selling products.",fd_export:"Download a backup and your sales list for Excel.",fd_shop:"A shop page your customers browse and order from on WhatsApp.",
  productLimit:"The Shuru plan holds up to 50 products.",guideSub:"Nine short steps to get your shop running.",tryIt:"Open",newHere:"New here? Learn the app in nine short steps.",
  g1t:"Set up your shop",g1b:"Open Setup. Type your shop name and WhatsApp number, and pick English or Bangla.",
@@ -661,7 +665,7 @@ bn:{custW:"কাস্টমার",tier_yearly:"প্রো বাৎসর�
  payFill:"ট্রানজেকশন আইডি, দোকানের নাম ও ফোন নম্বর লিখুন",paySent:"পেমেন্টের তথ্য পাঠানো হয়েছে। কোড হোয়াটসঅ্যাপে আসবে।",
  tier_basic:"শুরু",tier_standard:"ব্যবসা",tier_pro:"প্রো",tierd_basic:"নতুন ছোট দোকানের জন্য",tierd_standard:"বড় হতে থাকা দোকানের জন্য",tierd_pro:"অনলাইনেও বিক্রি করুন",
  b_sell:"ছবিতে চাপ দিয়ে বিক্রি",b_products:"৫০টি পর্যন্ত পণ্য",b_cashbook:"আয় ও খরচের খাতা",b_reports:"আজ ও ৭ দিনের রিপোর্ট",b_low:"স্টক কমার সতর্কতা",b_lang:"বাংলা ও ইংরেজি, ইন্টারনেট ছাড়াও চলে",
- f_unlimited:"যত খুশি পণ্য",f_barcode:"বারকোড স্ক্যান",f_photos:"পণ্যের ছবি",f_due:"বাকির হিসাব",f_reports:"৩০ দিন ও মাসিক রিপোর্ট, বেশি বিক্রিত পণ্য",f_export:"ব্যাকআপ ও এক্সেল এক্সপোর্ট",f_shop:"হোয়াটসঅ্যাপ অর্ডারসহ অনলাইন দোকান",f_ai:"ফ্লো এআই ব্যবসা সহকারী",fd_ai:"দোকান নিয়ে যেকোনো প্রশ্ন করুন: কী মাল আনবেন, কী বেশি বিক্রি হয়, দাম কেমন রাখবেন, কে কত বাকি রেখেছে।",ai:"ফ্লো এআই",aiSub:"আপনার ব্যবসার সহকারী। দোকানের হিসাব দেখে বলে দেয় কীভাবে আরও লাভ করবেন।",aiAsk:"দোকান নিয়ে ফ্লো এআই-কে জিজ্ঞেস করুন…",aiSend:"পাঠান",aiThinking:"ফ্লো এআই আপনার হিসাব দেখছে…",aiHello:"আসসালামু আলাইকুম! আমি ফ্লো এআই। আমি আপনার বিক্রি, স্টক, খরচ আর বাকির হিসাব দেখতে পাই। যা খুশি জিজ্ঞেস করুন, বা নিচের একটি প্রশ্নে চাপুন।",aiS1:"এই সপ্তাহে কোন মাল আনা দরকার?",aiS2:"কোন পণ্যে আমার সবচেয়ে বেশি লাভ?",aiS3:"কোন পণ্য বিক্রি হচ্ছে না, কী করব?",aiS4:"কে কত টাকা বাকি রেখেছে, কীভাবে আদায় করব?",aiS5:"এই মাসে বিক্রি কীভাবে বাড়াব?",aiS6:"আমার কোনো দাম কি খুব কম রাখা আছে?",aiOff:"ফ্লো এআই চালু করা হচ্ছে, শিগগিরই পাবেন।",aiLimit:"আজকের সব প্রশ্ন শেষ। কাল আবার জিজ্ঞেস করতে পারবেন।",aiErr:"ফ্লো এআই এখন উত্তর দিতে পারছে না। এক মিনিট পরে আবার চেষ্টা করুন।",aiLeft:"আজ আর {n}টি প্রশ্ন করতে পারবেন",aiNote:"ফ্লো এআই ভুল করতে পারে। জরুরি হিসাব রিপোর্টে মিলিয়ে নিন।",aiWeb:"লগ ইন করার পর অনলাইন অ্যাপে ফ্লো এআই পাবেন।",aiBanT:"ফ্লো এআই-কে জিজ্ঞেস করুন",aiBanS:"কী মাল আনবেন, কী বেশি চলে, কে বাকি রেখেছে",aiTrialNote:"ফ্রি ট্রায়ালে দিনে {n}টি প্রশ্ন। প্রো-তে ৫০টি।",
+ f_unlimited:"যত খুশি পণ্য",f_barcode:"বারকোড স্ক্যান",f_photos:"পণ্যের ছবি",f_due:"বাকির হিসাব",f_reports:"৩০ দিন ও মাসিক রিপোর্ট, বেশি বিক্রিত পণ্য",f_export:"ব্যাকআপ ও এক্সেল এক্সপোর্ট",f_shop:"হোয়াটসঅ্যাপ অর্ডারসহ অনলাইন দোকান",fbTitle:"ফেসবুক ও ইনস্টাগ্রাম ক্যাটালগ",fbFree:"ফ্রি",fbSteps:"আমার ক্যাটালগ লিংক চেপে লিংকটি কপি করুন।|business.facebook.com/commerce খুলে আপনার ফেসবুক পেজের জন্য একটি ক্যাটালগ বানান (ফ্রি)।|Catalog, তারপর Data sources, তারপর Add items, তারপর Data feed, তারপর Scheduled feed বাছুন।|লিংকটি বসিয়ে Daily বাছুন। আপনার পণ্য, দাম আর স্টক প্রতিদিন নিজে থেকেই আপডেট হবে।|ফেসবুক ও ইনস্টাগ্রামে Shops চালু করুন, অথবা পোস্টে পণ্য ট্যাগ করুন।",fbLinkBtn:"আমার ক্যাটালগ লিংক",fbCsvBtn:"ক্যাটালগ ফাইল ডাউনলোড",fbPhotoNote:"মেটা প্রতিটি পণ্যের ছবি চায়। কমার্স ম্যানেজারে আসল ছবি না দেওয়া পর্যন্ত পণ্যে স্টোর ফ্লো লোগো দেখাবে। কাস্টমার পণ্যে চাপ দিলে আপনাকে হোয়াটসঅ্যাপে মেসেজ করবে।",fbErr:"লিংক আনা যায়নি। ইন্টারনেট দেখে আবার চেষ্টা করুন।",copy:"কপি",copied:"কপি হয়েছে",courierHelp:"নিজের {c} মার্চেন্ট অ্যাকাউন্টে ফ্রি: পার্সেলের তথ্য কপি করে কুরিয়ারের প্যানেলে বসান, তারপর ট্র্যাকিং আইডি এখানে লিখুন।",copyParcel:"পার্সেলের তথ্য কপি",openPanel:"মার্চেন্ট প্যানেল খুলুন",trackPh:"ট্র্যাকিং / কনসাইনমেন্ট আইডি",trackBtn:"ট্র্যাক",sendTrack:"কাস্টমারকে ট্র্যাকিং লিংক পাঠান",trackMsg:"{name}, {shop} থেকে আপনার অর্ডার {c} দিয়ে পাঠানো হয়েছে। ট্র্যাকিং আইডি: {id}। এখানে দেখুন: {url}",parcelCopied:"পার্সেলের তথ্য কপি হয়েছে",codAmount:"ক্যাশ অন ডেলিভারি টাকা",parcelItems:"পণ্য",reportTab:"মাসিক রিপোর্ট",repLock:"মাসভিত্তিক বিক্রি ও ভ্যাটের রিপোর্ট, যা হিসাবরক্ষককে পাঠাতে পারবেন। ব্যবসা ও প্রো প্ল্যানে আছে।",vatRate:"ভ্যাট %",vatIncl:"আমার দামে ভ্যাট ধরা আছে",repBills:"বিল",repGross:"মোট বিক্রি",repNet:"নিট বিক্রি",repVat:"ভ্যাট ({r}%)",repExVat:"ভ্যাট ছাড়া বিক্রি",repPay:"যেভাবে পেমেন্ট",repBuy:"মাল কেনা",repExp:"চলতি খরচ",repOtherInc:"অন্যান্য আয়",repProfit:"নিট লাভ",repCsv:"হিসাবরক্ষকের জন্য ডাউনলোড (Excel CSV)",repShare:"সারাংশ পাঠান",repNote:"আপনার দেওয়া হারে বিক্রি থেকে ভ্যাট হিসাব করা হয়েছে। আপনার দোকানে কোন হার প্রযোজ্য, হিসাবরক্ষককে জিজ্ঞেস করুন।",repShareMsg:"{shop} মাসিক রিপোর্ট, {mon}: {bills}টি বিল, নিট বিক্রি {net}, {r}% হারে ভ্যাট {vat}, মাল কেনা {buy}।",dailyEmail:"প্রতিদিন সকালে গতকালের হিসাব ইমেইলে পাঠান (ফ্রি)",yBanT:"গতকাল: বিক্রি {sales}, নিট {net}",yBanS:"চাপ দিয়ে পুরো হিসাব নিজের হোয়াটসঅ্যাপে পাঠান",custPhone:"কাস্টমারের ফোন (মনে করিয়ে দিতে)",owesYou:"বাকি",remind:"মনে করান",remindT:"{name}-কে মনে করিয়ে দিন",remindMsgL:"মেসেজ (চাইলে বদলাতে পারেন)",remindMsg:"আসসালামু আলাইকুম {name}। {shop} থেকে বলছি। আপনার {date} থেকে {n}টি বিলে {amt} বাকি আছে, একটু মনে করিয়ে দিলাম।",remindPay:"দোকানে এসে বা বিকাশ/নগদে {num} নম্বরে দিতে পারেন।",remindThanks:"ধন্যবাদ!",remindFree:"ফ্রি: মেসেজ যাবে আপনার নিজের হোয়াটসঅ্যাপ বা ফোন থেকে। স্টোর ফ্লো কোনো টাকা নেয় না।",remindedOn:"{d} তারিখে মনে করানো হয়েছে",remBanT:"{n} জন কাস্টমারকে বাকির কথা মনে করাতে হবে",remBanS:"এক সপ্তাহের বেশি {amt} বাকি। চাপ দিয়ে মেসেজ পাঠান।",needPhone:"আগে কাস্টমারের ফোন নম্বর দিন।",qbBtn:"দ্রুত বিল",qbTitle:"মুখে বলে বা লিখে দ্রুত বিল",qbHelp:"ক্রেতা কী কিনছেন লিখুন বা বলুন, কমা দিয়ে আলাদা করে। যেমন: ২ কেজি চাল ১৪০ টাকা, ১টা সাবান, আধা কেজি পেঁয়াজ",qbPh:"২ কেজি চাল ১৪০ টাকা, ১টা সাবান…",qbSpeak:"বলুন",qbListening:"শুনছি… এখন বলুন",qbAdd:"বিলে যোগ করুন",qbNone:"এখনও কোনো পণ্য মেলেনি।",qbMiss:"পাওয়া যায়নি",qbAdded:"বিলে {n}টি পণ্য যোগ হয়েছে",qbMicErr:"এখানে মাইক্রোফোন চালু হচ্ছে না। ফোনের কিবোর্ডের মাইক চেপে বলুন।",qbCap:"স্টকে মাত্র {n}টি",f_ai:"ফ্লো এআই ব্যবসা সহকারী",fd_ai:"দোকান নিয়ে যেকোনো প্রশ্ন করুন: কী মাল আনবেন, কী বেশি বিক্রি হয়, দাম কেমন রাখবেন, কে কত বাকি রেখেছে।",ai:"ফ্লো এআই",aiSub:"আপনার ব্যবসার সহকারী। দোকানের হিসাব দেখে বলে দেয় কীভাবে আরও লাভ করবেন।",aiAsk:"দোকান নিয়ে ফ্লো এআই-কে জিজ্ঞেস করুন…",aiSend:"পাঠান",aiThinking:"ফ্লো এআই আপনার হিসাব দেখছে…",aiHello:"আসসালামু আলাইকুম! আমি ফ্লো এআই। আমি আপনার বিক্রি, স্টক, খরচ আর বাকির হিসাব দেখতে পাই। যা খুশি জিজ্ঞেস করুন, বা নিচের একটি প্রশ্নে চাপুন।",aiS1:"এই সপ্তাহে কোন মাল আনা দরকার?",aiS2:"কোন পণ্যে আমার সবচেয়ে বেশি লাভ?",aiS3:"কোন পণ্য বিক্রি হচ্ছে না, কী করব?",aiS4:"কে কত টাকা বাকি রেখেছে, কীভাবে আদায় করব?",aiS5:"এই মাসে বিক্রি কীভাবে বাড়াব?",aiS6:"আমার কোনো দাম কি খুব কম রাখা আছে?",aiOff:"ফ্লো এআই চালু করা হচ্ছে, শিগগিরই পাবেন।",aiLimit:"আজকের সব প্রশ্ন শেষ। কাল আবার জিজ্ঞেস করতে পারবেন।",aiErr:"ফ্লো এআই এখন উত্তর দিতে পারছে না। এক মিনিট পরে আবার চেষ্টা করুন।",aiLeft:"আজ আর {n}টি প্রশ্ন করতে পারবেন",aiNote:"ফ্লো এআই ভুল করতে পারে। জরুরি হিসাব রিপোর্টে মিলিয়ে নিন।",aiWeb:"লগ ইন করার পর অনলাইন অ্যাপে ফ্লো এআই পাবেন।",aiBanT:"ফ্লো এআই-কে জিজ্ঞেস করুন",aiBanS:"কী মাল আনবেন, কী বেশি চলে, কে বাকি রেখেছে",aiTrialNote:"ফ্রি ট্রায়ালে দিনে {n}টি প্রশ্ন। প্রো-তে ৫০টি।",
  fd_unlimited:"যত পণ্য রাখেন সব যোগ করুন।",fd_barcode:"USB স্ক্যানার বা ফোনের ক্যামেরায় স্ক্যান করে বিলে যোগ করুন।",fd_photos:"প্রতিটি পণ্যে ছবি দিন, দ্রুত খুঁজে পাবেন।",fd_due:"বাকিতে বিক্রি লিখুন এবং কার কাছে কত পাওনা দেখুন।",fd_reports:"লম্বা সময়ের রিপোর্ট ও বেশি বিক্রিত পণ্য দেখুন।",fd_export:"ব্যাকআপ ও এক্সেলের জন্য বিক্রির তালিকা ডাউনলোড করুন।",fd_shop:"একটি দোকান পেজ, যেখান থেকে কাস্টমার হোয়াটসঅ্যাপে অর্ডার করবে।",
  productLimit:"শুরু প্ল্যানে ৫০টি পর্যন্ত পণ্য রাখা যায়।",guideSub:"দোকান চালু করতে নয়টি ছোট ধাপ।",tryIt:"খুলুন",newHere:"নতুন? নয়টি ছোট ধাপে অ্যাপটি শিখুন।",
  g1t:"দোকান সেটআপ করুন",g1b:"সেটআপে যান। দোকানের নাম ও হোয়াটসঅ্যাপ নম্বর লিখুন, ভাষা বাছুন।",
@@ -859,20 +863,21 @@ const CONFIG = {
   demoSeconds:604800,                      // free trial length: 7 days
   ownerWhatsApp:"",                       // where plan orders go, e.g. "017XXXXXXXX"
   pay:{bkash:"01951134055",nagad:"01951134055",rocket:"01951134055"},      // numbers customers send money to
+  ai:false,                               // Flow AI: set true once FlowAI.gs is added and AI keys are set
   productLimit:50                          // product cap on the Shuru plan
 };
 const PLAN_ORDER=["basic","standard","pro"];
 const TIERS={
   basic:{price:500,features:[]},
   standard:{price:800,features:["unlimited","barcode","photos","reports","orders"]},
-  pro:{price:1200,features:["unlimited","barcode","photos","reports","orders","due","export","shop","ai"]}
+  pro:{price:1200,features:["unlimited","barcode","photos","reports","orders","due","export","shop",...(CONFIG.ai?["ai"]:[])]}
 };
 /* Pro paid once for 12 months: same features as Pro, cheaper than 12 monthly payments. */
 const YEARLY={tier:"pro",price:10000,months:12};
 const planPrice=k=>k==="yearly"?YEARLY.price:TIERS[k].price;
 const yearlySave=()=>TIERS.pro.price*12-YEARLY.price;
 const BASE_FEATURES=["b_sell","b_products","b_cashbook","b_reports","b_low","b_receipt","b_lang"];
-const PAID_FEATURES=["unlimited","barcode","photos","reports","orders","due","export","shop","ai"];
+const PAID_FEATURES=["unlimited","barcode","photos","reports","orders","due","export","shop",...(CONFIG.ai?["ai"]:[])];
 const b64u={
   dec:s=>Uint8Array.from(atob(s.replace(/-/g,"+").replace(/_/g,"/")+"=".repeat((4-s.length%4)%4)),c=>c.charCodeAt(0))
 };
@@ -1340,6 +1345,26 @@ function shareButtons(x,kind){
   const text=receiptText(x,kind), phone=kind==="order"?x.phone:"";
   return `<div class="sharebox"><b>${t("shareReceipt")}</b><div class="row" style="margin-top:8px"><a class="btn wa-btn" href="${esc(waLink(phone,text))}" target="_blank" rel="noopener">${I.wa}WhatsApp</a><button class="btn" data-act="shareNative" data-kind="${kind}" data-id="${x.id}">${I.share}${t("messengerMore")}</button></div></div>`;
 }
+/* ---------- courier booking and tracking: free, uses the shop's own merchant account ---------- */
+const COURIER_WEB={Steadfast:{panel:"https:\/\/steadfast.com.bd/login",track:id=>"https:\/\/steadfast.com.bd/tracking?q="+encodeURIComponent(id)},
+  Pathao:{panel:"https:\/\/merchant.pathao.com/",track:(id,ph)=>"https:\/\/merchant.pathao.com/tracking?consignment_id="+encodeURIComponent(id)+(ph?"&phone="+encodeURIComponent(ph):"")},
+  RedX:{panel:"https:\/\/redx.com.bd/",track:id=>"https:\/\/redx.com.bd/track-global-parcel/?trackingId="+encodeURIComponent(id)},
+  Paperfly:{panel:"https:\/\/go.paperfly.com.bd/",track:()=>"https:\/\/go.paperfly.com.bd/track"},
+  eCourier:{panel:"https:\/\/ecourier.com.bd/",track:()=>"https:\/\/ecourier.com.bd/"},
+  Sundarban:{panel:"https:\/\/sundarbancourierltd.com/",track:()=>"https:\/\/sundarbancourierltd.com/"}};
+function parcelText(o){ return [t("custW")+": "+(o.customer||""),t("phoneW")+": "+(o.phone||""),t("address")+": "+(o.address||""),t("codAmount")+": "+N(oDueAmt(o)),t("parcelItems")+": "+(o.lines||[]).map(l=>lineName(l)+" × "+N(l.qty)).join(", "),o.note?t("note")+": "+o.note:""].filter(Boolean).join("\n"); }
+function courierBox(o){
+  const c=COURIER_WEB[o.courier]; if(o.pay!=="cod"||!c||o.status==="cancelled") return "";
+  return `<div class="card courierbox" style="padding:12px;box-shadow:none">
+    <b>${I.truck.replace("<svg",'<svg width="18" height="18" style="vertical-align:-3px;margin-right:4px"')}${esc(o.courier)}</b>
+    <p class="small muted" style="margin:4px 0 10px">${t("courierHelp",{c:esc(o.courier)})}</p>
+    <div class="row" style="gap:8px"><button class="btn grow" data-act="copyParcel" data-id="${o.id}">${t("copyParcel")}</button><a class="btn grow" href="${c.panel}" target="_blank" rel="noopener">${t("openPanel")}</a></div>
+    <div class="row" style="gap:8px;margin-top:10px"><input class="input grow" id="oTrack" data-id="${o.id}" placeholder="${t("trackPh")}" value="${esc(o.trackId||"")}" style="min-width:0">
+    ${o.trackId?`<a class="btn primary" href="${esc(c.track(o.trackId,o.phone))}" target="_blank" rel="noopener">${t("trackBtn")}</a>`:""}</div>
+    ${o.trackId&&o.phone?`<a class="btn block" style="margin-top:8px" href="${esc(waLink(o.phone,t("trackMsg",{name:o.customer||"",shop:S.meta.shopName||"",c:o.courier,id:o.trackId,url:c.track(o.trackId,o.phone)})))}" target="_blank" rel="noopener">${I.wa}<span>${t("sendTrack")}</span></a>`:""}
+  </div>`;
+}
+async function copyText(text,msg){ try{ await navigator.clipboard.writeText(text); toast(msg); }catch(e){ const ta=document.createElement("textarea"); ta.value=text; document.body.appendChild(ta); ta.select(); try{ document.execCommand("copy"); toast(msg); }catch(_){ } ta.remove(); } }
 function orderSheet(o){
   const next=o.status==="pending"?[["sent",t("markSent"),I.truck],["paid",t("markPaidNow"),I.check]]:o.status==="sent"?[["paid",o.pay==="cod"?t("codReceived"):t("markPaidNow"),I.check]]:[];
   const steps=["pending","sent","paid"], cur=steps.indexOf(o.status);
@@ -1360,6 +1385,7 @@ function orderSheet(o){
   <div class="stack" style="margin-top:16px;gap:10px">
     ${next.map(([s,l,ic],i)=>`<button class="btn ${i===0?"primary":""} block" data-act="orderStatus" data-id="${o.id}" data-v="${s}" style="min-height:52px">${ic}${l}</button>`).join("")}
     ${remind}
+    ${courierBox(o)}
     ${shareButtons(o,"order")}
     <div class="row">${o.status!=="paid"?`<button class="btn" data-act="editOrder" data-id="${o.id}">${t("edit")}</button>`:""}${o.status==="pending"||o.status==="sent"?`<button class="btn" data-act="orderStatus" data-id="${o.id}" data-v="cancelled">${t("cancelOrder")}</button>`:""}<button class="btn danger" data-act="delOrder" data-id="${o.id}">${S.armed==="o"+o.id?t("tapAgain"):t("del")}</button></div>
   </div>`);
@@ -1383,7 +1409,7 @@ const ORDER_ACTS={
     try{ await navigator.clipboard.writeText(text); toast(t("receiptCopied")); }catch(e){ const ta=document.createElement("textarea"); ta.value=text; document.body.appendChild(ta); ta.select(); try{ document.execCommand("copy"); toast(t("receiptCopied")); }catch(_){ } ta.remove(); } }
 };
 /* ---------- shell ---------- */
-const NAV=[["home","home"],["sell","sell"],["orders","bag"],["products","box"],["money","money"],["shop","shop"],["ai","spark"]];
+const NAV=[["home","home"],["sell","sell"],["orders","bag"],["products","box"],["money","money"],["shop","shop"],...(CONFIG.ai?[["ai","spark"]]:[])];
 const MNAV=[["home","home"],["orders","bag"],["sell","sell"],["products","box"],["money","money"]];
 function shell(){
   const nm=S.meta.shopName||"Store Flow";
@@ -1425,7 +1451,7 @@ function render(){
   document.documentElement.lang=S.meta.lang==="bn"?"bn":"en";
   document.querySelectorAll("[data-nav]").forEach(a=>a.classList.toggle("on",a.dataset.nav===S.view));
   const open={plans:vPlans,guide:vGuide,code:vCodeEntry,terms:()=>`<div class="page-head"><div><h1>${t("terms")}</h1><p class="small muted">${t("termsUpdated")}</p></div></div><div class="card" style="max-width:760px">${termsList()}</div>`};
-  let v=open[S.view]||(curTier()?({home:vHome,sell:vSell,orders:vOrders,products:vProducts,money:vMoney,shop:vShop,ai:vAi,setup:vSetup}[S.view]||vHome):vLocked);
+  let v=open[S.view]||(curTier()?({home:vHome,sell:vSell,orders:vOrders,products:vProducts,money:vMoney,shop:vShop,...(CONFIG.ai?{ai:vAi}:{}),setup:vSetup}[S.view]||vHome):vLocked);
   const banner = S.meta.sample && curTier() && !open[S.view] && S.view!=="shop" ? `<div class="banner"><p>${t("sampleBanner")}</p><button class="btn" data-act="clearSample">${t("clearSample")}</button></div>` : "";
   const mainEl=$("#main"); mainEl.innerHTML=banner+v();
   if(S._lastView!==S.view){ S._lastView=S.view; mainEl.classList.remove("enter"); void mainEl.offsetWidth; mainEl.classList.add("enter"); clearTimeout(S._enterT); S._enterT=setTimeout(()=>mainEl.classList.remove("enter"),900); try{ window.scrollTo({top:0}); }catch(e){} }
@@ -1485,6 +1511,11 @@ function vHome(){
   if(S.access&&!inDemo()&&S.access.exp<Date.now()+5*864e5&&S.access.exp>Date.now()){ const d=Math.floor((startOfDay(S.access.exp)-startOfDay(Date.now()))/864e5), pl=t("tier_"+S.access.tier);
     topBan=`<a class="statusban warn always" href="#plans">${I.crown}<span class="grow"><b>${t(d<=0?"renewT0":d===1?"renewT1":"renewT",{plan:pl,d:N(d)})}</b><span>${t("renewS")}</span></span><span class="btn" style="background:#3A2600;color:#FFE9B8;border:0;min-height:40px">${t("renewBtn")}</span></a>`; }
   else if(inDemo()&&demoEnd()-Date.now()<2*864e5){ topBan=`<a class="statusban warn always" href="#plans">${I.crown}<span class="grow"><b>${t("trialEndT",{left:demoLeft()})}</b><span>${t("trialEndS")}</span></span>${chev0}</a>`; }
+  const toRemind=can("due")?dueToRemind():[];
+  const remBan=toRemind.length?`<a class="statusban always" href="#money" data-act="goDue" style="background:linear-gradient(135deg,#FFD98A,#F5B93A);color:#3A2600">${I.users}<span class="grow"><b>${t("remBanT",{n:N(toRemind.length)})}</b><span>${t("remBanS",{amt:M(sum(toRemind,x=>x.amt))})}</span></span>${I.chev.replace("<svg",'<svg class="chev"')}</a>`:"";
+  const yb=(()=>{ if(new Date().getHours()>=14) return ""; const d=new Date(); d.setHours(0,0,0,0); const to=d.getTime(), from=to-864e5; const ss=S.sales.filter(x=>x.at>=from&&x.at<to); if(!ss.length) return "";
+    const es=S.entries.filter(x=>x.at>=from&&x.at<to), sl=sum(ss,x=>x.total), net=sl-sum(ss,x=>sum(x.items,i=>i.qty*i.cost))+sum(es.filter(e=>e.type==="income"),e=>e.amount)-sum(es.filter(e=>e.type==="expense"&&e.category!=="purchase"),e=>e.amount);
+    return `<button class="statusban always" data-act="ySummary" style="width:100%;border:0;text-align:left;cursor:pointer">${I.receipt}<span class="grow"><b>${t("yBanT",{sales:M(sl),net:M(net)})}</b><span>${t("yBanS")}</span></span>${I.wa}</button>`; })();
   const preBan=can("orders")&&(oc.preToday||oc.preTomorrow)?`<a class="statusban always" href="#orders" data-act="otab" data-v="pre" style="background:linear-gradient(135deg,#FFD98A,#F5B93A);color:#3A2600">${I.cal}<span class="grow"><b>${oc.preToday?t("preDueBanT",{n:N(oc.preToday)}):t("preTomorrow",{n:N(oc.preTomorrow)})}</b><span>${oc.preToday&&oc.preTomorrow?t("preTomorrow",{n:N(oc.preTomorrow)})+" · ":""}${t("preDueBanS")}</span></span>${chev0}</a>`:"";
   const ordersCard=can("orders")&&S.orders.length?`<a class="card bigcard" href="#orders"><span class="bico">${I.bag}</span><span class="grow"><span class="muted">${t("ordersCard")}</span><div class="big num" style="font-size:1.2rem"><span class="num">${N(oc.pending)}</span> ${t("pendingW")} · <span class="num">${N(oc.sent)}</span> ${t("sentW")}</div>${oc.codAmt?`<span class="small muted">${t("courierOwes")} <b style="color:var(--gold)">${M(oc.codAmt)}</b></span>`:""}</span>${chev0}</a>`:"";
   const demoCard=(!S.products.length&&!S.sales.length&&!S.meta.sample)?`<div class="card bigcard" style="margin-bottom:14px;flex-wrap:wrap"><span class="bico">${I.bars}</span><span class="grow" style="flex:1 1 220px"><b>${t("sampleT")}</b><br><span class="small muted">${t("sampleS")}</span></span><button class="btn primary" data-act="loadSample">${t("sampleBtn")}</button></div>`:"";
@@ -1499,7 +1530,7 @@ function vHome(){
     <div class="stack">
       <section class="card chart"><div class="card-head"><h2><span class="hico">${I.bars}</span>${t("salesChart")} <span class="hint">(${per(can("reports")?S.period:"7")})</span></h2><span class="total num">${M(st.sales)}</span></div>${chart()}</section>
       ${ban}
-      <a class="statusban aiban" href="#ai">${I.spark}<span class="grow"><b>${t("aiBanT")}</b><span>${t("aiBanS")}</span></span>${chev}</a>
+      ${CONFIG.ai?`<a class="statusban aiban" href="#ai">${I.spark}<span class="grow"><b>${t("aiBanT")}</b><span>${t("aiBanS")}</span></span>${chev}</a>`:""}
       <div class="m-qa">${qa}</div>
       ${best}
     </div>
@@ -1507,7 +1538,7 @@ function vHome(){
       <section class="card"><div class="card-head"><h2><span class="hico" style="color:var(--gold)">${I.alert}</span>${t("lowStock")}</h2><span class="pill ${low.length?"out":"ok"}"><span class="num">${N(low.length)}</span>&nbsp;${t("itemsW")}</span></div>
         ${low.length?`<div class="list">${low.slice(0,6).map(p=>`<button class="lowrow" data-act="restock" data-id="${p.id}"><div class="thumb">${pic(p)}</div><span class="grow">${esc(pname(p))}</span><span class="pill out num">${p.stock<=0?t("outStock"):t("stockW")+": "+N(p.stock)}</span>${chev}</button>`).join("")}</div>`:`<div class="empty">${t("allGood")}</div>`}
       </section>
-      ${preBan}${ordersCard}
+      ${yb}${remBan}${preBan}${ordersCard}
       <a class="card bigcard" href="#products"><span class="bico">${I.layers}</span><span class="grow"><span class="muted">${t("stockValue")}</span><div class="big num">${M(stockVal)}</div><span class="small muted">${t("atCost")} · <span class="num">${N(S.products.length)}</span> ${t("items")}</span></span>${chev}</a>
       ${!can("due")?"":`<a class="card bigcard gold" href="#money" data-act="goDue"><span class="bico">${I.users}</span><span class="grow"><span class="muted">${t("dueTotal")}</span><div class="big num">${M(dueAmt)}</div><span class="small muted"><span class="num">${N(dueN)}</span> ${t("customersW")}</span></span>${chev}</a>`}
       ${!S.meta.guideSeen?`<a class="card bigcard" href="#guide"><span class="bico">${I.book}</span><span class="grow">${t("newHere")}</span>${chev}</a>`:""}
@@ -1547,6 +1578,7 @@ function vSell(){
   <div class="sell"><div class="stack" style="min-width:0">
     <div class="row">
       <div class="search">${I.search}<input class="input" id="q" type="search" placeholder="${t("search")}" value="${esc(S.q)}" autocomplete="off"></div>
+      <button class="btn qbbtn" data-act="quickBill">${I.mic}<span>${t("qbBtn")}</span></button>
     </div>
     ${can("barcode")?`<div class="scanrow">
       <div class="search">${I.scan}<input class="input" id="scanInput" inputmode="numeric" placeholder="${t("scanPh")}" autocomplete="off"></div>
@@ -1581,6 +1613,7 @@ function cartHTML(){
   <div class="field" style="margin-top:12px"><label>${t("payment")}</label>
     <div class="chips" style="flex-wrap:wrap">${["cash","bkash","nagad","rocket","card","due"].map(m=>m==="due"&&!can("due")?`<button class="chip" data-act="upgrade" data-f="due">${t(m)}${lockIc()}</button>`:`<button class="chip ${S.co.method===m?"on":""}" data-act="method" data-v="${m}">${t(m)}</button>`).join("")}</div></div>
   <div class="field" style="margin-top:10px"><label for="coCust">${t("customer")}</label><input class="input" id="coCust" data-co="customer" value="${esc(S.co.customer)}" placeholder="${S.co.method==="due"?t("customerPh"):""}"></div>
+  ${S.co.method==="due"?`<div class="field"><label for="coPhone">${t("custPhone")}</label><input class="input" id="coPhone" data-co="phone" inputmode="tel" value="${esc(S.co.phone||"")}" placeholder="01XXXXXXXXX"></div>`:""}
   <button class="btn primary block" style="margin-top:14px;min-height:50px;font-size:1.05rem" data-act="completeSale">${t("confirmSale")} · <span class="num" id="coTotal2">${M(tt.total)}</span></button>`;
 }
 function refreshCart(){
@@ -1596,15 +1629,80 @@ function addToCart(id){
   if(c) c.qty=q; else S.cart.push({pid:id,qty:1,price:p.price});
   refreshCart();
 }
+/* ---------- quick bill: type or speak items in Bangla or English ---------- */
+const QB_NUM={"half":0.5,"আধা":0.5,"আধ":0.5,"হাফ":0.5,"দেড়":1.5,"দেড়":1.5,"আড়াই":2.5,"আড়াই":2.5,"one":1,"a":1,"an":1,"two":2,"three":3,"four":4,"five":5,"six":6,"seven":7,"eight":8,"nine":9,"ten":10,"twelve":12,"এক":1,"একটা":1,"একটি":1,"দুই":2,"দুটো":2,"দুইটা":2,"দু":2,"তিন":3,"তিনটা":3,"চার":4,"চারটা":4,"পাঁচ":5,"পাঁচটা":5,"ছয়":6,"ছয়":6,"সাত":7,"আট":8,"নয়":9,"নয়":9,"দশ":10,"বারো":12,"ডজন":12};
+const QB_UNIT=/^(kg|kgs|kilo|কেজি|কিলো|g|gm|gram|grams|গ্রাম|l|ltr|liter|litre|লিটার|pc|pcs|piece|pieces|পিস|টা|টি|খানা|packet|packets|pkt|প্যাকেট|dozen|ডজন|box|বক্স|hali|হালি)$/i;
+function qbNorm(x){ return String(x||"").replace(/[০-৯]/g,d=>"০১২৩৪৫৬৭৮৯".indexOf(d)).toLowerCase(); }
+function qbMatch(words){
+  const q=words.filter(w=>w.length>1||/[^\x00-\x7F]/.test(w)); if(!q.length) return null;
+  let best=null, bs=0;
+  S.products.forEach(p=>{ const hay=qbNorm(p.name+" "+(p.nameBn||"")); let sc=0;
+    q.forEach(w=>{ if(new RegExp("(^|[\\s(])"+w.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")).test(hay)) sc+=2; else if(hay.includes(w)) sc+=1; });
+    if(sc>bs||(sc===bs&&sc&&p.stock>(best?.stock||0))){ bs=sc; best=p; } });
+  return bs>0?best:null;
+}
+function qbParse(text){
+  return qbNorm(text).split(/[,،;\n।]+|\s+(?:and|আর|এবং|ও)\s+/).map(x=>x.trim()).filter(Boolean).map(raw=>{
+    let c=" "+raw+" ", total=null, qty=null, gram=false, dozen=false, hali=false;
+    c=c.replace(/(?:৳|tk\.?|taka)\s*(\d+(?:\.\d+)?)/,(m,n)=>{ total=+n; return " "; });
+    c=c.replace(/(\d+(?:\.\d+)?)\s*(?:taka|tk\.?|টাকা|টাকার|৳|\/-)/,(m,n)=>{ total=+n; return " "; });
+    let words=c.split(/\s+/).filter(Boolean), rest=[];
+    for(let i=0;i<words.length;i++){ let w=words[i]; let m=w.match(/^(\d+(?:\.\d+)?)(.*)$/);
+      if(qty===null&&m){ qty=+m[1]; const u=m[2]||(QB_UNIT.test(words[i+1]||"")?words[++i]:""); gram=/^(g|gm|gram|grams|গ্রাম)$/i.test(u); dozen=/^(dozen|ডজন)$/i.test(u); hali=/^(hali|হালি)$/i.test(u); continue; }
+      if(qty===null&&QB_NUM[w]!==undefined){ qty=QB_NUM[w]; if(QB_UNIT.test(words[i+1]||"")){ const u=words[++i]; gram=/^(g|gm|gram|grams|গ্রাম)$/i.test(u); hali=/^(hali|হালি)$/i.test(u);} continue; }
+      if(QB_UNIT.test(w)) continue; rest.push(w.replace(/(টা|টি|খানা)$/,"")); }
+    const p=qbMatch(rest.filter(Boolean)); if(!p) return {raw,miss:true};
+    qty=qty===null?1:qty;
+    if(gram&&/kg|কেজি/i.test(p.unit||"kg")) qty=qty/1000;
+    if(hali&&!/hali|হালি/i.test(p.unit||"")) qty=qty*4;
+    if(dozen&&/dozen|ডজন/i.test(p.unit||"")) qty=qty;
+    qty=Math.round(qty*1000)/1000; if(!(qty>0)) qty=1;
+    const price=total!==null?Math.round(total/qty*100)/100:p.price;
+    return {raw,p,qty,price}; });
+}
+function qbPreview(){
+  const box=$("#qbPrev"); if(!box) return; const lines=qbParse($("#qbText").value);
+  box.innerHTML=!lines.length?`<p class="small muted">${t("qbNone")}</p>`:lines.map(l=>l.miss?`<div class="qbl miss"><span>✗</span><span class="grow">${t("qbMiss")}: “${esc(l.raw)}”</span></div>`:
+    `<div class="qbl"><span>✓</span><span class="grow">${esc(pname(l.p))} × <span class="num">${N(l.qty)}</span> ${esc(t(l.p.unit)||l.p.unit||"")}${l.qty>l.p.stock?` <span class="pill out">${t("qbCap",{n:N(Math.max(0,l.p.stock))})}</span>`:""}</span><b class="num">${M(l.qty*l.price)}</b></div>`).join("");
+  const ok=lines.filter(l=>!l.miss).length; const b=$("#qbAddBtn"); if(b) b.disabled=!ok;
+}
+function quickBillSheet(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  openSheet("quickBill",`<div class="sheet-head"><h2>${I.mic.replace("<svg",'<svg width="20" height="20" style="vertical-align:-3px;margin-right:6px"')}${t("qbTitle")}</h2><button class="iconbtn" data-act="close" aria-label="${t("cancel")}">${I.x}</button></div>
+  <p class="small muted" style="margin:0 0 10px">${t("qbHelp")}</p>
+  <textarea class="input" id="qbText" rows="3" placeholder="${t("qbPh")}" style="width:100%;resize:vertical"></textarea>
+  ${SR?`<button class="btn block" data-act="qbMic" id="qbMic" style="margin-top:8px">${I.mic}<span>${t("qbSpeak")}</span></button>`:""}
+  <div id="qbPrev" class="qbprev"><p class="small muted">${t("qbNone")}</p></div>
+  <button class="btn primary block" data-act="qbAdd" id="qbAddBtn" disabled>${t("qbAdd")}</button>`);
+  setTimeout(()=>$("#qbText")?.focus(),50);
+}
+function qbMic(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition; if(!SR){ toast(t("qbMicErr")); return; }
+  if(S.qbRec){ try{S.qbRec.stop();}catch(e){} return; }
+  const r=new SR(); r.lang=S.meta.lang==="bn"?"bn-BD":"en-IN"; r.interimResults=false; r.maxAlternatives=1; S.qbRec=r;
+  const b=$("#qbMic"); if(b){ b.classList.add("primary"); b.querySelector("span").textContent=t("qbListening"); }
+  r.onresult=e=>{ const said=[...e.results].map(x=>x[0].transcript).join(" "); const ta=$("#qbText"); if(ta){ ta.value=(ta.value.trim()?ta.value.trim()+", ":"")+said; qbPreview(); } };
+  r.onerror=e=>{ if(e.error!=="no-speech"&&e.error!=="aborted") toast(t("qbMicErr")); };
+  r.onend=()=>{ S.qbRec=null; const b=$("#qbMic"); if(b){ b.classList.remove("primary"); b.querySelector("span").textContent=t("qbSpeak"); } };
+  try{ r.start(); }catch(e){ S.qbRec=null; toast(t("qbMicErr")); }
+}
+function qbAdd(){
+  const lines=qbParse($("#qbText").value).filter(l=>!l.miss); let n=0;
+  lines.forEach(l=>{ const q=Math.min(l.qty,Math.max(0,l.p.stock)); if(!(q>0)) return; const c=S.cart.find(x=>x.pid===l.p.id);
+    if(c){ c.qty=Math.min(Math.round((c.qty+q)*1000)/1000,l.p.stock); c.price=l.price; } else S.cart.push({pid:l.p.id,qty:q,price:l.price}); n++; });
+  if(S.qbRec){ try{S.qbRec.stop();}catch(e){} }
+  closeSheet(); if(n){ toast(t("qbAdded",{n:N(n)})); } else toast(t("onlyLeft",{n:N(0)})); render();
+}
 function completeSale(){
   if(!S.cart.length) return;
   if(S.co.method==="due"&&!S.co.customer.trim()){ toast(t("needCustomer")); $("#coCust")?.focus(); return; }
   const tt=cartTotals(), at=Date.now();
   const items=S.cart.map(c=>{const p=S.products.find(x=>x.id===c.pid); return {pid:c.pid,name:p.name,nameBn:p.nameBn||"",qty:c.qty,price:c.price,cost:+p.cost||0};});
-  const sale={id:uid(),at,items,subtotal:tt.sub,discount:tt.disc,total:tt.total,method:S.co.method,customer:S.co.customer.trim(),note:"",paidAt:S.co.method==="due"?null:at};
+  const sale={id:uid(),at,items,subtotal:tt.sub,discount:tt.disc,total:tt.total,method:S.co.method,customer:S.co.customer.trim(),phone:S.co.method==="due"?String(S.co.phone||"").trim():"",note:"",paidAt:S.co.method==="due"?null:at};
+  if(sale.phone&&sale.customer){ S.meta.custPhones=S.meta.custPhones||{}; S.meta.custPhones[sale.customer]=sale.phone; saveMeta(); }
   S.sales.push(sale); DB.put("sales",sale);
   items.forEach(i=>{const p=S.products.find(x=>x.id===i.pid); p.stock=Math.round((p.stock-i.qty)*1000)/1000; DB.put("products",p);});
-  S.cart=[]; S.co={discount:"",method:"cash",customer:"",note:""};
+  S.cart=[]; S.co={discount:"",method:"cash",customer:"",note:"",phone:""};
   if(S.sheet==="cart") closeSheet();
   render(); toast(t("saleSaved")+" · "+M(sale.total));
 }
@@ -1735,8 +1833,9 @@ function saveRestock(f){
 
 /* ---------- money ---------- */
 function vMoney(){
-  const tabs=[["sales","salesTab"],["cashbook","cashbook"],["due","dueTab"]];
+  const tabs=[["sales","salesTab"],["cashbook","cashbook"],["due","dueTab"],["report","reportTab"]];
   let body="";
+  if(S.moneyTab==="report"){ body=vReport(); } else
   if(S.moneyTab==="due"&&!can("due")){
     body=`<div class="card locked-card"><div class="lockbadge" style="margin:0 auto 10px">${I.lock}</div><h2>${t("f_due")}</h2><p class="muted">${t("fd_due")}</p><button class="btn primary" data-act="upgrade" data-f="due">${t("seePlans")}</button></div>`;
   } else if(S.moneyTab==="sales"){
@@ -1753,11 +1852,69 @@ function vMoney(){
   } else {
     const due=S.sales.filter(s=>s.method==="due"&&!s.paidAt); const by={};
     due.forEach(s=>{const k=s.customer||"?"; (by[k]=by[k]||[]).push(s)});
-    body=Object.keys(by).length?`<section class="card"><div class="list">${Object.entries(by).sort((a,b)=>sum(b[1],s=>s.total)-sum(a[1],s=>s.total)).map(([c,arr])=>`<div class="li"><div class="thumb" style="font-weight:700">${esc(c.slice(0,1))}</div><div class="grow"><b>${esc(c)}</b><span class="small muted"><span class="num">${N(arr.length)}</span> ${t("bills")} · ${esc(fdate(Math.min(...arr.map(s=>s.at))))}</span></div><span class="amt" style="color:var(--warn)">${M(sum(arr,s=>s.total))}</span><button class="btn" style="min-height:34px;padding:4px 10px" data-act="markPaid" data-v="${esc(c)}">${t("markPaid")}</button></div>`).join("")}</div></section>`:`<div class="card empty">${t("noDue")}</div>`;
+    body=Object.keys(by).length?`<section class="card"><div class="list">${Object.entries(by).sort((a,b)=>sum(b[1],s=>s.total)-sum(a[1],s=>s.total)).map(([c,arr])=>`<div class="li"><div class="thumb" style="font-weight:700">${esc(c.slice(0,1))}</div><div class="grow"><b>${esc(c)}</b><span class="small muted"><span class="num">${N(arr.length)}</span> ${t("bills")} · ${esc(fdate(Math.min(...arr.map(s=>s.at))))}${(S.meta.reminded||{})[c]?" · "+t("remindedOn",{d:fdate((S.meta.reminded||{})[c])}):""}</span></div><span class="amt" style="color:var(--warn)">${M(sum(arr,s=>s.total))}</span><button class="btn" style="min-height:34px;padding:4px 10px" data-act="remind" data-v="${esc(c)}">${I.wa}<span class="d-inl">${t("remind")}</span></button><button class="btn" style="min-height:34px;padding:4px 10px" data-act="markPaid" data-v="${esc(c)}">${t("markPaid")}</button></div>`).join("")}</div></section>`:`<div class="card empty">${t("noDue")}</div>`;
   }
   return `<div class="page-head"><div><h1>${t("money")}</h1></div>${S.moneyTab==="cashbook"?`<button class="btn primary" data-act="newEntry">${I.plus}${t("addEntry")}</button>`:""}</div>
-  <div class="chips" style="margin-bottom:14px">${tabs.map(([k,l])=>`<button class="chip ${S.moneyTab===k?"on":""}" data-act="mtab" data-v="${k}">${t(l)}${k==="due"&&!can("due")?lockIc():""}</button>`).join("")}</div>
+  <div class="chips" style="margin-bottom:14px">${tabs.map(([k,l])=>`<button class="chip ${S.moneyTab===k?"on":""}" data-act="mtab" data-v="${k}">${t(l)}${(k==="due"&&!can("due"))||(k==="report"&&!can("reports"))?lockIc():""}</button>`).join("")}</div>
   <div class="stack">${body}</div>`;
+}
+/* ---------- monthly VAT-ready report for the accountant ---------- */
+function repData(){
+  const now=new Date(), off=+S.repOff||0, m0=new Date(now.getFullYear(),now.getMonth()+off,1), m1=new Date(now.getFullYear(),now.getMonth()+off+1,1);
+  const from=m0.getTime(), to=m1.getTime(), rate=S.meta.vatRate===undefined||S.meta.vatRate===""?5:+S.meta.vatRate||0, incl=S.meta.vatIncl!==false;
+  const ss=S.sales.filter(x=>x.at>=from&&x.at<to), es=S.entries.filter(x=>x.at>=from&&x.at<to);
+  const vatOf=net=>incl?net*rate/(100+rate):net*rate/100;
+  const days={}; ss.forEach(x=>{ const k=dayKey(x.at), d=days[k]=days[k]||{k,at:x.at,n:0,gross:0,disc:0,net:0,cash:0,bkash:0,nagad:0,rocket:0,card:0,due:0,cogs:0};
+    d.n++; d.gross+=x.subtotal||x.total; d.disc+=x.discount||0; d.net+=x.total; d[x.method]=(d[x.method]||0)+x.total; d.cogs+=sum(x.items,i=>i.qty*(i.cost||0)); });
+  const rows=Object.values(days).sort((a,b)=>a.at-b.at); rows.forEach(d=>{ d.vat=vatOf(d.net); d.exvat=incl?d.net-d.vat:d.net; });
+  const tot=k=>sum(rows,d=>d[k]||0);
+  const cats={}; es.filter(e=>e.type==="expense").forEach(e=>cats[e.category||"other"]=(cats[e.category||"other"]||0)+e.amount);
+  const inc=sum(es.filter(e=>e.type==="income"),e=>e.amount);
+  return {m0,rate,incl,rows,tot,cats,inc,n:ss.length};
+}
+function vReport(){
+  if(!can("reports")) return `<div class="card locked-card"><div class="lockbadge" style="margin:0 auto 10px">${I.lock}</div><h2>${t("reportTab")}</h2><p class="muted">${t("repLock")}</p><button class="btn primary" data-act="upgrade" data-f="reports">${t("seePlans")}</button></div>`;
+  const R=repData(), mon=fdate(R.m0.getTime(),{month:"long",year:"numeric"}), net=R.tot("net"), vat=R.tot("vat");
+  const exp=sum(Object.entries(R.cats).filter(([k])=>k!=="purchase"),([,v])=>v), buy=R.cats.purchase||0, profit=net-R.tot("cogs");
+  const line=(l,v,b)=>`<div class="li"><span class="grow">${l}</span><span class="amt ${b?"":"muted"}" style="${b?"font-weight:700":""}">${v}</span></div>`;
+  return `<section class="card stack">
+    <div class="row between"><button class="iconbtn" data-act="repMonth" data-v="-1" aria-label="‹">‹</button><h2 style="margin:0">${esc(mon)}</h2><button class="iconbtn" data-act="repMonth" data-v="1" aria-label="›" ${(+S.repOff||0)>=0?"disabled":""}>›</button></div>
+    <div class="row" style="gap:10px;align-items:flex-end">
+      <div class="field" style="margin:0;max-width:120px"><label for="vatRate">${t("vatRate")}</label><input class="input num" id="vatRate" data-meta="vatRate" type="number" min="0" max="30" step="0.5" inputmode="decimal" value="${esc(String(R.rate))}"></div>
+      <label class="row" style="gap:8px;flex-wrap:nowrap;margin-bottom:10px"><input type="checkbox" data-meta="vatIncl" ${R.incl?"checked":""} style="width:20px;height:20px"> <span>${t("vatIncl")}</span></label>
+    </div>
+    <div class="list">
+      ${line(t("repBills"),N(R.n))}
+      ${line(t("repGross"),M(R.tot("gross")))}
+      ${line(t("discount"),"−"+M(R.tot("disc")))}
+      ${line(t("repNet"),M(net),1)}
+      ${line(t("repVat",{r:N(R.rate)}),M(vat),1)}
+      ${line(t("repExVat"),M(R.incl?net-vat:net))}
+      <div class="li" style="flex-wrap:wrap;gap:4px 12px"><span class="grow">${t("repPay")}</span><span class="small muted" style="flex-basis:100%;text-align:right;overflow-wrap:anywhere">${["cash","bkash","nagad","rocket","card","due"].filter(k=>R.tot(k)).map(k=>esc(methodLabel(k))+" "+M(R.tot(k))).join(" · ")||"—"}</span></div>
+      ${line(t("repBuy"),M(buy))}
+      ${line(t("repExp"),M(exp))}
+      ${line(t("repOtherInc"),M(R.inc))}
+      ${line(t("repProfit"),M(profit+R.inc-exp),1)}
+    </div>
+    <div class="row" style="gap:8px"><button class="btn primary" data-act="repCsv">${t("repCsv")}</button><button class="btn" data-act="repShare">${I.wa}<span>${t("repShare")}</span></button></div>
+    <p class="small muted" style="margin:0">${t("repNote")}</p>
+  </section>`;
+}
+function repCsv(){
+  const R=repData(), q=v=>'"'+String(v??"").replace(/"/g,'""')+'"', r2=n=>Math.round((n||0)*100)/100;
+  const mon=R.m0.getFullYear()+"-"+String(R.m0.getMonth()+1).padStart(2,"0");
+  const L=[["Store Flow monthly sales and VAT report"],["Shop",S.meta.shopName||""],["Month",mon],["VAT rate %",R.rate],["Prices include VAT",R.incl?"Yes":"No"],[],
+    ["Date","Bills","Gross sales","Discount","Net sales","VAT","Sales excl. VAT","Cash","bKash","Nagad","Rocket","Card","Due (credit)"]];
+  R.rows.forEach(d=>L.push([d.k,d.n,r2(d.gross),r2(d.disc),r2(d.net),r2(d.vat),r2(d.exvat),r2(d.cash),r2(d.bkash),r2(d.nagad),r2(d.rocket),r2(d.card),r2(d.due)]));
+  L.push(["TOTAL",R.n,...["gross","disc","net","vat","exvat","cash","bkash","nagad","rocket","card","due"].map(k=>r2(R.tot(k)))]);
+  L.push([],["Expenses by type","Amount"]); Object.entries(R.cats).forEach(([k,v])=>L.push([k==="purchase"?"Stock purchases":t(k)||k,r2(v)]));
+  L.push(["Other income",r2(R.inc)],["Cost of goods sold",r2(R.tot("cogs"))]);
+  download("store-flow-report-"+mon+".csv","﻿"+L.map(r=>r.map(q).join(",")).join("\r\n"),"text/csv");
+}
+function repShare(){
+  const R=repData(), mon=fdate(R.m0.getTime(),{month:"long",year:"numeric"}), net=R.tot("net");
+  const txt=t("repShareMsg",{shop:S.meta.shopName||"",mon,bills:N(R.n),net:M(net),vat:M(R.tot("vat")),r:N(R.rate),buy:M(R.cats.purchase||0)});
+  window.open(waLink("",txt),"_blank");
 }
 function saleSheet(s){
   openSheet("sale",`<div class="sheet-head"><h2>${t("saleDetail")}</h2><button class="iconbtn" data-act="close" aria-label="${t("cancel")}">${I.x}</button></div>
@@ -1789,6 +1946,41 @@ function saveEntry(){
 }
 
 /* ---------- public shop preview ---------- */
+/* ---------- baki reminders: free one-tap WhatsApp or SMS from the shop phone ---------- */
+function dueByCustomer(){ const by={}; S.sales.filter(s=>s.method==="due"&&!s.paidAt).forEach(s=>{ const k=s.customer||"?"; const o=by[k]=by[k]||{name:k,amt:0,n:0,from:s.at,phone:""}; o.amt+=s.total; o.n++; o.from=Math.min(o.from,s.at); if(s.phone) o.phone=s.phone; }); return by; }
+function dueToRemind(){ const days=+S.meta.remindDays||7, now=Date.now(), rem=S.meta.reminded||{};
+  return Object.values(dueByCustomer()).filter(o=>now-o.from>=days*864e5&&(!rem[o.name]||now-rem[o.name]>=3*864e5)); }
+function remindText(o){ const shop=S.meta.shopName||"", num=S.meta.phone||"";
+  return t("remindMsg",{name:o.name,shop,amt:"৳"+N(o.amt),n:N(o.n),date:fdate(o.from,{day:"numeric",month:"short"})})+(num?" "+t("remindPay",{num}):"")+" "+t("remindThanks"); }
+function remindSheet(name){
+  const o=dueByCustomer()[name]; if(!o) return; const ph=o.phone||(S.meta.custPhones||{})[name]||"";
+  S.edit={remind:name};
+  openSheet("remind",`<div class="sheet-head"><h2>${I.wa.replace("<svg",'<svg width="20" height="20" style="vertical-align:-3px;margin-right:6px"')}${t("remindT",{name:esc(name)})}</h2><button class="iconbtn" data-act="close" aria-label="${t("cancel")}">${I.x}</button></div>
+  <p class="muted" style="margin:0 0 12px">${t("owesYou")}: <b class="num" style="color:var(--warn)">${M(o.amt)}</b> · <span class="num">${N(o.n)}</span> ${t("bills")}</p>
+  <div class="field"><label for="rmPhone">${t("custPhone")}</label><input class="input" id="rmPhone" inputmode="tel" value="${esc(ph)}" placeholder="01XXXXXXXXX"></div>
+  <div class="field"><label for="rmText">${t("remindMsgL")}</label><textarea class="input" id="rmText" rows="5" style="width:100%;resize:vertical">${esc(remindText(o))}</textarea></div>
+  <div class="row" style="gap:8px;margin-top:6px"><button class="btn primary grow" data-act="sendRemind" data-v="wa">${I.wa}<span>WhatsApp</span></button><button class="btn grow" data-act="sendRemind" data-v="sms">${I.inbox}<span>SMS</span></button></div>
+  <p class="small muted" style="margin:10px 0 0">${t("remindFree")}</p>`);
+}
+function sendRemind(how){
+  const name=S.edit&&S.edit.remind; if(!name) return; const ph=$("#rmPhone").value.trim(), txt=$("#rmText").value.trim();
+  if(how==="sms"&&!ph){ toast(t("needPhone")); $("#rmPhone").focus(); return; }
+  S.meta.custPhones=S.meta.custPhones||{}; if(ph) S.meta.custPhones[name]=ph;
+  S.meta.reminded=S.meta.reminded||{}; S.meta.reminded[name]=Date.now(); saveMeta();
+  let d=ph.replace(/[^\d+]/g,""); if(/^01\d{9}$/.test(d)) d="+88"+d;
+  const url=how==="sms"?"sms:"+d+"?body="+encodeURIComponent(txt):waLink(ph,txt);
+  window.open(url,"_blank"); closeSheet(); render();
+}
+function ySummary(){
+  const d=new Date(); d.setHours(0,0,0,0); const to=d.getTime(), from=to-864e5; const ss=S.sales.filter(x=>x.at>=from&&x.at<to), es=S.entries.filter(x=>x.at>=from&&x.at<to);
+  const sl=sum(ss,x=>x.total), pr=sl-sum(ss,x=>sum(x.items,i=>i.qty*i.cost)), ex=sum(es.filter(e=>e.type==="expense"&&e.category!=="purchase"),e=>e.amount), inc=sum(es.filter(e=>e.type==="income"),e=>e.amount);
+  const top={}; ss.forEach(x=>x.items.forEach(i=>{ const k=S.meta.lang==="bn"&&i.nameBn?i.nameBn:i.name; top[k]=(top[k]||0)+i.qty*i.price; }));
+  const best=Object.keys(top).sort((a,b)=>top[b]-top[a]).slice(0,3), low=S.products.filter(p=>stockState(p)!=="ok").map(pname).slice(0,6);
+  const due=sum(S.sales.filter(x=>x.method==="due"&&!x.paidAt),x=>x.total);
+  const L=[(S.meta.shopName||"Store Flow")+" · "+fdate(from,{weekday:"long",day:"numeric",month:"long"}),t("sales")+": "+M(sl)+" ("+N(ss.length)+" "+t("bills")+")",t("profit")+": "+M(pr),t("repExp")+": "+M(ex),t("repProfit")+": "+M(pr+inc-ex),t("dueTotal")+": "+M(due)];
+  if(best.length) L.push(t("topSellers")+": "+best.join(", ")); if(low.length) L.push(t("lowStock")+": "+low.join(", "));
+  window.open(waLink(S.meta.phone||"",L.join("\n")),"_blank");
+}
 function waNumber(){ let d=(S.meta.phone||"").replace(/\D/g,""); if(d.startsWith("0")) d="88"+d; else if(d.length===10&&d.startsWith("1")) d="880"+d; return d; }
 /* ---------- Flow AI ---------- */
 function aiMd(txt){
@@ -1828,6 +2020,15 @@ function vAi(){
     <p class="small muted aifoot"><span class="num">${left?t("aiLeft",{n:N(left)}):t("aiLimit")}</span>${A.access==="trial"?" · "+t("aiTrialNote",{n:N(A.limit)}):""}<br>${t("aiNote")}</p>
   </div>`;
 }
+function fbCsv(){
+  const q=v=>'"'+String(v??"").replace(/"/g,'""').replace(/[\r\n]+/g," ")+'"', shop=S.meta.shopName||"Shop", num=waNumber();
+  const L=[["id","title","description","availability","condition","price","link","image_link","brand","product_type","quantity_to_sell_on_facebook"].join(",")];
+  S.products.filter(p=>p.name&&+p.price>0).forEach(p=>{ const title=p.name+(p.nameBn?" ("+p.nameBn+")":"");
+    L.push([p.id,title.slice(0,150),title+" from "+shop+(p.unit?", per "+p.unit:"")+". Order on WhatsApp.",p.stock>0?"in stock":"out of stock","new",(+p.price).toFixed(2)+" BDT",
+      num?"https:\/\/api.whatsapp.com/send?phone="+num+"&text="+encodeURIComponent("Hi "+shop+", I want to order: "+p.name):"https:\/\/shehransufyani.github.io/Dokan-Khata/",
+      /^https?:/.test(p.photo||"")?p.photo:"https:\/\/shehransufyani.github.io/Dokan-Khata/icons/icon-512.png",shop,p.category||"",Math.max(0,Math.floor(+p.stock||0))].map(q).join(",")); });
+  download("facebook-catalog.csv","﻿"+L.join("\r\n"),"text/csv");
+}
 function vShop(){
   if(!can("shop")) return `<div class="page-head"><div><h1>${t("shop")}</h1></div></div><div class="card locked-card" style="max-width:560px"><div class="lockbadge" style="margin:0 auto 10px">${I.lock}</div><h2>${t("f_shop")}</h2><p class="muted">${t("fd_shop")}</p><p class="muted small">${t("needPlan",{plan:t("tier_pro"),price:N(TIERS.pro.price)})}</p><a class="btn primary" href="#plans">${t("seePlans")}</a></div>`;
   const list=filtered(S.products).sort((a,b)=>(b.stock>0)-(a.stock>0)||pname(a).localeCompare(pname(b)));
@@ -1839,6 +2040,12 @@ function vShop(){
   return `<p class="small muted" style="margin:0 0 10px">${t("shopNote")} ${t("shopLinkSoon")}</p>
   <div class="shophead"><h1>${esc(S.meta.shopName||"Store Flow")}</h1><p>${esc(S.meta.phone||"")}</p></div>
   ${num?"":`<div class="banner"><p>${t("setPhone")}</p><a class="btn" href="#setup">${t("setup")}</a></div>`}
+  <details class="card fbcat" style="margin-bottom:14px"><summary><b>${t("fbTitle")}</b><span class="small muted"> · ${t("fbFree")}</span></summary>
+    <ol class="small" style="margin:10px 0;padding-left:20px;line-height:1.6">${t("fbSteps").split("|").map(x=>`<li>${x}</li>`).join("")}</ol>
+    <div class="row" style="gap:8px">${GAS&&S.auth?`<button class="btn primary" data-act="fbLink">${t("fbLinkBtn")}</button>`:""}<button class="btn" data-act="fbCsv">${t("fbCsvBtn")}</button></div>
+    <div id="fbLinkOut"></div>
+    <p class="small muted" style="margin:10px 0 0">${t("fbPhotoNote")}</p>
+  </details>
   <div class="stack">
   <div class="row"><div class="search">${I.search}<input class="input" id="q" type="search" placeholder="${t("search")}" value="${esc(S.q)}" autocomplete="off"></div></div>
   <div class="chips">${["",...cats()].map(c=>`<button class="chip ${S.cat===c?"on":""}" data-act="cat" data-v="${esc(c)}">${esc(c||t("all"))}</button>`).join("")}</div>
@@ -1859,6 +2066,7 @@ function vSetup(){
       <div class="field"><label for="sPhone">${t("whatsapp")}</label><input class="input num" id="sPhone" data-meta="phone" inputmode="tel" placeholder="017XXXXXXXX" value="${esc(S.meta.phone)}"></div>
       <div class="field"><label>${t("language")}</label><div class="seg"><button class="${S.meta.lang==="en"?"on":""}" data-act="setLang" data-v="en">English</button><button class="${S.meta.lang==="bn"?"on":""}" data-act="setLang" data-v="bn">বাংলা</button></div></div>
       <label class="row" style="gap:8px;flex-wrap:nowrap"><input type="checkbox" id="sCount" data-meta="showCount" ${S.meta.showCount?"checked":""} style="width:20px;height:20px"> <span>${t("showCount")}</span></label>
+      ${GAS&&S.auth&&String(S.auth.login||"").includes("@")?`<label class="row" style="gap:8px;flex-wrap:nowrap"><input type="checkbox" data-meta="dailyEmail" ${S.meta.dailyEmail!==false?"checked":""} style="width:20px;height:20px"> <span>${t("dailyEmail")}</span></label>`:""}
     </section>
     <section class="card stack"><h2>${t("backup")}</h2>
       ${!can("export")?`<p class="muted" style="margin:0">${t("fd_export")}</p><div><button class="btn" data-act="upgrade" data-f="export">${t("seePlans")}${lockIc()}</button></div>`:`<div class="row"><button class="btn" data-act="exportJson">${t("exportJson")}</button><button class="btn" data-act="exportCsv">${t("exportCsv")}</button>
@@ -1901,7 +2109,7 @@ function resizeImage(file){ return new Promise(res=>{ const r=new FileReader(); 
 /* ---------- events ---------- */
 const A={
   lang(){ S.meta.lang=S.meta.lang==="bn"?"en":"bn"; saveMeta(); shell(); render(); },
-  more(){ openSheet("more",`<div class="sheet-head"><h2>${t("more")}</h2><button class="iconbtn" data-act="close" aria-label="${t("cancel")}">${I.x}</button></div>${planCard()}<div class="morelist"><a href="#ai">${I.spark}${t("ai")}</a><a href="#shop">${I.shop}${t("shop")}</a><a href="#setup">${I.gear}${t("setup")}</a><a href="#guide">${I.book}${t("guide")}</a><a href="#plans">${I.star}${t("plans")}</a></div><div class="langtog" style="margin-top:12px">${I.globe}<button class="${S.meta.lang==="en"?"on":""}" data-act="setLang" data-v="en">English</button><button class="${S.meta.lang==="bn"?"on":""}" data-act="setLang" data-v="bn">বাংলা</button></div>`); },
+  more(){ openSheet("more",`<div class="sheet-head"><h2>${t("more")}</h2><button class="iconbtn" data-act="close" aria-label="${t("cancel")}">${I.x}</button></div>${planCard()}<div class="morelist">${CONFIG.ai?`<a href="#ai">${I.spark}${t("ai")}</a>`:""}<a href="#shop">${I.shop}${t("shop")}</a><a href="#setup">${I.gear}${t("setup")}</a><a href="#guide">${I.book}${t("guide")}</a><a href="#plans">${I.star}${t("plans")}</a></div><div class="langtog" style="margin-top:12px">${I.globe}<button class="${S.meta.lang==="en"?"on":""}" data-act="setLang" data-v="en">English</button><button class="${S.meta.lang==="bn"?"on":""}" data-act="setLang" data-v="bn">বাংলা</button></div>`); },
   loadSample(){ if(S.products.length||S.sales.length) return; seed(); S.meta.seeded=true; saveMeta(); shell(); render(); toast(t("sampleOn")); },
   setLang(el){ S.meta.lang=el.dataset.v; saveMeta(); if(S.sheet) closeSheet(); shell(); render(); },
   period(el){ S.period=el.dataset.v; render(); },
@@ -1948,6 +2156,19 @@ const A={
   gatePeek(){ S.meta.demoStart=S.meta.demoStart||0; $("#gateRoot").innerHTML=""; document.body.classList.remove("gated"); S.peek=true; },
   upgrade(el){ upgradeSheet(el.dataset.f); },
   aiSug(el){ askAi(el.dataset.v); },
+  quickBill(){ quickBillSheet(); },
+  fbCsv(){ fbCsv(); },
+  fbLink(el){ el.disabled=true; gs("catalogLink",S.auth.token).then(u=>{ const o=$("#fbLinkOut"); if(o) o.innerHTML=`<div class="row" style="gap:8px;margin-top:10px"><input class="input grow" readonly value="${esc(u)}" style="min-width:0" onclick="this.select()"><button class="btn" data-act="copyVal" data-v="${esc(u)}">${t("copy")}</button></div>`; }).catch(()=>toast(t("fbErr"))).finally(()=>{ el.disabled=false; }); },
+  copyVal(el){ copyText(el.dataset.v,t("copied")); },
+  copyParcel(el){ const o=S.orders.find(x=>x.id===el.dataset.id); if(o) copyText(parcelText(o),t("parcelCopied")); },
+  repMonth(el){ S.repOff=Math.min(0,(+S.repOff||0)+(+el.dataset.v)); render(); },
+  repCsv(){ repCsv(); },
+  repShare(){ repShare(); },
+  ySummary(){ ySummary(); },
+  remind(el){ remindSheet(el.dataset.v); },
+  sendRemind(el){ sendRemind(el.dataset.v); },
+  qbMic(){ qbMic(); },
+  qbAdd(){ qbAdd(); },
   buy(el){ paySheet(el.dataset.v); },
   payMethod(el){ S.edit.method=el.dataset.v; document.querySelectorAll("#paySeg button").forEach(b=>b.classList.toggle("on",b===el)); $("#payBody").innerHTML=payBody(); },
   overlay(el,ev){ if(ev.target===el) closeSheet(); }
@@ -1962,9 +2183,11 @@ document.addEventListener("click",ev=>{
 document.addEventListener("submit",ev=>{ ev.preventDefault(); const f=ev.target;
   if(f.id==="authForm"){ doAuth(); return; } if(f.id==="storeForm"){ doStore(); return; }
   if(f.id==="codeForm"||f.id==="gateCodeForm") activate($(f.id==="codeForm"?"#codeIn":"#gateCodeIn").value); else if(f.id==="payForm") submitPayment(); else if(f.id==="pForm") saveProduct(f); else if(f.id==="rForm") saveRestock(f); else if(f.id==="eForm") saveEntry(); else if(f.id==="oForm") saveOrder(); else if(f.id==="aiForm") askAi($("#aiQ").value); });
+document.addEventListener("change",ev=>{ const el=ev.target; if(el.id==="oTrack"){ const o=S.orders.find(x=>x.id===el.dataset.id); if(!o) return; o.trackId=el.value.trim(); if(o.trackId&&o.status==="pending") o.status="sent"; DB.put("orders",o); orderSheet(o); render(); toast(t("saved")); } });
 document.addEventListener("input",ev=>{
   const el=ev.target;
   if(el.id==="aiQ"){ S.aiDraft=el.value; return; }
+  if(el.id==="qbText"){ qbPreview(); return; }
   if(el.id==="termsChk"){ $("#termsBtn").disabled=!el.checked; return; }
   if(el.id==="q"){ S.q=el.value; const g=$("#grid"); if(!g) return;
     if(S.view==="sell") g.innerHTML=sellGrid(); else if(S.view==="products") render(), $("#q").focus(), $("#q").setSelectionRange(S.q.length,S.q.length); else if(S.view==="shop") { render(); const q=$("#q"); q.focus(); q.setSelectionRange(S.q.length,S.q.length);} return; }
