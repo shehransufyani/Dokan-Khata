@@ -10,7 +10,7 @@
 
 var PLANS = { basic: 'Shuru (৳500)', standard: 'Bepsha (৳800)', pro: 'Pro (৳1200)' };
 /** Payment options people can pay for. Pro Yearly gives a 12-month Pro code. */
-var PAY_PLANS = { basic: PLANS.basic, standard: PLANS.standard, pro: PLANS.pro, yearly: 'Pro Yearly (৳12000)' };
+var PAY_PLANS = { basic: PLANS.basic, standard: PLANS.standard, pro: PLANS.pro, yearly: 'Pro Yearly (৳10000)' };
 function payTerms_(opt) { return opt === 'yearly' ? { tier: 'pro', months: 12, note: 'Yearly · ' } : { tier: opt, months: 1, note: '' }; }
 var SHEETS = {
   codes:    ['Code', 'Business', 'Phone', 'Plan', 'Expires', 'Status', 'Created', 'Note', 'Account'],
@@ -21,7 +21,7 @@ var SHEETS = {
 var SHEET_NAMES = { codes: 'Codes', payments: 'Payments', data: 'Data', accounts: 'Accounts' };
 var TRIAL_MS = 7 * 24 * 60 * 60 * 1000; // 7-day free trial
 var STORES = ['products', 'sales', 'entries', 'orders', 'meta'];
-var PRICES = { basic: 500, standard: 800, pro: 1200, yearly: 12000 };
+var PRICES = { basic: 500, standard: 800, pro: 1200, yearly: 10000 };
 
 /* ---------- web app ---------- */
 function doGet() {
@@ -194,7 +194,7 @@ function ask_(ui, title, prompt) {
   return r.getSelectedButton() === ui.Button.OK ? r.getResponseText().trim() : null;
 }
 function askPlan_(ui) {
-  var t = ask_(ui, 'Plan', 'Type 1 for Shuru (৳500), 2 for Bepsha (৳800), 3 for Pro (৳1200) or 4 for Pro Yearly (৳12000, 12 months)');
+  var t = ask_(ui, 'Plan', 'Type 1 for Shuru (৳500), 2 for Bepsha (৳800), 3 for Pro (৳1200) or 4 for Pro Yearly (৳10000, 12 months)');
   return t === null ? null : ({ '1': 'basic', '2': 'standard', '3': 'pro', '4': 'yearly' })[t] || null;
 }
 function showCode_(ui, res, biz) {
