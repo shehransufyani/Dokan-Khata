@@ -94,20 +94,36 @@ function appLink_(code) {
 }
 
 /* ---------- shop data ---------- */
-/** Returns everything stored for this account: {products:[], sales:[], entries:[], meta:[]} */
+/** Returns everything stored for this account: {products:[], sales:[], entries:[], meta:[]}.
+ *  If the sheet holds the same item twice (an old save bug), only the copy the app last saved is returned. */
 function loadAll(token) {
   var c = { code: auth_(token).id };
   var out = { products: [], sales: [], entries: [], orders: [], meta: [] };
   var sh = sheet_('data'), last = sh.getLastRow();
   if (last < 2) return out;
-  var rows = sh.getRange(2, 1, last - 1, 5).getValues();
+  var rows = sh.getRange(2, 1, last - 1, 5).getValues(), pick = {}, order = [];
   for (var i = 0; i < rows.length; i++) {
     if (norm_(rows[i][0]) !== c.code || !out[rows[i][1]]) continue;
-    try { out[rows[i][1]].push(JSON.parse(rows[i][4])); } catch (e) {}
+    var k = rows[i][1] + '|' + rows[i][2];
+    if (!(k in pick)) order.push(k);
+    if (!(k in pick) || newer_(rows[i], rows[pick[k]])) pick[k] = i;
   }
+  order.forEach(function (k) { var r = rows[pick[k]]; try { out[r[1]].push(JSON.parse(r[4])); } catch (e) {} });
   return out;
 }
-/** ops: [{op:'put'|'del'|'clear', store, id, obj}] applied in order. Writes need a running trial or a plan that has not ended. */
+/** Which of two Data rows for the same item is the one to keep: the later save, or the lower row when the times tie. */
+function newer_(a, b) { var ta = +new Date(a[3]) || 0, tb = +new Date(b[3]) || 0; return ta >= tb; }
+/** Deletes sheet rows (row numbers), merging neighbours into one call so big clean-ups stay fast. */
+function deleteRows_(sh, list) {
+  list = list.filter(function (r, i, x) { return r > 1 && x.indexOf(r) === i; }).sort(function (a, b) { return b - a; });
+  for (var i = 0; i < list.length;) {
+    var j = i; while (j + 1 < list.length && list[j + 1] === list[j] - 1) j++;
+    sh.deleteRows(list[j], j - i + 1);
+    i = j + 1;
+  }
+}
+/** ops: [{op:'put'|'del'|'clear', store, id, obj}] applied in order. Writes need a running trial or a plan that has not ended.
+ *  Each item has exactly one row: a put updates it and removes any extra copies of it. */
 function saveBatch(token, ops) {
   var a = auth_(token);
   if (!trialOn_(a) && !usable_(a.code)) throw new Error('LOCKED');
@@ -115,9 +131,15 @@ function saveBatch(token, ops) {
   var lock = LockService.getScriptLock(); lock.waitLock(20000);
   try {
     var sh = sheet_('data'), last = sh.getLastRow();
-    var keys = last > 1 ? sh.getRange(2, 1, last - 1, 3).getValues() : [];
+    var keys = last > 1 ? sh.getRange(2, 1, last - 1, 4).getValues() : [];
+    // index: key -> row number to keep (or 'aN' = appended in this batch); extra copies of a key go to deleteRows.
     var index = {}, deleteRows = [], appends = [];
-    for (var i = 0; i < keys.length; i++) index[norm_(keys[i][0]) + '|' + keys[i][1] + '|' + keys[i][2]] = i + 2;
+    for (var i = 0; i < keys.length; i++) {
+      if (norm_(keys[i][0]) !== c.code) continue;
+      var k = c.code + '|' + keys[i][1] + '|' + keys[i][2];
+      if (!(k in index)) { index[k] = i + 2; continue; }
+      if (newer_(keys[i], keys[index[k] - 2])) { deleteRows.push(index[k]); index[k] = i + 2; } else deleteRows.push(i + 2);
+    }
     (ops || []).forEach(function (o) {
       if (STORES.indexOf(o.store) < 0) return;
       if (o.op === 'clear') {
@@ -143,9 +165,32 @@ function saveBatch(token, ops) {
     });
     appends = appends.filter(function (r) { return r; });
     if (appends.length) sh.getRange(sh.getLastRow() + 1, 1, appends.length, 5).setValues(appends);
-    deleteRows.sort(function (a, b) { return b - a; }).forEach(function (r) { if (r > 1) sh.deleteRow(r); });
+    deleteRows_(sh, deleteRows);
   } finally { lock.releaseLock(); }
   return true;
+}
+/** Sheet menu: removes duplicate copies of the same item in Data, keeping the copy saved last. Makes a backup sheet first. */
+function menuCleanDuplicates() {
+  var ui = SpreadsheetApp.getUi(), r = cleanDuplicates_();
+  ui.alert('Duplicates removed', r.n ? r.n + ' extra copies were removed. A copy of the old Data sheet was kept as "' + r.backup + '".' : 'No duplicates found.', ui.ButtonSet.OK);
+}
+function cleanDuplicates_() {
+  var lock = LockService.getScriptLock(); lock.waitLock(30000);
+  try {
+    var sh = sheet_('data'), last = sh.getLastRow();
+    if (last < 2) return { n: 0 };
+    var rows = sh.getRange(2, 1, last - 1, 4).getValues(), keep = {}, drop = [];
+    for (var i = 0; i < rows.length; i++) {
+      var k = norm_(rows[i][0]) + '|' + rows[i][1] + '|' + rows[i][2];
+      if (!(k in keep)) { keep[k] = i; continue; }
+      if (newer_(rows[i], rows[keep[k]])) { drop.push(keep[k] + 2); keep[k] = i; } else drop.push(i + 2);
+    }
+    if (!drop.length) return { n: 0 };
+    var name = 'Data backup ' + Utilities.formatDate(new Date(), 'Asia/Dhaka', 'yyyy-MM-dd HH:mm');
+    sh.copyTo(ss_()).setName(name).hideSheet();
+    deleteRows_(sh, drop);
+    return { n: drop.length, backup: name };
+  } finally { lock.releaseLock(); }
 }
 
 /* ---------- plan payments ---------- */
@@ -254,6 +299,7 @@ function onOpen() {
     .addItem('Reset password of selected account', 'menuResetPassword')
     .addSeparator()
     .addItem('Update owner dashboard', 'menuDashboard')
+    .addItem('Remove duplicate products and sales', 'menuCleanDuplicates')
     .addItem('Send renewal reminders now', 'menuReminders')
     .addSeparator()
     .addItem('Open admin panel', 'menuAdmin')

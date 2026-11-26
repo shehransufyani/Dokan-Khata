@@ -751,6 +751,8 @@ const $ = (s,r=document) => r.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const uid = () => Date.now().toString(36)+Math.random().toString(36).slice(2,8);
 const sum = (a,f) => a.reduce((x,y)=>x+(+f(y)||0),0);
+/* one entry per id (the last copy wins), so two cards can never share a product id */
+const uniqById = a => { const m=new Map(); (a||[]).forEach(o=>{ if(o&&o.id!=null){ m.delete(String(o.id)); m.set(String(o.id),o); } }); return [...m.values()]; };
 const nf = () => new Intl.NumberFormat(S.meta.lang==="bn"?"bn-BD":"en-IN",{maximumFractionDigits:2});
 const N = n => nf().format(Math.round((+n||0)*100)/100);
 const M = n => (n<0?"−":"")+"৳"+N(Math.abs(n));
@@ -807,10 +809,19 @@ const Sync = {
   },
   async pull(){
     if(!GAS||!S.auth) return;
+    if(this.q.length) await this.flush();
     let d; try{ d=await gs("loadAll",S.auth.token); }catch(e){ return; }
-    d.orders=d.orders||[]; const has=d.products.length||d.sales.length||d.entries.length||d.orders.length;
+    const ST=["products","sales","entries","orders"];
+    ST.forEach(st=>{ d[st]=uniqById(d[st]||[]); });
+    const has=d.products.length||d.sales.length||d.entries.length||d.orders.length;
     if(has){
-      ["products","sales","entries","orders"].forEach(st=>{ DB.clear(st); S[st]=d[st]; d[st].forEach(o=>DB.put(st,o)); });
+      // changes made on this device that are not online yet stay on top of what the sheet sent
+      this.q.forEach(op=>{ const L=d[op.store]; if(!L||op.store==="meta") return;
+        if(op.op==="clear") d[op.store]=[];
+        else if(op.op==="del") d[op.store]=L.filter(x=>x.id!==op.id);
+        else if(op.op==="put"&&op.obj){ d[op.store]=L.filter(x=>x.id!==op.obj.id); d[op.store].push(op.obj); } });
+      // only this device is refreshed here; nothing is sent back, so opening the app never rewrites the sheet
+      localOnly(()=>ST.forEach(st=>{ DB.clear(st); S[st]=d[st]; d[st].forEach(o=>DB.put(st,o)); }));
       const m=(d.meta||[]).find(x=>x.id==="settings");
       if(m){ const keep={acct:S.meta.acct,paySent:S.meta.paySent,shopName:S.meta.shopName,lang:S.meta.lang,access:S.meta.access,demoStart:S.meta.demoStart,termsOk:S.meta.termsOk,guideSeen:S.meta.guideSeen,scanMode:S.meta.scanMode,scanSound:S.meta.scanSound}; S.meta=Object.assign(S.meta,m,keep); }
       S.meta.sample=false; DB.put("meta",S.meta); S.cart=[]; shell(); render();
@@ -2221,7 +2232,7 @@ document.addEventListener("change",async ev=>{
   if(el.id==="oDel"||el.id==="oAdv"){ renderOLines(); }
   if(el.id==="pPhoto"&&el.files[0]){ S.edit.photo=await resizeImage(el.files[0]); if(S.edit.photo) $("#pPhotoPrev").innerHTML=`<img src="${S.edit.photo}" alt="">`; }
   if(el.id==="importFile"&&el.files[0]){ try{ const d=JSON.parse(await el.files[0].text()); if(!["store-flow","dokan-khata"].includes(d.app)||!Array.isArray(d.products)) throw 0;
-      wipe(); S.products=d.products; S.sales=d.sales||[]; S.entries=d.entries||[]; S.orders=d.orders||[]; S.meta=Object.assign(S.meta,d.meta||{},{id:"settings"});
+      wipe(); S.products=uniqById(d.products); S.sales=uniqById(d.sales); S.entries=uniqById(d.entries); S.orders=uniqById(d.orders); S.meta=Object.assign(S.meta,d.meta||{},{id:"settings"});
       S.products.forEach(p=>DB.put("products",p)); S.sales.forEach(s=>DB.put("sales",s)); S.entries.forEach(e=>DB.put("entries",e)); S.orders.forEach(o=>DB.put("orders",o)); saveMeta(); shell(); render(); toast(t("imported"));
     }catch(e){ toast(t("badFile")); } el.value=""; }
 });
