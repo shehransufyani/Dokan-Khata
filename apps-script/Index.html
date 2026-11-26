@@ -486,6 +486,29 @@ body::before{background:var(--bg)}
 .d-qa{display:none}
 @media (min-width:900px){.deskwrap{display:block;padding-bottom:0!important}.deskwrap+.main{padding-top:4px}.m-qa{display:none}.d-qa{display:block}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+/* Helper button, chat and walk-through */
+.hbfab{position:fixed;right:max(14px,env(safe-area-inset-right,0px));bottom:calc(78px + env(safe-area-inset-bottom,0px));z-index:30;display:inline-flex;align-items:center;gap:8px;border:0;border-radius:999px;padding:11px 16px 11px 13px;background:var(--accent);color:var(--accent-ink);font-family:var(--font-head);font-weight:600;font-size:.95rem;box-shadow:0 10px 26px -6px rgba(0,0,0,.55);transition:bottom .2s ease,transform .12s}
+.hbfab:active{transform:scale(.96)}
+.hbfab svg{width:20px;height:20px}
+.hbfab.cart{bottom:calc(148px + env(safe-area-inset-bottom,0px))}
+@media (min-width:900px){.hbfab,.hbfab.cart{bottom:24px;right:24px}}
+.hbfab.new::after{content:"";position:absolute;inset:-5px;border-radius:999px;border:2px solid var(--accent);animation:hbp 1.8s ease-out infinite;pointer-events:none}
+@keyframes hbp{from{opacity:.9;transform:scale(1)}to{opacity:0;transform:scale(1.22)}}
+@media (prefers-reduced-motion:reduce){.hbfab.new::after{animation:none}.co-spot{transition:none}}
+.hbico{width:30px;height:30px;border-radius:10px;background:var(--accent-soft);color:var(--accent);display:inline-grid;place-items:center;flex:none}.hbico svg{width:18px;height:18px}
+.hblog{display:flex;flex-direction:column;gap:10px;min-height:120px;max-height:min(52vh,460px);overflow:auto;padding:2px 2px 10px;overscroll-behavior:contain}
+.hbm{max-width:94%;padding:10px 13px;border-radius:16px;line-height:1.5}
+.hbm.me{align-self:flex-end;background:var(--accent);color:var(--accent-ink);border-bottom-right-radius:6px;font-weight:500}
+.hbm.bot{align-self:flex-start;background:var(--surface-2);border:1px solid var(--line-2);border-bottom-left-radius:6px}
+.hbm ol{margin:6px 0 10px;padding-left:22px}.hbm li{margin:4px 0}
+.hblive{margin:6px 0 8px;padding:8px 10px;border-radius:10px;background:var(--accent-soft)}
+.hbchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.hbchips .chip{white-space:normal;text-align:left;padding:6px 12px;font-size:.88rem}
+.hbform{display:flex;gap:8px;align-items:center}.hbform .input{flex:1;min-width:0}
+.iconbtn.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+#coachRoot{position:fixed;inset:0;z-index:70;pointer-events:none}
+.co-spot{position:fixed;border-radius:14px;box-shadow:0 0 0 3px var(--accent),0 0 0 9999px rgba(4,12,9,.66);transition:left .25s ease,top .25s ease,width .25s ease,height .25s ease;pointer-events:none}
+.co-tip{position:fixed;pointer-events:auto;background:var(--surface);color:var(--ink);border:1px solid var(--accent-line);border-radius:16px;padding:12px 14px;box-shadow:0 18px 44px rgba(0,0,0,.5)}
+.co-tip p{margin:6px 0 10px;font-size:1.02rem;line-height:1.45}
 </style>
 </head>
 <body>
@@ -1047,7 +1070,7 @@ const GUIDE=[["g1","setup"],["g2","products"],["g3","sell"],["g4","sell"],["g5",
 function vGuide(){
   return `<div class="page-head"><div><h1>${t("guide")}</h1><p>${t("guideSub")}</p></div>
     <div class="seg" style="min-width:200px"><button class="${S.meta.lang==="en"?"on":""}" data-act="setLang" data-v="en">English</button><button class="${S.meta.lang==="bn"?"on":""}" data-act="setLang" data-v="bn">বাংলা</button></div></div>
-  <p class="row" style="margin:0 0 12px"><a class="linkbtn" href="#terms">${t("terms")} →</a>${GAS&&S.auth?`<button class="btn" data-act="tourAgain">${t("tourAgain")}</button>`:""}</p><ol class="guide">${GUIDE.map(([g,v])=>`<li class="card"><div class="gnum num">${N(+g.slice(1))}</div><div style="min-width:0"><h2>${t(g+"t")}</h2><p>${t(g+"b")}</p>${curTier()||v==="plans"?`<a class="linkbtn" href="#${v}">${t("tryIt")} →</a>`:""}</div></li>`).join("")}</ol>`;
+  <p class="row" style="margin:0 0 12px"><a class="linkbtn" href="#terms">${t("terms")} →</a>${GAS&&S.auth?`<button class="btn" data-act="tourAgain">${t("tourAgain")}</button>`:""}<button class="btn primary" data-act="helper">${I.spark}<span>${t("hbTitle")}</span></button></p><ol class="guide">${GUIDE.map(([g,v])=>`<li class="card"><div class="gnum num">${N(+g.slice(1))}</div><div style="min-width:0"><h2>${t(g+"t")}</h2><p>${t(g+"b")}</p>${curTier()||v==="plans"?`<a class="linkbtn" href="#${v}">${t("tryIt")} →</a>`:""}</div></li>`).join("")}</ol>`;
 }
 
 /* ---------- accounts (Apps Script version): log in, shop name, walkthrough, trial ---------- */
@@ -1461,7 +1484,8 @@ function shell(){
     <main class="main" id="main"></main>
   </div>
   <nav class="bottomnav" aria-label="Main">${MNAV.map(([v,ic])=>`<a href="#${v}" data-nav="${v}">${I[ic]}<span>${t(v)}</span></a>`).join("")}<button data-act="more" data-nav="more">${I.dots}<span>${t("more")}</span></button></nav>
-  <div id="cartbarRoot"></div>`;
+  <div id="cartbarRoot"></div>
+  <button class="hbfab${lsGet("dk-hb")?"":" new"}" data-act="helper" aria-label="${t("hbTitle")}">${I.spark}<span>${t("hbFab")}</span></button>`;
 }
 function planCard(){
   const tr=curTier();
@@ -1483,6 +1507,7 @@ function render(){
 }
 function renderCartbar(){
   const r=$("#cartbarRoot"); if(!r) return;
+  document.querySelector(".hbfab")?.classList.toggle("cart",S.view==="sell"&&S.cart.length>0);
   if(S.view!=="sell"||!S.cart.length){ r.innerHTML=""; return; }
   const n=sum(S.cart,c=>c.qty);
   r.innerHTML=`<div class="cartbar"><button data-act="openCart"><span>${t("checkout")} · <span class="num">${N(n)}</span></span><span class="num">${M(cartTotals().total)}</span></button></div>`;
@@ -1699,21 +1724,11 @@ function quickBillSheet(){
   <button class="btn primary block" data-act="qbAdd" id="qbAddBtn" disabled>${t("qbAdd")}</button>`);
   setTimeout(()=>$("#qbText")?.focus(),50);
 }
-function qbMic(){
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition; if(!SR){ toast(t("qbMicErr")); return; }
-  if(S.qbRec){ try{S.qbRec.stop();}catch(e){} return; }
-  const r=new SR(); r.lang=S.meta.lang==="bn"?"bn-BD":"en-IN"; r.interimResults=false; r.maxAlternatives=1; S.qbRec=r;
-  const b=$("#qbMic"); if(b){ b.classList.add("primary"); b.querySelector("span").textContent=t("qbListening"); }
-  r.onresult=e=>{ const said=[...e.results].map(x=>x[0].transcript).join(" "); const ta=$("#qbText"); if(ta){ ta.value=(ta.value.trim()?ta.value.trim()+", ":"")+said; qbPreview(); } };
-  r.onerror=e=>{ if(e.error!=="no-speech"&&e.error!=="aborted") toast(t("qbMicErr")); };
-  r.onend=()=>{ S.qbRec=null; const b=$("#qbMic"); if(b){ b.classList.remove("primary"); b.querySelector("span").textContent=t("qbSpeak"); } };
-  try{ r.start(); }catch(e){ S.qbRec=null; toast(t("qbMicErr")); }
-}
 function qbAdd(){
   const lines=qbParse($("#qbText").value).filter(l=>!l.miss); let n=0;
   lines.forEach(l=>{ const q=Math.min(l.qty,Math.max(0,l.p.stock)); if(!(q>0)) return; const c=S.cart.find(x=>x.pid===l.p.id);
     if(c){ c.qty=Math.min(Math.round((c.qty+q)*1000)/1000,l.p.stock); c.price=l.price; } else S.cart.push({pid:l.p.id,qty:q,price:l.price}); n++; });
-  if(S.qbRec){ try{S.qbRec.stop();}catch(e){} }
+  if(S.rec){ try{S.rec.stop();}catch(e){} }
   closeSheet(); if(n){ toast(t("qbAdded",{n:N(n)})); } else toast(t("onlyLeft",{n:N(0)})); render();
 }
 function completeSale(){
@@ -2111,22 +2126,6 @@ function openSheet(name,html){ S.sheet=name; $("#sheetRoot").innerHTML=`<div cla
 function closeSheet(){ if(S.scanStream){S.scanStream.getTracks().forEach(x=>x.stop());S.scanStream=null;} S.sheet=null; S.armed=null; $("#sheetRoot").innerHTML=""; }
 let toastT; function toast(m){ $("#toastRoot").innerHTML=`<div class="toast" role="status">${esc(m)}</div>`; clearTimeout(toastT); toastT=setTimeout(()=>$("#toastRoot").innerHTML="",2600); }
 
-async function openScanner(target){
-  S.scanTarget=target==="form"?"form":null;
-  if(!("BarcodeDetector" in window)||!navigator.mediaDevices?.getUserMedia){ toast(t("noCamScan")); return; }
-  const prev=S.sheet==="product"?$("#sheetBody").innerHTML:null;
-  try{
-    const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"}});
-    const det=new BarcodeDetector();
-    const holder=document.createElement("div"); holder.className="overlay"; holder.style.zIndex=55;
-    holder.innerHTML=`<div class="sheet"><div class="sheet-head"><h2>${t("camera")}</h2><button class="iconbtn" id="scanClose">${I.x}</button></div><video class="scan" playsinline autoplay muted></video></div>`;
-    document.body.appendChild(holder); const v=holder.querySelector("video"); v.srcObject=stream;
-    let done=false; const stop=()=>{done=true;stream.getTracks().forEach(x=>x.stop());holder.remove();};
-    holder.querySelector("#scanClose").onclick=stop;
-    const loop=async()=>{ if(done) return; try{ const r=await det.detect(v); if(r&&r[0]){ stop(); handleBarcode(r[0].rawValue); return; } }catch(e){} setTimeout(loop,250); };
-    v.onloadedmetadata=loop;
-  }catch(e){ toast(t("camDenied")); }
-}
 function resizeImage(file){ return new Promise(res=>{ const r=new FileReader(); r.onload=()=>{ const img=new Image(); img.onload=()=>{ const s=320, sc=Math.min(1,s/Math.max(img.width,img.height)); const c=document.createElement("canvas"); c.width=Math.round(img.width*sc); c.height=Math.round(img.height*sc); c.getContext("2d").drawImage(img,0,0,c.width,c.height); res(c.toDataURL("image/jpeg",.78)); }; img.onerror=()=>res(""); img.src=r.result; }; r.onerror=()=>res(""); r.readAsDataURL(file); }); }
 
 /* ---------- events ---------- */
@@ -2238,6 +2237,413 @@ document.addEventListener("keydown",e=>{ const el=e.target; if(el&&el.id==="gq"&
 function route(){ const h=location.hash.replace("#",""); S.view=VIEWS.includes(h)?h:"home"; if(S.view==="guide"&&!S.meta.guideSeen){ S.meta.guideSeen=true; saveMeta(); } S.q=""; S.cat=""; S.armed=null; if(S.sheet) closeSheet(); render(); window.scrollTo(0,0); }
 addEventListener("hashchange",route);
 let wasWide=wide(); addEventListener("resize",()=>{ const w=wide(); if(w!==wasWide){ wasWide=w; if(S.sheet==="cart") closeSheet(); if(S.view==="sell") render(); } });
+
+/* ---------- camera and mic ----------
+   Google serves the Apps Script app inside a frame that is not allowed to use the camera or the microphone.
+   A small window opened from the app is a normal page, so the browser can ask for the camera and mic there.
+   It sends each barcode or spoken sentence straight back to the app. On GitHub Pages it all runs in the page. */
+Object.assign(T.en,{camAim:"Point the camera at the barcode. Keep it steady and in good light.",camAllow:"Camera permission was refused. Tap the lock or camera icon in the address bar, allow the camera, then open the scanner again.",camNone:"No camera could be opened here. Take a photo of the barcode instead.",camLost:"The Store Flow tab was closed. Close this window and open the scanner again.",camReading:"Reading the barcode…",camNoCode:"No barcode found. Hold the phone closer, fill the photo with the barcode, and try again.",camPhoto:"Take a photo of the barcode",camPhotoHelp:"Your phone camera opens. Take a clear, close photo of the barcode and the app reads it.",camGot:"Barcode {code} added to the product",camDone:"Done",camHint:"Scanned items go straight into your bill. Tap Done when you finish.",camPop:"Allow pop-ups for this site so the camera window can open.",micT:"Speak",micListening:"Listening… speak now",micTap:"Tap the mic and speak",micGot:"Got it. Sending to Store Flow…",micUse:"Use this",micNoSR:"This browser cannot turn speech into text. Tap the box below, then tap the mic on your phone keyboard.",micDenied:"Microphone permission was refused. Tap the lock icon in the address bar, allow the microphone, then try again.",micNoSpeech:"I didn't hear anything. Tap the mic and try again.",micErr:"Voice typing stopped. Check your internet, then tap the mic again.",micPh:"Your words show here. You can fix them before sending."});
+Object.assign(T.bn,{camAim:"বারকোডের দিকে ক্যামেরা ধরুন। হাত স্থির রাখুন, আলো যেন ভালো থাকে।",camAllow:"ক্যামেরার অনুমতি দেওয়া হয়নি। ঠিকানার ঘরের তালা বা ক্যামেরা চিহ্নে চাপ দিয়ে ক্যামেরা চালু করুন, তারপর আবার স্ক্যানার খুলুন।",camNone:"এখানে ক্যামেরা খোলা যাচ্ছে না। বরং বারকোডের একটি ছবি তুলুন।",camLost:"স্টোর ফ্লো-র ট্যাব বন্ধ হয়ে গেছে। এই উইন্ডো বন্ধ করে আবার স্ক্যানার খুলুন।",camReading:"বারকোড পড়ছি…",camNoCode:"বারকোড পাওয়া যায়নি। ফোন আরও কাছে ধরুন, ছবিতে যেন বারকোডটাই বড় করে আসে, তারপর আবার চেষ্টা করুন।",camPhoto:"বারকোডের ছবি তুলুন",camPhotoHelp:"ফোনের ক্যামেরা খুলবে। বারকোডের কাছ থেকে একটি পরিষ্কার ছবি তুলুন, অ্যাপ নিজেই পড়ে নেবে।",camGot:"পণ্যে বারকোড {code} যোগ হয়েছে",camDone:"শেষ",camHint:"স্ক্যান করা পণ্য সরাসরি বিলে যোগ হবে। শেষ হলে শেষ চাপুন।",camPop:"ক্যামেরার উইন্ডো খুলতে এই সাইটের জন্য পপ-আপ চালু করুন।",micT:"বলুন",micListening:"শুনছি… এখন বলুন",micTap:"মাইকে চাপ দিয়ে বলুন",micGot:"পেয়েছি। স্টোর ফ্লো-তে পাঠাচ্ছি…",micUse:"এটা নিন",micNoSR:"এই ব্রাউজার কথা থেকে লেখা বানাতে পারে না। নিচের ঘরে চাপ দিয়ে ফোনের কিবোর্ডের মাইক চাপুন।",micDenied:"মাইক্রোফোনের অনুমতি দেওয়া হয়নি। ঠিকানার ঘরের তালা চিহ্নে চাপ দিয়ে মাইক্রোফোন চালু করুন, তারপর আবার চেষ্টা করুন।",micNoSpeech:"কিছু শুনতে পাইনি। মাইকে চাপ দিয়ে আবার বলুন।",micErr:"ভয়েস টাইপিং থেমে গেছে। ইন্টারনেট দেখে আবার মাইকে চাপ দিন।",micPh:"আপনার কথা এখানে লেখা হবে। পাঠানোর আগে ঠিক করে নিতে পারবেন।"});
+
+const ZX_URL="https:\/\/cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js";
+function allowsHere(f){ if(!window.isSecureContext) return false; try{ const fp=document.permissionsPolicy||document.featurePolicy; if(fp&&fp.allowsFeature) return fp.allowsFeature(f); }catch(e){} return !GAS; }
+let zxP=null, bdOk=null, bdet=null, zxr=null, decCv=null;
+function loadZX(){ if(window.ZXing) return Promise.resolve(window.ZXing);
+  if(!zxP) zxP=new Promise((res,rej)=>{ const s=document.createElement("script"); s.src=ZX_URL; s.async=true; s.onload=()=>window.ZXing?res(window.ZXing):rej(new Error("zx")); s.onerror=()=>{ zxP=null; rej(new Error("zx")); }; document.head.appendChild(s); });
+  return zxP; }
+async function useBD(){ if(bdOk!==null) return bdOk; bdOk=false;
+  try{ if("BarcodeDetector" in window){ const f=await BarcodeDetector.getSupportedFormats(); if(f&&f.length){ bdet=new BarcodeDetector(); bdOk=true; } } }catch(e){}
+  return bdOk; }
+function warmDecoder(){ useBD().then(ok=>{ if(!ok) loadZX().catch(()=>{}); }); }
+/* reads one picture (ImageData) and returns the barcode text, or null */
+async function decodeFrame(img){
+  if(await useBD()){ try{ const r=await bdet.detect(img); return r&&r[0]?r[0].rawValue:null; }catch(e){ return null; } }
+  const Z=await loadZX();
+  if(!zxr){ const h=new Map(), F=Z.BarcodeFormat; h.set(Z.DecodeHintType.POSSIBLE_FORMATS,[F.EAN_13,F.EAN_8,F.UPC_A,F.UPC_E,F.CODE_128,F.CODE_39,F.CODE_93,F.ITF,F.CODABAR,F.QR_CODE,F.DATA_MATRIX]); h.set(Z.DecodeHintType.TRY_HARDER,true); zxr=new Z.MultiFormatReader(); zxr.setHints(h); }
+  decCv=decCv||document.createElement("canvas"); decCv.width=img.width; decCv.height=img.height; decCv.getContext("2d",{willReadFrequently:true}).putImageData(img,0,0);
+  try{ return zxr.decodeWithState(new Z.BinaryBitmap(new Z.HybridBinarizer(new Z.HTMLCanvasElementLuminanceSource(decCv)))).getText(); }catch(e){ return null; }
+}
+function grabFrame(src,sw,sh,max,cv){ const sc=Math.min(1,max/Math.max(sw,sh)); cv.width=Math.max(1,Math.round(sw*sc)); cv.height=Math.max(1,Math.round(sh*sc)); const c=cv.getContext("2d",{willReadFrequently:true}); c.drawImage(src,0,0,cv.width,cv.height); return c.getImageData(0,0,cv.width,cv.height); }
+async function decodeFile(file){
+  const url=URL.createObjectURL(file);
+  try{ const img=await new Promise((res,rej)=>{ const i=new Image(); i.onload=()=>res(i); i.onerror=rej; i.src=url; }); const cv=document.createElement("canvas");
+    for(const m of [1400,900,2200]){ const c=await decodeFrame(grabFrame(img,img.naturalWidth,img.naturalHeight,m,cv)); if(c) return c; } return null; }
+  catch(e){ return null; } finally{ URL.revokeObjectURL(url); }
+}
+/* what a scan does in the app; the camera window shows the label */
+function scanResult(code){
+  code=String(code||"").trim(); if(!code) return {label:"",close:false};
+  if(S.scanTarget==="form"){ handleBarcode(code); return {label:t("camGot",{code}),close:true}; }
+  const p=S.products.find(x=>x.barcode&&x.barcode===code);
+  handleBarcode(code);
+  if(!p) return {label:t("notFound")+" ("+code+")",close:true,bad:true};
+  const c=S.cart.find(x=>x.pid===p.id); return {label:"✓ "+pname(p)+(c?" × "+N(c.qty):""),close:false};
+}
+const SFM={cb:null, decode:img=>decodeFrame(img), decodeFile:f=>decodeFile(f), onCode:c=>scanResult(c), onSpeech:txt=>{ const cb=SFM.cb; SFM.cb=null; if(cb) cb(String(txt||"")); }};
+window.SFM=SFM;
+
+/* the camera window: its code runs in the new window and talks to the app through window.opener */
+function scanPopup(L){
+  const O=window.opener, v=document.getElementById("v"), st=document.getElementById("st"), log=document.getElementById("log"), cv=document.createElement("canvas");
+  let stream=null, last="", lastAt=0, busy=false, stop=false;
+  const say=(m,c)=>{ st.textContent=m; st.className=c||""; };
+  const beep=ok=>{ try{ const a=new (window.AudioContext||window.webkitAudioContext)(), o=a.createOscillator(), g=a.createGain(); o.frequency.value=ok?1250:330; g.gain.value=.12; o.connect(g); g.connect(a.destination); o.start(); setTimeout(()=>{ o.stop(); a.close(); },ok?110:260); }catch(e){} };
+  const end=()=>{ stop=true; if(stream) stream.getTracks().forEach(x=>x.stop()); window.close(); };
+  document.getElementById("done").onclick=end;
+  addEventListener("pagehide",()=>{ if(stream) stream.getTracks().forEach(x=>x.stop()); });
+  const got=code=>{ let r={label:code}; try{ r=O.SFM.onCode(code)||r; }catch(e){ say(L.lost,"bad"); return; }
+    beep(!r.bad); try{ navigator.vibrate&&navigator.vibrate(60); }catch(e){}
+    const li=document.createElement("div"); li.className="it"+(r.bad?" bad":""); li.textContent=r.label; log.prepend(li); say(r.label,r.bad?"bad":"ok");
+    if(r.close) setTimeout(end,900); };
+  const tick=async()=>{ if(stop) return; if(!O||O.closed){ say(L.lost,"bad"); return; }
+    if(v.readyState>=2&&v.videoWidth&&!busy){ busy=true;
+      try{ const sc=Math.min(1,960/Math.max(v.videoWidth,v.videoHeight)); cv.width=Math.round(v.videoWidth*sc); cv.height=Math.round(v.videoHeight*sc); const c=cv.getContext("2d",{willReadFrequently:true}); c.drawImage(v,0,0,cv.width,cv.height);
+        const code=await O.SFM.decode(c.getImageData(0,0,cv.width,cv.height)); const now=Date.now(); if(code){ if(code!==last||now-lastAt>1500) got(code); last=code; lastAt=now; } }catch(e){}
+      busy=false; }
+    setTimeout(tick,180); };
+  const ph=document.getElementById("photo");
+  ph.onchange=async()=>{ const f=ph.files[0]; if(!f) return; say(L.reading); let code=null; try{ code=await O.SFM.decodeFile(f); }catch(e){} ph.value=""; if(code) got(code); else say(L.noCode,"bad"); };
+  (async()=>{ try{ if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia) throw new Error("none");
+      stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"},width:{ideal:1280},height:{ideal:720}},audio:false});
+      v.srcObject=stream; await v.play(); say(L.aim); tick(); }
+    catch(e){ document.body.classList.add("nocam"); say(e&&e.name==="NotAllowedError"?L.denied:L.nocam,"bad"); } })();
+}
+/* the mic window */
+function micPopup(L){
+  const O=window.opener, SR=window.SpeechRecognition||window.webkitSpeechRecognition, out=document.getElementById("txt"), st=document.getElementById("st"), b=document.getElementById("mic");
+  let rec=null, fin="", on=false, bad=false;
+  const say=(m,c)=>{ st.textContent=m; st.className=c||""; bad=c==="bad"; };
+  const send=()=>{ const s=out.value.trim(); try{ if(s&&O&&!O.closed) O.SFM.onSpeech(s); }catch(e){} window.close(); };
+  document.getElementById("use").onclick=send;
+  document.getElementById("cancel").onclick=()=>window.close();
+  const start=()=>{ if(!SR){ say(L.noSR,"bad"); out.focus(); return; }
+    if(on){ try{ rec.stop(); }catch(e){} return; }
+    rec=new SR(); rec.lang=L.lang; rec.interimResults=true; rec.continuous=false; rec.maxAlternatives=1; fin=out.value.trim();
+    rec.onstart=()=>{ on=true; b.classList.add("on"); say(L.listening,"ok"); };
+    rec.onresult=e=>{ let f="", tmp=""; for(let i=e.resultIndex;i<e.results.length;i++){ const r=e.results[i]; if(r.isFinal) f+=r[0].transcript; else tmp+=r[0].transcript; }
+      if(f.trim()) fin=(fin?fin+", ":"")+f.trim(); out.value=fin+(tmp?(fin?", ":"")+tmp:""); };
+    rec.onerror=e=>{ say(e.error==="not-allowed"||e.error==="service-not-allowed"?L.denied:e.error==="no-speech"?L.noSpeech:L.err,"bad"); };
+    rec.onend=()=>{ on=false; b.classList.remove("on"); out.value=fin; if(fin&&!bad){ say(L.got,"ok"); setTimeout(send,700); } else if(!bad) say(L.tap); };
+    try{ rec.start(); }catch(e){ say(L.err,"bad"); } };
+  b.onclick=start; start();
+}
+function mediaPage(kind,L){
+  const css="*{box-sizing:border-box}body{margin:0;min-height:100vh;font:16px/1.5 'Hind Siliguri',system-ui,sans-serif;background:#0A1712;color:#EAF6EF;display:flex;flex-direction:column;gap:12px;padding:16px}h1{font:600 1.15rem Poppins,system-ui,sans-serif;margin:0}.top{display:flex;align-items:center;justify-content:space-between;gap:10px}button,.btn{font:inherit;font-weight:600;border-radius:12px;border:1px solid #284A39;background:#163024;color:#EAF6EF;padding:11px 16px;min-height:46px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-align:center}.pri{background:#3DDC97;color:#05281A;border-color:#3DDC97}video{width:100%;max-height:52vh;object-fit:cover;border-radius:16px;background:#000}#st{min-height:1.5em;color:#9BB8A8}#st.ok{color:#3DDC97}#st.bad{color:#F5B93A}.it{padding:8px 12px;border-radius:10px;background:#10241B;border:1px solid #1C3628;margin-bottom:6px}.it.bad{border-color:#F5B93A}.hint{color:#9BB8A8;font-size:.9rem;margin:0}body.nocam video{display:none}textarea{width:100%;min-height:120px;border-radius:12px;border:1px solid #284A39;background:#10241B;color:#EAF6EF;padding:12px;font:inherit}#mic{width:120px;height:120px;border-radius:50%;margin:10px auto;background:#163024;border:2px solid #3DDC97;color:#3DDC97}#mic svg{width:52px;height:52px}#mic.on{background:#3DDC97;color:#05281A;animation:p 1.2s infinite}@keyframes p{50%{box-shadow:0 0 0 14px rgba(61,220,151,.18)}}.row{display:flex;gap:10px}.row>*{flex:1}";
+  const body=kind==="scan"
+    ?`<div class="top"><h1>${esc(L.title)}</h1><button class="pri" id="done">${esc(L.done)}</button></div><video id="v" playsinline muted autoplay></video><div id="st">…</div><label class="btn" for="photo">${esc(L.photo)}</label><input type="file" id="photo" accept="image/png,image/jpeg,image/webp,image/heic" capture="environment" hidden><p class="hint">${esc(L.hint)}</p><div id="log"></div>`
+    :`<div class="top"><h1>${esc(L.title)}</h1><button id="cancel">✕</button></div><button id="mic" aria-label="${esc(L.title)}">${I.mic}</button><div id="st" style="text-align:center">…</div><textarea id="txt" placeholder="${esc(L.ph)}"></textarea><div class="row"><button class="pri" id="use">${esc(L.use)}</button></div>`;
+  const fn=kind==="scan"?scanPopup:micPopup;
+  return `<!doctype html><html lang="${S.meta.lang==="bn"?"bn":"en"}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(L.title)}</title><style>${css}</style></head><body>${body}<script>(${fn.toString()})(${JSON.stringify(L).replace(/</g,"\\u003c")});<\/script></body></html>`;
+}
+/* opens the camera or mic window; must run straight inside the tap, or the browser blocks it */
+function mediaWin(kind){
+  const L=kind==="scan"
+    ?{title:t("camera"),aim:t("camAim"),denied:t("camAllow"),nocam:t("camNone"),lost:t("camLost"),reading:t("camReading"),noCode:t("camNoCode"),done:t("camDone"),photo:t("camPhoto"),hint:t(S.scanTarget==="form"?"camPhotoHelp":"camHint")}
+    :{title:t("micT"),lang:S.meta.lang==="bn"?"bn-BD":"en-IN",listening:t("micListening"),tap:t("micTap"),got:t("micGot"),use:t("micUse"),noSR:t("micNoSR"),denied:t("micDenied"),noSpeech:t("micNoSpeech"),err:t("micErr"),ph:t("micPh")};
+  let w=null;
+  try{ const url=URL.createObjectURL(new Blob([mediaPage(kind,L)],{type:"text/html"})); w=window.open(url,"sf_"+kind,wide()?"popup,width=460,height=720":""); setTimeout(()=>URL.revokeObjectURL(url),120000); }catch(e){ w=null; }
+  return w;
+}
+/* photo fallback: the phone's own camera app takes a picture and the app reads the barcode in it */
+function photoScan(){
+  const h=document.createElement("div"); h.className="overlay"; h.style.zIndex=56;
+  h.innerHTML=`<div class="sheet"><div class="sheet-head"><h2>${t("camera")}</h2><button class="iconbtn" data-x aria-label="${t("cancel")}">${I.x}</button></div><p class="muted" style="margin:0 0 12px">${t("camPhotoHelp")}</p><label class="btn primary block" for="scanPhoto">${I.scan}<span>${t("camPhoto")}</span></label><input type="file" id="scanPhoto" accept="image/png,image/jpeg,image/webp,image/heic" capture="environment" hidden><p class="small muted" id="scanPhotoMsg" style="margin:10px 0 0"></p></div>`;
+  document.body.appendChild(h); warmDecoder();
+  h.querySelector("[data-x]").onclick=()=>h.remove(); h.onclick=e=>{ if(e.target===h) h.remove(); };
+  const inp=h.querySelector("#scanPhoto"), msg=m=>{ h.querySelector("#scanPhotoMsg").textContent=m; };
+  inp.onchange=async()=>{ const f=inp.files[0]; if(!f) return; msg(t("camReading")); const code=await decodeFile(f); inp.value=""; if(code){ h.remove(); handleBarcode(code); } else msg(t("camNoCode")); };
+}
+async function openScanner(target){
+  S.scanTarget=target==="form"?"form":null; warmDecoder();
+  if(!allowsHere("camera")||!navigator.mediaDevices?.getUserMedia){
+    if(mediaWin("scan")) return;
+    toast(t("camPop")); photoScan(); return;
+  }
+  let stream;
+  try{ stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"},width:{ideal:1280},height:{ideal:720}}}); }
+  catch(e){ toast(e&&e.name==="NotAllowedError"?t("camAllow"):t("camNone")); photoScan(); return; }
+  const h=document.createElement("div"); h.className="overlay"; h.style.zIndex=55;
+  h.innerHTML=`<div class="sheet"><div class="sheet-head"><h2>${t("camera")}</h2><button class="iconbtn" data-x aria-label="${t("cancel")}">${I.x}</button></div><video class="scan" playsinline autoplay muted></video><p class="small muted" id="scanMsg" style="margin:8px 0">${t("camAim")}</p><button class="btn block" data-photo>${t("camPhoto")}</button></div>`;
+  document.body.appendChild(h); const v=h.querySelector("video"), cv=document.createElement("canvas"); v.srcObject=stream;
+  let done=false; const stop=()=>{ done=true; stream.getTracks().forEach(x=>x.stop()); h.remove(); };
+  h.querySelector("[data-x]").onclick=stop; h.querySelector("[data-photo]").onclick=()=>{ stop(); photoScan(); };
+  let last="", lastAt=0;
+  const loop=async()=>{ if(done) return;
+    try{ if(v.readyState>=2&&v.videoWidth){ const code=await decodeFrame(grabFrame(v,v.videoWidth,v.videoHeight,960,cv));
+      const now=Date.now(); if(code&&!(code===last&&now-lastAt<=1500)){ last=code; lastAt=now; const r=scanResult(code); const m=h.querySelector("#scanMsg"); if(m) m.textContent=r.label; if(r.close) setTimeout(stop,r.bad?0:500); } else if(code) lastAt=now; } }catch(e){}
+    setTimeout(loop,200); };
+  v.onloadedmetadata=loop;
+}
+/* voice: in the page when allowed, otherwise in the mic window */
+function listen(cb,onState){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){ toast(t("qbMicErr")); return; }
+  if(allowsHere("microphone")){
+    if(S.rec){ try{ S.rec.stop(); }catch(e){} return; }
+    const r=new SR(); r.lang=S.meta.lang==="bn"?"bn-BD":"en-IN"; r.interimResults=false; r.maxAlternatives=1; S.rec=r; if(onState) onState(true);
+    r.onresult=e=>cb([...e.results].map(x=>x[0].transcript).join(" "));
+    r.onerror=e=>{ if(e.error!=="no-speech"&&e.error!=="aborted") toast(t("qbMicErr")); };
+    r.onend=()=>{ S.rec=null; if(onState) onState(false); };
+    try{ r.start(); }catch(e){ S.rec=null; if(onState) onState(false); toast(t("qbMicErr")); }
+    return;
+  }
+  SFM.cb=cb; if(!mediaWin("mic")){ SFM.cb=null; toast(t("qbMicErr")); }
+}
+function qbMic(){
+  listen(said=>{ const ta=$("#qbText"); if(ta){ ta.value=(ta.value.trim()?ta.value.trim()+", ":"")+said; qbPreview(); } },
+    on=>{ const b=$("#qbMic"); if(b){ b.classList.toggle("primary",on); b.querySelector("span").textContent=t(on?"qbListening":"qbSpeak"); } });
+}
+
+/* ---------- Helper: a free, built-in guide that answers "how do I…" and walks the owner through each screen ----------
+   It needs no AI key and works offline. It matches the question against the list below (English, Bangla and
+   Banglish words). If Flow AI is switched on later (CONFIG.ai), questions it cannot match go to Flow AI. */
+Object.assign(T.en,{hbFab:"Help",hbTitle:"Store Flow Helper",hbSub:"Ask how to do anything. I show you where to tap. Free, works without internet.",hbPh:"How do I… (e.g. add a product)",hbHello:"Hi! I can show you how to use Store Flow. Ask in English or Bangla, or tap a question.",hbHere:"On this screen, people often ask:",hbShow:"Show me",hbOpen:"Open this screen",hbRelated:"Related",hbMiss:"I don't know that one yet. Try different words, or pick one of these:",hbMissAi:"Let me ask Flow AI…",hbGuide:"Read the full guide",hbNoEl:"I can't see this button right now. It may need another plan, or the screen needs more data first. Tap Next to go on.",hbDoneT:"Done! Ask me anything else any time.",hbNow:"Right now",hbOnly:"Your helper",hbMore:"More questions",
+ v_home:"Home",v_sell:"Sell",v_orders:"Orders",v_products:"Products",v_money:"Money",v_shop:"My shop",v_setup:"Setup",v_plans:"Plans",v_guide:"Guide",v_ai:"Flow AI"});
+Object.assign(T.bn,{hbFab:"সাহায্য",hbTitle:"স্টোর ফ্লো সহায়ক",hbSub:"কীভাবে কী করবেন জিজ্ঞেস করুন। কোথায় চাপতে হবে দেখিয়ে দেব। ফ্রি, ইন্টারনেট ছাড়াও চলে।",hbPh:"কীভাবে… (যেমন: পণ্য যোগ করব)",hbHello:"আসসালামু আলাইকুম! স্টোর ফ্লো কীভাবে চালাবেন, আমি দেখিয়ে দিতে পারি। বাংলা বা ইংরেজিতে জিজ্ঞেস করুন, বা একটি প্রশ্নে চাপুন।",hbHere:"এই পাতায় সবাই সাধারণত জানতে চায়:",hbShow:"দেখিয়ে দিন",hbOpen:"পাতাটি খুলুন",hbRelated:"আরও জানুন",hbMiss:"এটা এখনো জানি না। অন্য কথায় জিজ্ঞেস করুন, বা এগুলোর একটি বাছুন:",hbMissAi:"ফ্লো এআই-কে জিজ্ঞেস করছি…",hbGuide:"পুরো গাইড পড়ুন",hbNoEl:"এই বোতামটি এখন দেখা যাচ্ছে না। হয়তো অন্য প্ল্যানে আছে, বা আগে আরও তথ্য লাগবে। এগোতে পরেরটি চাপুন।",hbDoneT:"হয়ে গেছে! আর কিছু জানতে চাইলে যেকোনো সময় জিজ্ঞেস করুন।",hbNow:"এই মুহূর্তে",hbOnly:"আপনার সহায়ক",hbMore:"আরও প্রশ্ন",
+ v_home:"হোম",v_sell:"বিক্রি",v_orders:"অর্ডার",v_products:"পণ্য",v_money:"হিসাব",v_shop:"আমার দোকান",v_setup:"সেটআপ",v_plans:"প্ল্যান",v_guide:"গাইড",v_ai:"ফ্লো এআই"});
+
+const navSel=v=>`.bottomnav [data-nav="${v}"],.side [data-nav="${v}"]`;
+const nav=v=>({nav:v,s:navSel(v),en:"Tap "+(T.en[v]||v)+" in the menu.",bn:"মেনু থেকে "+(T.bn[v]||v)+" চাপুন।"});
+const st=(s,en,bn,o)=>Object.assign({s,en,bn},o||{});
+/* k: words people use (comma separated). a: answer steps split by |. tour: the walk-through. fn: a live answer from the shop's own numbers */
+const HELP=[
+ {id:"addProduct",v:"products",k:{en:"add product,new product,add item,new item,create product,add goods,product add,notun product,mal add,mal tolbo,item add",bn:"পণ্য যোগ,নতুন পণ্য,প্রোডাক্ট যোগ,মাল যোগ,আইটেম যোগ,নতুন মাল,পণ্য এড,পণ্য তুলব,পণ্য রাখব"},
+  t:{en:"Add a product",bn:"পণ্য যোগ করা"},
+  a:{en:"Open Products and tap Add product.|Type the name. You can add a Bangla name too.|Write the selling price, what it cost you, and how many you have.|Tap Save. It shows on the Sell screen right away.",bn:"পণ্য পাতায় গিয়ে পণ্য যোগ করুন চাপুন।|নাম লিখুন। চাইলে বাংলা নামও দিন।|বিক্রির দাম, কেনা দাম আর কতগুলো আছে লিখুন।|সেভ চাপুন। সঙ্গে সঙ্গে বিক্রি পাতায় দেখা যাবে।"},
+  tour:[nav("products"),st('[data-act="newProduct"]',"Tap Add product.","পণ্য যোগ করুন চাপুন।"),st("#pName","Type the product name here.","এখানে পণ্যের নাম লিখুন।"),st("#pPrice","The price you sell it for.","যে দামে বিক্রি করবেন।"),st("#pCost","What it cost you. The app uses this to show your real profit.","আপনার কেনা দাম। এটা দিয়েই আসল লাভ দেখায়।"),st("#pStock","How many you have now.","এখন কতগুলো আছে।"),st('#pForm button[type="submit"]',"Tap Save. Done!","সেভ চাপুন। হয়ে গেল!")]},
+ {id:"sell",v:"sell",k:{en:"sell,make a sale,new sale,make bill,bill,sale,billing,checkout,cash memo,sell item,bikri,bikri korbo,bill korbo,memo",bn:"বিক্রি,বিক্রি করব,বিল,বিল করব,মেমো,ক্যাশ মেমো,বেচা,বিক্রি লিখব,নতুন বিক্রি"},
+  t:{en:"Make a sale",bn:"বিক্রি করা"},
+  a:{en:"Open Sell.|Tap product pictures to add them to the bill. Tap again to add more.|Open the bill, choose how the customer paid (cash, bKash, Nagad, card or due).|Tap Complete sale. Stock goes down by itself.",bn:"বিক্রি পাতা খুলুন।|পণ্যের ছবিতে চাপ দিয়ে বিলে যোগ করুন। আবার চাপলে সংখ্যা বাড়বে।|বিল খুলে কীভাবে টাকা দিল বাছুন (ক্যাশ, বিকাশ, নগদ, কার্ড বা বাকি)।|বিক্রি শেষ চাপুন। স্টক নিজে থেকেই কমে যাবে।"},
+  tour:[nav("sell"),st(".ptile","Tap a product picture to add it to the bill. Tap again for more.","পণ্যের ছবিতে চাপ দিন, বিলে যোগ হবে। আবার চাপলে আরও একটি।"),st('.cartbar button,#cartPanel',"This is the bill. On a phone, tap it to open.","এটাই বিল। ফোনে চাপ দিয়ে খুলুন।"),st('[data-act="method"]',"Choose how the customer paid.","ক্রেতা কীভাবে টাকা দিল বাছুন।"),st('[data-act="completeSale"]',"Tap Complete sale. Stock and reports update by themselves.","বিক্রি শেষ চাপুন। স্টক আর হিসাব নিজে থেকেই ঠিক হবে।")]},
+ {id:"camera",v:"sell",k:{en:"scan,camera,scan barcode,barcode camera,scan with phone,phone camera,qr,scanner camera,camera scan,scan product",bn:"স্ক্যান,ক্যামেরা,বারকোড স্ক্যান,ক্যামেরায় স্ক্যান,ফোনের ক্যামেরা,কিউআর,বারকোড পড়া"},
+  t:{en:"Scan barcodes with the camera",bn:"ক্যামেরায় বারকোড স্ক্যান"},
+  a:{en:"Open Sell and tap Scan with camera.|The first time, allow the camera. On the online app a small camera window opens. That is normal.|Point at the barcode. Each scan adds the item to the bill with a beep. Tap Done when you finish.|No luck? Tap Take a photo of the barcode instead.",bn:"বিক্রি পাতায় ক্যামেরায় স্ক্যান চাপুন।|প্রথমবার ক্যামেরার অনুমতি দিন। অনলাইন অ্যাপে ছোট একটি ক্যামেরা উইন্ডো খুলবে, এটাই স্বাভাবিক।|বারকোডের দিকে ধরুন। প্রতিটি স্ক্যানে বিপ শব্দসহ পণ্য বিলে যোগ হবে। শেষ হলে শেষ চাপুন।|না হলে বারকোডের ছবি তুলুন চাপুন।"},
+  tour:[nav("sell"),st('[data-act="camera"][data-target="sell"]',"Tap Scan with camera. Allow the camera the first time.","ক্যামেরায় স্ক্যান চাপুন। প্রথমবার ক্যামেরার অনুমতি দিন।")]},
+ {id:"usbScanner",v:"sell",k:{en:"usb scanner,barcode scanner,bluetooth scanner,barcode gun,scanner machine,connect scanner,scanner",bn:"বারকোড স্ক্যানার,ইউএসবি স্ক্যানার,ব্লুটুথ স্ক্যানার,স্ক্যানার মেশিন,স্ক্যানার লাগাব"},
+  t:{en:"Use a USB or Bluetooth scanner",bn:"ইউএসবি বা ব্লুটুথ স্ক্যানার"},
+  a:{en:"Plug in a USB scanner, or pair a Bluetooth scanner with your phone.|On Sell, tap Barcode scanner so it stays ready.|Scan. Each code adds the item with a beep. An unknown code lets you add it as a new product.",bn:"ইউএসবি স্ক্যানার লাগান, বা ফোনের সঙ্গে ব্লুটুথ স্ক্যানার জোড়া দিন।|বিক্রি পাতায় বারকোড স্ক্যানার চাপুন, তাহলে সবসময় তৈরি থাকবে।|স্ক্যান করুন। প্রতিটি কোডে বিপসহ পণ্য যোগ হবে। অজানা কোড হলে নতুন পণ্য হিসেবে যোগ করতে পারবেন।"},
+  tour:[nav("sell"),st('[data-act="scanMode"]',"Tap Barcode scanner. Then just scan.","বারকোড স্ক্যানার চাপুন। তারপর শুধু স্ক্যান করুন।"),st("#scanInput","You can also type a barcode here and press Enter.","চাইলে এখানে বারকোড লিখে Enter চাপতে পারেন।")]},
+ {id:"barcodeProduct",v:"products",k:{en:"barcode to product,link barcode,save barcode,product barcode,add barcode,set barcode",bn:"পণ্যে বারকোড,বারকোড যোগ,বারকোড সেভ,বারকোড বসাব"},
+  t:{en:"Save a barcode on a product",bn:"পণ্যে বারকোড সেভ"},
+  a:{en:"Open Products and tap the product.|In the Barcode box, scan or type the code. The scan button next to it uses the camera.|Tap Save.",bn:"পণ্য পাতায় পণ্যটিতে চাপুন।|বারকোড ঘরে স্ক্যান করুন বা কোড লিখুন। পাশের বোতাম দিয়ে ক্যামেরায় স্ক্যান হয়।|সেভ চাপুন।"},
+  tour:[nav("products"),st('[data-act="editProduct"]',"Tap a product to open it.","একটি পণ্যে চাপ দিয়ে খুলুন।"),st("#pBarcode","Scan or type the barcode here. The button beside it opens the camera.","এখানে বারকোড স্ক্যান করুন বা লিখুন। পাশের বোতামে ক্যামেরা খোলে।"),st('#pForm button[type="submit"]',"Tap Save.","সেভ চাপুন।")]},
+ {id:"voice",v:"sell",k:{en:"voice,mic,microphone,speak,talk,quick bill,voice bill,say,dictate,bole bill,mukhe bole",bn:"ভয়েস,মাইক,মাইক্রোফোন,মুখে বলে,বলে বিল,দ্রুত বিল,কথা বলে,বলব"},
+  t:{en:"Bill by voice (quick bill)",bn:"মুখে বলে বিল (দ্রুত বিল)"},
+  a:{en:"Open Sell and tap Quick bill.|Tap Speak and say the items, for example: 2 kg rice 140 taka, 1 soap. On the online app a small mic window opens.|Check the list, then tap Add to bill.|You can also type, or use the mic on your phone keyboard.",bn:"বিক্রি পাতায় দ্রুত বিল চাপুন।|বলুন চেপে পণ্যের নাম বলুন, যেমন: ২ কেজি চাল ১৪০ টাকা, ১টা সাবান। অনলাইন অ্যাপে ছোট একটি মাইক উইন্ডো খুলবে।|তালিকা দেখে বিলে যোগ করুন চাপুন।|চাইলে লিখতেও পারেন, বা ফোনের কিবোর্ডের মাইক ব্যবহার করুন।"},
+  tour:[nav("sell"),st('[data-act="quickBill"]',"Tap Quick bill.","দ্রুত বিল চাপুন।"),st("#qbMic","Tap Speak and say what the customer is buying.","বলুন চেপে ক্রেতা কী কিনছেন বলুন।"),st("#qbAddBtn","Check the list, then tap Add to bill.","তালিকা মিলিয়ে বিলে যোগ করুন চাপুন।")]},
+ {id:"dueSale",v:"sell",k:{en:"due,credit,baki,sell on credit,sell on due,udhar,khata,credit sale,customer will pay later,pay later",bn:"বাকি,বাকিতে বিক্রি,বাকি লিখব,ধার,উধার,খাতা,পরে দেবে,বাকির খাতা"},
+  t:{en:"Sell on due (baki)",bn:"বাকিতে বিক্রি"},
+  a:{en:"Add the items on Sell as usual.|In the bill, choose Due as the payment.|Write the customer's name, and their phone for reminders.|Tap Complete sale. It shows in Money, Due.",bn:"বিক্রি পাতায় যথারীতি পণ্য যোগ করুন।|বিলে পেমেন্ট হিসেবে বাকি বাছুন।|কাস্টমারের নাম লিখুন, মনে করাতে ফোন নম্বরও দিন।|বিক্রি শেষ চাপুন। হিসাব পাতার বাকি ঘরে দেখা যাবে।"},
+  tour:[nav("sell"),st(".ptile","Add the items to the bill first.","আগে পণ্যগুলো বিলে যোগ করুন।"),st('.cartbar button,#cartPanel',"Open the bill.","বিল খুলুন।"),st('[data-act="method"][data-v="due"],[data-act="upgrade"][data-f="due"]',"Choose Due.","বাকি বাছুন।"),st("#coCust","Write the customer's name.","কাস্টমারের নাম লিখুন।"),st('[data-act="completeSale"]',"Tap Complete sale.","বিক্রি শেষ চাপুন।")]},
+ {id:"collectDue",v:"money",k:{en:"collect due,who owes,remind,reminder,mark paid,got paid,due list,customer paid,baki tola,baki aday,owe me",bn:"বাকি আদায়,কে বাকি,বাকি তোলা,মনে করাব,রিমাইন্ড,টাকা পেয়েছি,বাকির তালিকা,বাকি শোধ,কে কত টাকা দেবে"},
+  t:{en:"Collect due and send reminders",bn:"বাকি আদায় ও মনে করানো"},
+  a:{en:"Open Money and tap the Due tab.|You see who owes you and how much.|Tap Remind to send a WhatsApp or SMS from your own phone (free).|When they pay, tap Mark as paid.",bn:"হিসাব পাতায় বাকি ট্যাব চাপুন।|কে কত টাকা বাকি রেখেছে দেখবেন।|মনে করান চাপলে নিজের ফোন থেকে হোয়াটসঅ্যাপ বা এসএমএস যাবে (ফ্রি)।|টাকা দিলে টাকা পেয়েছি চাপুন।"},
+  tour:[nav("money"),st('[data-act="mtab"][data-v="due"]',"Tap the Due tab.","বাকি ট্যাবে চাপুন।"),st('[data-act="remind"]',"Tap Remind to send a message from your phone.","মনে করান চাপলে আপনার ফোন থেকে মেসেজ যাবে।"),st('[data-act="markPaid"]',"When they pay, tap here.","টাকা দিলে এখানে চাপুন।")]},
+ {id:"expense",v:"money",k:{en:"expense,cost,spend,rent,bill payment,salary,electricity,add expense,money out,khoroch,khoroc,vara",bn:"খরচ,খরচ লিখব,ভাড়া,বেতন,বিদ্যুৎ বিল,টাকা খরচ,খরচের হিসাব,দোকান ভাড়া"},
+  t:{en:"Write an expense (rent, salary, bills)",bn:"খরচ লেখা (ভাড়া, বেতন, বিল)"},
+  a:{en:"On Home tap Money out, or open Money, Income and expenses.|Choose Expense, write the amount and what it was for.|Tap Save. Your net earnings update.",bn:"হোমে টাকা খরচ চাপুন, বা হিসাব পাতায় আয় ও খরচ খুলুন।|খরচ বাছুন, টাকার পরিমাণ আর কীসের খরচ লিখুন।|সেভ চাপুন। আপনার নিট আয় ঠিক হয়ে যাবে।"},
+  tour:[nav("money"),st('[data-act="mtab"][data-v="cashbook"]',"Tap Income and expenses.","আয় ও খরচ চাপুন।"),st('[data-act="newEntry"]',"Tap Add.","যোগ চাপুন।"),st("#eAmt","Write the amount.","টাকার পরিমাণ লিখুন।"),st('#eForm button[type="submit"]',"Tap Save.","সেভ চাপুন।")]},
+ {id:"income",v:"money",k:{en:"income,money in,other income,add income,aay,ay",bn:"আয়,অন্য আয়,আয় লিখব,টাকা আয়"},
+  t:{en:"Write other income",bn:"অন্য আয় লেখা"},
+  a:{en:"Open Money, Income and expenses, and tap Add.|Choose Income, write the amount and a note.|Tap Save.",bn:"হিসাব পাতায় আয় ও খরচ খুলে যোগ চাপুন।|আয় বাছুন, টাকার পরিমাণ ও নোট লিখুন।|সেভ চাপুন।"},
+  tour:[nav("money"),st('[data-act="mtab"][data-v="cashbook"]',"Tap Income and expenses.","আয় ও খরচ চাপুন।"),st('[data-act="newEntry"]',"Tap Add.","যোগ চাপুন।"),st('[data-act="etype"][data-v="income"]',"Choose Income.","আয় বাছুন।"),st("#eAmt","Write the amount, then Save.","টাকার পরিমাণ লিখে সেভ করুন।")]},
+ {id:"restock",v:"products",k:{en:"restock,add stock,stock in,new stock,more stock,update stock,purchase,bought goods,stock barano,mal kinlam",bn:"স্টক যোগ,স্টক বাড়াব,নতুন মাল এসেছে,মাল কিনেছি,স্টক আপডেট,মাল আনলাম"},
+  t:{en:"Add stock when new goods arrive",bn:"নতুন মাল এলে স্টক যোগ"},
+  a:{en:"Open Products.|Tap the + Stock button on the product.|Write how many came in. You can also log what you paid.|Tap Save.",bn:"পণ্য পাতা খুলুন।|পণ্যের পাশে স্টক যোগের বোতাম চাপুন।|কতগুলো এসেছে লিখুন। চাইলে কত টাকায় কিনলেন তাও লিখুন।|সেভ চাপুন।"},
+  tour:[nav("products"),st('[data-act="restock"]',"Tap the add stock button on a product.","পণ্যের স্টক যোগ বোতামে চাপুন।"),st("#rQty","How many came in.","কতগুলো এসেছে।"),st('#rForm button[type="submit"]',"Tap Save.","সেভ চাপুন।")]},
+ {id:"lowStock",v:"products",k:{en:"low stock,running out,finished,out of stock,stock alert,what to buy",bn:"স্টক কম,শেষ হয়ে যাচ্ছে,স্টক শেষ,কী আনতে হবে,মাল ফুরিয়ে"},
+  t:{en:"See what is running low",bn:"কী কমে গেছে দেখা"},
+  a:{en:"Open Products and tap Low or Out.|The bell at the top also shows a dot when something is low.|Set the low-stock number inside each product.",bn:"পণ্য পাতায় কম বা শেষ চাপুন।|উপরের ঘণ্টায় লাল বিন্দু থাকলে কিছু কমে গেছে।|প্রতিটি পণ্যের ভেতরে কত হলে সতর্ক করবে তা ঠিক করুন।"},
+  fn:"low", tour:[nav("products"),st('[data-act="pf"][data-v="low"]',"Tap Low to see them.","কম চাপলে দেখা যাবে।")]},
+ {id:"editProduct",v:"products",k:{en:"edit product,change price,update price,change name,delete product,remove product,edit item,price change,dam change",bn:"দাম বদলাব,দাম পরিবর্তন,নাম বদলাব,পণ্য মুছব,পণ্য ডিলিট,পণ্য এডিট,দাম ঠিক"},
+  t:{en:"Change a price or delete a product",bn:"দাম বদলানো বা পণ্য মোছা"},
+  a:{en:"Open Products and tap the product.|Change the name, price or stock and tap Save.|To remove it, tap Delete and tap again to confirm.",bn:"পণ্য পাতায় পণ্যটিতে চাপুন।|নাম, দাম বা স্টক বদলে সেভ চাপুন।|মুছতে চাইলে ডিলিট চেপে আবার চাপুন।"},
+  tour:[nav("products"),st('[data-act="editProduct"]',"Tap the product you want to change.","যে পণ্য বদলাবেন সেটিতে চাপুন।"),st("#pPrice","Change the price here.","এখানে দাম বদলান।"),st('#pForm button[type="submit"]',"Tap Save.","সেভ চাপুন।")]},
+ {id:"photo",v:"products",k:{en:"photo,picture,image,product photo,add picture,chobi",bn:"ছবি,পণ্যের ছবি,ছবি দেব,ছবি যোগ"},
+  t:{en:"Add a product photo",bn:"পণ্যের ছবি দেওয়া"},
+  a:{en:"Open the product.|Tap the photo box and choose or take a picture.|Tap Save. Photos are on the Bepsha and Pro plans.",bn:"পণ্যটি খুলুন।|ছবির ঘরে চাপ দিয়ে ছবি বাছুন বা তুলুন।|সেভ চাপুন। ছবি ব্যবসা ও প্রো প্ল্যানে আছে।"},
+  tour:[nav("products"),st('[data-act="editProduct"]',"Tap a product.","একটি পণ্যে চাপুন।"),st('label[for="pPhoto"],[data-act="upgrade"][data-f="photos"]',"Tap here to add a photo.","ছবি দিতে এখানে চাপুন।")]},
+ {id:"deleteSale",v:"money",k:{en:"delete sale,wrong sale,cancel sale,refund,return,undo sale,mistake bill,vul bill",bn:"বিক্রি মুছব,ভুল বিক্রি,বিল বাতিল,ফেরত,রিটার্ন,ভুল বিল"},
+  t:{en:"Delete a wrong sale or a return",bn:"ভুল বিক্রি বা ফেরত মোছা"},
+  a:{en:"Open Money, Sales.|Tap the sale to open it.|Tap Delete, then tap again. The stock goes back.",bn:"হিসাব পাতায় বিক্রি ট্যাব খুলুন।|বিক্রিটিতে চাপ দিয়ে খুলুন।|ডিলিট চেপে আবার চাপুন। স্টক ফিরে আসবে।"},
+  tour:[nav("money"),st('[data-act="mtab"][data-v="sales"]',"Tap Sales.","বিক্রি চাপুন।"),st('[data-act="viewSale"]',"Tap the sale to open it, then Delete.","বিক্রিটিতে চাপ দিয়ে খুলুন, তারপর ডিলিট।")]},
+ {id:"reports",v:"home",k:{en:"report,profit,how much profit,earnings,sales report,today sales,how is business,chart,best seller,labh,lav,hisab",bn:"রিপোর্ট,লাভ,কত লাভ,আয়ের হিসাব,বিক্রির হিসাব,হিসাব দেখব,চার্ট,বেশি বিক্রি,ব্যবসা কেমন"},
+  t:{en:"See sales and profit",bn:"বিক্রি ও লাভ দেখা"},
+  a:{en:"Open Home.|Pick Today, 7 days, 30 days or This month at the top.|You see sales, profit after product cost, costs, net earnings, a chart and best sellers.",bn:"হোম খুলুন।|উপরে আজ, ৭ দিন, ৩০ দিন বা এই মাস বাছুন।|বিক্রি, কেনা দাম বাদে লাভ, খরচ, নিট আয়, চার্ট আর বেশি বিক্রিত পণ্য দেখবেন।"},
+  fn:"today", tour:[nav("home"),st('[data-act="period"],[data-act="upgrade"][data-f="reports"]',"Pick the time you want to see.","কোন সময়ের হিসাব দেখবেন বাছুন।"),st("#barg,.chart","Your daily sales chart.","প্রতিদিনের বিক্রির চার্ট।")]},
+ {id:"monthly",v:"money",k:{en:"monthly report,vat,tax,accountant,month report,excel report,csv report",bn:"মাসিক রিপোর্ট,ভ্যাট,ট্যাক্স,হিসাবরক্ষক,মাসের হিসাব"},
+  t:{en:"Monthly report and VAT",bn:"মাসিক রিপোর্ট ও ভ্যাট"},
+  a:{en:"Open Money and tap Monthly report.|Use the arrows to change month. Set your VAT %.|Download it for your accountant, or send a summary.",bn:"হিসাব পাতায় মাসিক রিপোর্ট চাপুন।|তীর দিয়ে মাস বদলান। ভ্যাট % দিন।|হিসাবরক্ষকের জন্য ডাউনলোড করুন, বা সারাংশ পাঠান।"},
+  tour:[nav("money"),st('[data-act="mtab"][data-v="report"]',"Tap Monthly report.","মাসিক রিপোর্ট চাপুন।"),st("#vatRate","Set your VAT rate here.","এখানে ভ্যাটের হার দিন।"),st('[data-act="repCsv"]',"Download for your accountant.","হিসাবরক্ষকের জন্য ডাউনলোড।")]},
+ {id:"orders",v:"orders",k:{en:"order,orders,facebook order,whatsapp order,instagram order,online order,new order,delivery,courier,cod,cash on delivery,parcel",bn:"অর্ডার,ফেসবুক অর্ডার,হোয়াটসঅ্যাপ অর্ডার,অনলাইন অর্ডার,নতুন অর্ডার,ডেলিভারি,কুরিয়ার,ক্যাশ অন ডেলিভারি,পার্সেল"},
+  t:{en:"Track Facebook and WhatsApp orders",bn:"ফেসবুক ও হোয়াটসঅ্যাপ অর্ডার রাখা"},
+  a:{en:"Open Orders and tap New order.|Pick where it came from, the items, delivery charge and payment (COD or paid).|Move each order from Pending to Sent to Paid. Couriers' COD money shows in its own tab.",bn:"অর্ডার পাতায় নতুন অর্ডার চাপুন।|কোথা থেকে এসেছে, পণ্য, ডেলিভারি চার্জ আর পেমেন্ট (ক্যাশ অন ডেলিভারি বা পরিশোধিত) দিন।|প্রতিটি অর্ডার অপেক্ষমাণ থেকে পাঠানো, তারপর টাকা পাওয়া পর্যন্ত নিন। কুরিয়ারের কাছে পাওনা আলাদা ট্যাবে থাকে।"},
+  tour:[nav("orders"),st('[data-act="newOrder"]',"Tap New order.","নতুন অর্ডার চাপুন।"),st("#oCust","Write the customer's name.","কাস্টমারের নাম লিখুন।"),st("#oProd","Pick the products they ordered.","কী অর্ডার করেছে বাছুন।")]},
+ {id:"preorder",v:"orders",k:{en:"pre order,preorder,cake order,advance,booking,later date,party order",bn:"প্রি-অর্ডার,প্রি অর্ডার,কেকের অর্ডার,অগ্রিম,বুকিং,পরের তারিখ"},
+  t:{en:"Take a pre-order with advance",bn:"অগ্রিমসহ প্রি-অর্ডার"},
+  a:{en:"Open Orders and tap New pre-order.|Write the items, pickup date and time, and the advance paid.|Home reminds you on the day.",bn:"অর্ডার পাতায় নতুন প্রি-অর্ডার চাপুন।|পণ্য, নেওয়ার তারিখ ও সময়, আর অগ্রিম কত পেলেন লিখুন।|সেদিন হোম পাতায় মনে করিয়ে দেবে।"},
+  tour:[nav("orders"),st('[data-act="otab"][data-v="pre"]',"Open Pre-orders.","প্রি-অর্ডার খুলুন।"),st('[data-act="newOrder"]',"Tap New pre-order.","নতুন প্রি-অর্ডার চাপুন।")]},
+ {id:"receipt",v:"sell",k:{en:"receipt,send receipt,memo whatsapp,invoice,print",bn:"রসিদ,রসিদ পাঠাব,ইনভয়েস,মেমো পাঠাব,প্রিন্ট"},
+  t:{en:"Send a receipt to the customer",bn:"কাস্টমারকে রসিদ পাঠানো"},
+  a:{en:"After you complete a sale, the receipt opens.|Tap WhatsApp to send it, or Messenger and more to copy it.|Old receipts: open Money, Sales and tap the sale.",bn:"বিক্রি শেষ করলেই রসিদ খুলবে।|হোয়াটসঅ্যাপে পাঠাতে চাপুন, বা মেসেঞ্জার ও অন্যান্য চেপে কপি করুন।|পুরনো রসিদ: হিসাব পাতায় বিক্রি খুলে বিক্রিটিতে চাপুন।"},
+  tour:[nav("money"),st('[data-act="mtab"][data-v="sales"]',"Tap Sales.","বিক্রি চাপুন।"),st('[data-act="viewSale"]',"Tap a sale to see and send its receipt.","বিক্রিতে চাপ দিয়ে রসিদ দেখুন ও পাঠান।")]},
+ {id:"shop",v:"shop",k:{en:"online shop,my shop,shop page,customer order,share shop,website,catalog",bn:"অনলাইন দোকান,আমার দোকান,দোকানের পাতা,শেয়ার,ওয়েবসাইট,ক্যাটালগ"},
+  t:{en:"Your online shop",bn:"আপনার অনলাইন দোকান"},
+  a:{en:"Open My shop to see what customers see.|Customers pick items and send the order to your WhatsApp.|Put your WhatsApp number in Setup first. This is a Pro feature.",bn:"ক্রেতারা কী দেখবে তা আমার দোকান পাতায় দেখুন।|ক্রেতা পণ্য বেছে আপনার হোয়াটসঅ্যাপে অর্ডার পাঠাবে।|আগে সেটআপে আপনার হোয়াটসঅ্যাপ নম্বর দিন। এটি প্রো ফিচার।"},
+  tour:[nav("shop"),st(".shopgrid,#grid","Customers see your products like this.","ক্রেতারা আপনার পণ্য এভাবে দেখবে।")]},
+ {id:"facebook",v:"shop",k:{en:"facebook catalog,instagram shop,facebook shop,meta catalog,commerce manager,fb shop",bn:"ফেসবুক ক্যাটালগ,ইনস্টাগ্রাম শপ,ফেসবুক শপ,মেটা"},
+  t:{en:"Show products on Facebook and Instagram",bn:"ফেসবুক ও ইনস্টাগ্রামে পণ্য দেখানো"},
+  a:{en:"Open My shop and find Facebook and Instagram catalog.|Tap Get my catalog link and copy it.|Paste it in Facebook Commerce Manager as a daily scheduled feed. It is free.",bn:"আমার দোকান পাতায় ফেসবুক ও ইনস্টাগ্রাম ক্যাটালগ খুঁজুন।|আমার ক্যাটালগ লিংক চেপে কপি করুন।|ফেসবুক কমার্স ম্যানেজারে প্রতিদিনের ফিড হিসেবে বসান। এটা ফ্রি।"},
+  tour:[nav("shop"),st('[data-act="fbLink"],[data-act="fbCsv"]',"Tap here to get your catalog link.","ক্যাটালগ লিংক পেতে এখানে চাপুন।")]},
+ {id:"backup",v:"setup",k:{en:"backup,export,excel,download data,restore,import,csv,save data",bn:"ব্যাকআপ,এক্সপোর্ট,এক্সেল,ডেটা ডাউনলোড,রিস্টোর,ইমপোর্ট"},
+  t:{en:"Backup and Excel export",bn:"ব্যাকআপ ও এক্সেল"},
+  a:{en:"Open Setup.|Tap Download backup to keep a copy, or Sales for Excel.|To bring a backup back, tap Restore backup. This is a Pro feature.",bn:"সেটআপ খুলুন।|কপি রাখতে ব্যাকআপ ডাউনলোড, বা এক্সেলের জন্য বিক্রি চাপুন।|ব্যাকআপ ফিরিয়ে আনতে রিস্টোর চাপুন। এটি প্রো ফিচার।"},
+  tour:[nav("setup"),st('[data-act="exportJson"],[data-act="upgrade"][data-f="export"]',"Tap here to download a backup.","ব্যাকআপ নিতে এখানে চাপুন।")]},
+ {id:"shopName",v:"setup",k:{en:"shop name,change shop name,whatsapp number,phone number,my number,settings,setup",bn:"দোকানের নাম,নাম বদলাব,হোয়াটসঅ্যাপ নম্বর,ফোন নম্বর,সেটিংস,সেটআপ"},
+  t:{en:"Shop name and WhatsApp number",bn:"দোকানের নাম ও হোয়াটসঅ্যাপ নম্বর"},
+  a:{en:"Open Setup.|Type your shop name and WhatsApp number. They save by themselves.",bn:"সেটআপ খুলুন।|দোকানের নাম আর হোয়াটসঅ্যাপ নম্বর লিখুন। নিজে থেকেই সেভ হয়।"},
+  tour:[nav("setup"),st("#sName","Your shop name.","আপনার দোকানের নাম।"),st("#sPhone","Your WhatsApp number. Customers' orders come here.","আপনার হোয়াটসঅ্যাপ নম্বর। ক্রেতার অর্ডার এখানে আসবে।")]},
+ {id:"language",v:"setup",k:{en:"language,bangla,english,change language,bengali",bn:"ভাষা,বাংলা,ইংরেজি,ভাষা বদলাব,ইংলিশ"},
+  t:{en:"Switch Bangla and English",bn:"বাংলা ও ইংরেজি বদলানো"},
+  a:{en:"Tap English or বাংলা in the side menu, the More menu, or Setup.",bn:"পাশের মেনু, আরও মেনু বা সেটআপে English বা বাংলা চাপুন।"},
+  tour:[nav("setup"),st('#main [data-act="setLang"]',"Tap the language you want.","যে ভাষা চান সেটিতে চাপুন।")]},
+ {id:"dailyEmail",v:"setup",k:{en:"daily summary,email summary,morning email,daily report",bn:"প্রতিদিনের হিসাব,ইমেইল,সকালের ইমেইল,দৈনিক রিপোর্ট"},
+  t:{en:"Get yesterday's summary every morning",bn:"প্রতিদিন সকালে গতকালের হিসাব"},
+  a:{en:"Open Setup and tick Email me a summary of yesterday every morning (if you log in with email).|Phone logins get a WhatsApp button on Home instead.",bn:"সেটআপে প্রতিদিন সকালে ইমেইল টিক দিন (ইমেইল দিয়ে লগ ইন করলে)।|ফোন নম্বরে লগ ইন করলে হোমে হোয়াটসঅ্যাপ বোতাম পাবেন।"},
+  tour:[nav("setup"),st('[data-meta="dailyEmail"]',"Tick this box.","এই ঘরে টিক দিন।")]},
+ {id:"plans",v:"plans",k:{en:"plan,price,pay,payment,renew,subscription,upgrade,bkash,nagad,rocket,trial,how much,cost of app,access code,code",bn:"প্ল্যান,দাম কত,পেমেন্ট,রিনিউ,আপগ্রেড,বিকাশ,নগদ,রকেট,ট্রায়াল,অ্যাক্সেস কোড,কোড"},
+  t:{en:"Plans, payment and access code",bn:"প্ল্যান, পেমেন্ট ও অ্যাক্সেস কোড"},
+  a:{en:"Open Plans and pick Shuru, Bepsha or Pro (or Pro Yearly to save).|Send money by bKash, Nagad or Rocket and enter the Transaction ID.|You get an access code. Your plan starts when it is approved.",bn:"প্ল্যান পাতায় শুরু, ব্যবসা বা প্রো বাছুন (সাশ্রয় চাইলে প্রো বাৎসরিক)।|বিকাশ, নগদ বা রকেটে টাকা পাঠিয়ে ট্রানজেকশন আইডি দিন।|অ্যাক্সেস কোড পাবেন। অনুমোদন হলেই প্ল্যান চালু হবে।"},
+  tour:[nav("plans"),st('[data-act="buy"]',"Tap the plan you want.","যে প্ল্যান চান সেটিতে চাপুন।")]},
+ {id:"sample",v:"home",k:{en:"sample,example,demo data,try,test data,clear sample",bn:"উদাহরণ,নমুনা,ডেমো,চেষ্টা করে দেখব"},
+  t:{en:"See example sales",bn:"উদাহরণ বিক্রি দেখা"},
+  a:{en:"On Home tap Show example sales (only when your shop is empty).|They stay on this device. Tap Clear example to remove them.",bn:"হোমে উদাহরণ বিক্রি দেখুন চাপুন (দোকান খালি থাকলে)।|এগুলো শুধু এই ডিভাইসে থাকে। মুছতে উদাহরণ মুছুন চাপুন।"},
+  tour:[nav("home"),st('[data-act="loadSample"],[data-act="clearSample"]',"Tap here.","এখানে চাপুন।")]},
+ {id:"tour",v:"guide",k:{en:"tour,guide,help,tutorial,how to use,learn,start,first time,new user",bn:"গাইড,সাহায্য,শিখব,কীভাবে চালাব,প্রথমবার,নতুন,টিউটোরিয়াল"},
+  t:{en:"Take the full tour",bn:"পুরো ট্যুর দেখা"},
+  a:{en:"Open Guide for step-by-step help on every part of the app.|In Setup, Show the tour again replays the welcome tour.|Or just ask me here any time.",bn:"অ্যাপের প্রতিটি অংশের ধাপে ধাপে সাহায্য পেতে গাইড খুলুন।|সেটআপে আবার ট্যুর দেখুন চাপলে শুরুর ট্যুর আবার চলবে।|অথবা যেকোনো সময় এখানে আমাকে জিজ্ঞেস করুন।"},
+  tour:[nav("guide"),st(".guide","Every part of the app, step by step.","অ্যাপের প্রতিটি অংশ, ধাপে ধাপে।")]},
+ {id:"logout",v:"setup",k:{en:"logout,log out,sign out,login,another phone,other device,password,forgot password",bn:"লগ আউট,লগ ইন,অন্য ফোন,পাসওয়ার্ড,পাসওয়ার্ড ভুলে"},
+  t:{en:"Log in on another phone, or log out",bn:"অন্য ফোনে লগ ইন বা লগ আউট"},
+  a:{en:"Open the same Store Flow link on the other phone and log in with the same email or phone. Your shop loads there.|Forgot the password? Tap Forgot password on the login screen and a code comes to your email.|To log out, open Setup and tap Log out.",bn:"অন্য ফোনে একই স্টোর ফ্লো লিংক খুলে একই ইমেইল বা ফোন দিয়ে লগ ইন করুন। দোকানের সব তথ্য সেখানে চলে আসবে।|পাসওয়ার্ড ভুলে গেলে লগ ইন পাতায় পাসওয়ার্ড ভুলে গেছি চাপুন, ইমেইলে কোড আসবে।|লগ আউট করতে সেটআপে লগ আউট চাপুন।"},
+  tour:[nav("setup"),st('[data-act="logout"]',"Log out here.","এখানে লগ আউট।")]},
+ {id:"todayData",k:{en:"today sales,sold today,today's sale,how much today,today profit,aj koto bikri,ajke koto",bn:"আজ কত বিক্রি,আজকের বিক্রি,আজ কত লাভ,আজকে কত"},t:{en:"How much did I sell today?",bn:"আজ কত বিক্রি হলো?"},fn:"today",v:"home"},
+ {id:"dueData",k:{en:"how much due,total due,who owes me,baki koto",bn:"মোট বাকি,বাকি কত,কে কত বাকি"},t:{en:"How much is due to me?",bn:"আমার কত টাকা বাকি আছে?"},fn:"due",v:"money"},
+ {id:"bestData",k:{en:"best seller,best selling,top product,what sells most,most sold",bn:"বেশি বিক্রি,সবচেয়ে বেশি বিক্রি,কোন পণ্য বেশি চলে"},t:{en:"What sells the most?",bn:"কোন পণ্য সবচেয়ে বেশি বিক্রি হয়?"},fn:"best",v:"home"},
+ {id:"stockData",k:{en:"stock value,value of stock,how much stock,inventory value",bn:"স্টকের দাম,মালের দাম,কত টাকার মাল"},t:{en:"How much is my stock worth?",bn:"আমার স্টকের দাম কত?"},fn:"stock",v:"products"}
+];
+if(CONFIG.ai) HELP.push({id:"flowAi",v:"ai",k:{en:"flow ai,ai,assistant,advice,business advice,increase sales",bn:"ফ্লো এআই,এআই,পরামর্শ,বিক্রি বাড়াব"},t:{en:"Ask Flow AI for business advice",bn:"ফ্লো এআই-এর পরামর্শ"},a:{en:"Open Flow AI from the menu and ask anything about your shop.",bn:"মেনু থেকে ফ্লো এআই খুলে দোকান নিয়ে যেকোনো প্রশ্ন করুন।"},tour:[nav("ai")]});
+const HB_HERE={home:["reports","todayData","expense","sample"],sell:["sell","camera","voice","dueSale"],orders:["orders","preorder","receipt"],products:["addProduct","restock","barcodeProduct","lowStock"],money:["collectDue","expense","deleteSale","monthly"],shop:["shop","facebook"],setup:["shopName","backup","language","dailyEmail"],plans:["plans"],guide:["tour","addProduct","sell"]};
+const HB_STOP=new Set("how do i can to the a an my is it what where which when please tell me show way want need of in on for and with kivabe kibhabe kemne kemon ki ki kore kori korbo korte kora ami amar ache kothay bolo dekhao কিভাবে কীভাবে কি কী আমি আমার করব করবো করতে করে কোথায় কেমনে বলুন দেখান একটু চাই হয় যায় কেমন আছে দিয়ে আর এর এটা কোন".split(" "));
+const hbNorm=s=>String(s||"").toLowerCase().replace(/[?.,!।;:"'()\-_]/g," ").replace(/\s+/g," ").trim();
+let HB_IDX=null;
+function hbIndex(){ if(HB_IDX) return HB_IDX; const df={};
+  const ents=HELP.map(e=>{ const ph=[e.k.en,e.k.bn,e.t.en,e.t.bn].join(",").split(",").map(hbNorm).filter(Boolean); const words=new Set(ph.join(" ").split(" ").filter(w=>w.length>1&&!HB_STOP.has(w))); words.forEach(w=>df[w]=(df[w]||0)+1); return {e,ph,words}; });
+  return HB_IDX={ents,df}; }
+function hbMatch(q){
+  const nq=" "+hbNorm(q)+" ", toks=nq.trim().split(" ").filter(w=>w.length>1&&!HB_STOP.has(w)), {ents,df}=hbIndex();
+  return ents.map(({e,ph,words})=>{ let sc=0;
+    ph.forEach(p=>{ if(p.length>2&&nq.includes(" "+p+" ")) sc+=p.includes(" ")?3+p.split(" ").length:1.5; else if(p.includes(" ")&&p.length>5&&nq.includes(p)) sc+=2.5; });
+    toks.forEach(w=>{ let best=0; words.forEach(k=>{ let m=0; if(k===w) m=2; else if(w.length>=3&&k.length>=3&&(w.startsWith(k)||k.startsWith(w))) m=1.2; if(m) m=m/Math.sqrt(df[k]||1); if(m>best) best=m; }); sc+=best; });
+    return {e,sc}; }).sort((a,b)=>b.sc-a.sc);
+}
+/* live answers from the shop's own numbers */
+function hbData(kind){
+  const bn=S.meta.lang==="bn";
+  if(kind==="today"){ const s=stats(periodStart("today")), w=stats(periodStart("7")); return bn?`আজ ${N(s.count)}টি বিল, বিক্রি ${M(s.sales)}, লাভ ${M(s.profit)}। গত ৭ দিনে বিক্রি ${M(w.sales)}, নিট আয় ${M(w.net)}।`:`Today: ${N(s.count)} bills, sales ${M(s.sales)}, profit ${M(s.profit)}. Last 7 days: sales ${M(w.sales)}, net earnings ${M(w.net)}.`; }
+  if(kind==="low"){ const l=S.products.filter(p=>stockState(p)!=="ok").sort((a,b)=>a.stock-b.stock); if(!l.length) return t("allStockS");
+    return (bn?`${N(l.length)}টি পণ্য কম বা শেষ: `:`${N(l.length)} running low or out: `)+l.slice(0,8).map(p=>pname(p)+" ("+N(Math.max(0,p.stock))+")").join(", ")+(l.length>8?"…":""); }
+  if(kind==="due"){ const d=Object.values(dueByCustomer()).sort((a,b)=>b.amt-a.amt); if(!d.length) return bn?"কারো কাছে বাকি নেই।":"Nobody owes you money right now.";
+    const tot=sum(d,x=>x.amt); return (bn?`মোট বাকি ${M(tot)}, ${N(d.length)} জনের কাছে। বেশি: `:`${M(tot)} due from ${N(d.length)} customer(s). Most: `)+d.slice(0,3).map(x=>x.name+" "+M(x.amt)).join(", ")+"."; }
+  if(kind==="best"){ const top={}; S.sales.filter(s=>s.at>=periodStart("30")).forEach(s=>s.items.forEach(i=>{ const k=i.pid; top[k]=top[k]||{n:(bn&&i.nameBn)||i.name,q:0,a:0}; top[k].q+=i.qty; top[k].a+=i.qty*i.price; }));
+    const l=Object.values(top).sort((a,b)=>b.q-a.q).slice(0,3); if(!l.length) return bn?"গত ৩০ দিনে এখনো বিক্রি নেই।":"No sales in the last 30 days yet.";
+    return (bn?"গত ৩০ দিনে বেশি বিক্রি: ":"Best sellers, last 30 days: ")+l.map(x=>x.n+" × "+N(x.q)+" ("+M(x.a)+")").join(", ")+"."; }
+  if(kind==="stock"){ const v=sum(S.products,p=>Math.max(0,p.stock)*p.cost), sv=sum(S.products,p=>Math.max(0,p.stock)*p.price); return bn?`কেনা দামে আপনার স্টকের দাম ${M(v)}। বিক্রির দামে ${M(sv)}।`:`Your stock is worth ${M(v)} at cost, ${M(sv)} at selling price.`; }
+  return "";
+}
+const hbL=o=>o?(o[S.meta.lang]||o.en):"";
+function hbBot(e){
+  const steps=e.a?hbL(e.a).split("|"):[], live=e.fn?hbData(e.fn):"";
+  const rel=hbMatch(hbL(e.t)+" "+hbL(e.k).split(",").slice(0,3).join(" ")).filter(x=>x.e!==e&&x.sc>0&&x.e.a).slice(0,3).map(x=>x.e);
+  return `<div class="hbm bot"><b>${esc(hbL(e.t))}</b>${live?`<p class="hblive"><span class="small muted">${t("hbNow")}</span><br>${esc(live)}</p>`:""}${steps.length?`<ol>${steps.map(x=>`<li>${esc(x)}</li>`).join("")}</ol>`:""}
+    <div class="row" style="gap:8px">${e.tour?`<button class="btn primary" data-act="hbShow" data-id="${e.id}">${I.spark}<span>${t("hbShow")}</span></button>`:""}${e.v&&!e.tour?`<a class="btn" href="#${e.v}" data-act="close">${t("hbOpen")}</a>`:""}</div>
+    ${rel.length?`<div class="hbchips"><span class="small muted" style="width:100%">${t("hbRelated")}</span>${rel.map(r=>`<button class="chip" data-act="hbPick" data-id="${r.id}">${esc(hbL(r.t))}</button>`).join("")}</div>`:""}</div>`;
+}
+function hbChips(ids){ return `<div class="hbchips">${ids.map(id=>HELP.find(e=>e.id===id)).filter(Boolean).map(e=>`<button class="chip" data-act="hbPick" data-id="${e.id}">${esc(hbL(e.t))}</button>`).join("")}</div>`; }
+function hbWelcome(){
+  const here=HB_HERE[S.view]||HB_HERE.home;
+  return `<div class="hbm bot"><p style="margin:0 0 6px">${t("hbHello")}</p>${T.en["v_"+S.view]?`<span class="small muted">${t("hbHere")} <b>${esc(t("v_"+S.view))}</b></span>`:""}${hbChips(here)}</div>`;
+}
+function hbPaint(){ const log=$("#hbLog"); if(!log) return; log.innerHTML=hbWelcome()+(S.hbLog||[]).join(""); log.scrollTop=log.scrollHeight; }
+function hbSheet(){
+  S.hbLog=S.hbLog||[]; lsSet("dk-hb","1"); document.querySelector(".hbfab")?.classList.remove("new");
+  openSheet("helper",`<div class="sheet-head"><h2 class="row" style="gap:8px;flex-wrap:nowrap"><span class="hbico">${I.spark}</span>${t("hbTitle")}</h2><button class="iconbtn" data-act="close" aria-label="${t("cancel")}">${I.x}</button></div>
+  <p class="small muted" style="margin:0 0 10px">${t("hbSub")}</p>
+  <div class="hblog" id="hbLog" aria-live="polite"></div>
+  <form id="hbForm" class="hbform" autocomplete="off"><input class="input" id="hbQ" placeholder="${t("hbPh")}" enterkeyhint="send"><button type="button" class="iconbtn" data-act="hbMic" id="hbMic" aria-label="${t("qbSpeak")}">${I.mic}</button><button class="btn primary" type="submit">${t("aiSend")}</button></form>
+  <p class="small" style="margin:8px 0 0"><a class="linkbtn" href="#guide" data-act="close">${t("hbGuide")} →</a></p>`);
+  hbPaint(); if(wide()) setTimeout(()=>$("#hbQ")?.focus(),60);
+}
+function hbAsk(q){
+  q=String(q||"").trim(); if(!q) return; S.hbLog=S.hbLog||[];
+  S.hbLog.push(`<div class="hbm me">${esc(q)}</div>`);
+  const m=hbMatch(q), top=m[0];
+  if(top&&top.sc>=1.4){ S.hbLog.push(hbBot(top.e)); }
+  else if(CONFIG.ai&&GAS&&S.auth){ S.hbLog.push(`<div class="hbm bot">${t("hbMissAi")}</div>`); hbPaint(); setTimeout(()=>hbToAi(q),500); }
+  else { const alt=m.filter(x=>x.sc>0).slice(0,4).map(x=>x.e.id); S.hbLog.push(`<div class="hbm bot">${t("hbMiss")}${hbChips(alt.length?alt:(HB_HERE[S.view]||HB_HERE.home))}</div>`); }
+  if(S.hbLog.length>40) S.hbLog=S.hbLog.slice(-40);
+  const i=$("#hbQ"); if(i) i.value=""; hbPaint();
+}
+/* hand-off: once Flow AI is switched on, unmatched questions go there */
+function hbToAi(q){ closeSheet(); location.hash="#ai"; let n=0; const go=()=>{ if(S.view==="ai"&&S.ai&&S.ai.turns&&!S.ai.busy) askAi(q); else if(n++<40) setTimeout(go,250); }; setTimeout(go,300); }
+
+/* ---------- walk-through: dims the screen and points at each button in turn ---------- */
+const CO={on:false,steps:[],i:0,el:null,timer:null,tok:0};
+const coWait=ms=>new Promise(r=>setTimeout(r,ms));
+function coVis(sel){ try{ return [...document.querySelectorAll(sel)].find(x=>{ const r=x.getBoundingClientRect(); return r.width>0&&r.height>0&&getComputedStyle(x).visibility!=="hidden"; })||null; }catch(e){ return null; } }
+function coFind(sel,ms){ return new Promise(res=>{ const t0=Date.now(); const f=()=>{ const el=coVis(sel); if(el||Date.now()-t0>ms) res(el); else setTimeout(f,120); }; f(); }); }
+function coachStart(id){ const e=HELP.find(x=>x.id===id); if(!e||!e.tour) return; closeSheet(); CO.steps=e.tour; CO.i=0; CO.on=true; coachStep(); }
+async function coachStep(){
+  if(!CO.on) return; const tok=++CO.tok, s=CO.steps[CO.i]; if(!s){ coachEnd(true); return; }
+  if(s.nav){ if(S.view===s.nav){ CO.i++; return coachStep(); } if(!coVis(s.s)){ location.hash="#"+s.nav; await coWait(380); if(tok!==CO.tok) return; CO.i++; return coachStep(); } }
+  const el=await coFind(s.s,s.nav?200:1800); if(tok!==CO.tok||!CO.on) return;
+  CO.el=el; if(el){ try{ el.scrollIntoView({block:"center",behavior:"smooth"}); }catch(e){ el.scrollIntoView(); } await coWait(340); if(tok!==CO.tok) return; }
+  coachDraw();
+}
+function coachDraw(){
+  let root=$("#coachRoot"); if(!root){ root=document.createElement("div"); root.id="coachRoot"; document.body.appendChild(root); }
+  const s=CO.steps[CO.i], n=CO.steps.length, last=CO.i===n-1;
+  root.innerHTML=`<div class="co-spot" id="coSpot"></div><div class="co-tip" id="coTip" role="dialog" aria-label="${t("hbTitle")}"><div class="row between" style="flex-wrap:nowrap"><span class="small muted" style="font-weight:600">${t("tourOf",{n:N(CO.i+1),total:N(n)})}</span><button class="iconbtn" data-act="coEnd" aria-label="${t("cancel")}">${I.x}</button></div><p>${esc(hbL(s))}</p>${CO.el?"":`<p class="small muted">${t("hbNoEl")}</p>`}<div class="row between"><button class="btn" data-act="coBack" ${CO.i?"":"disabled"}>${t("back")}</button><button class="btn primary" data-act="coNext">${last?t("camDone"):t("next")}</button></div></div>`;
+  coachPlace(); clearInterval(CO.timer); CO.timer=setInterval(coachPlace,200);
+}
+function coachPlace(){
+  const spot=$("#coSpot"), tip=$("#coTip"); if(!spot||!tip||!CO.on) return;
+  const s=CO.steps[CO.i]; if(CO.el&&!CO.el.isConnected) CO.el=coVis(s.s);
+  const el=CO.el, vw=innerWidth, vh=innerHeight, tw=Math.min(360,vw-24), th=tip.offsetHeight||160;
+  if(!el){ spot.style.cssText="left:50%;top:40%;width:0;height:0;opacity:0"; tip.style.cssText=`left:${(vw-tw)/2}px;top:${Math.max(12,vh/2-th/2)}px;width:${tw}px`; return; }
+  const r=el.getBoundingClientRect(), p=6;
+  spot.style.cssText=`left:${r.left-p}px;top:${r.top-p}px;width:${r.width+2*p}px;height:${r.height+2*p}px`;
+  const left=Math.min(Math.max(12,r.left+r.width/2-tw/2),vw-tw-12); let top=r.bottom+p+12;
+  if(top+th>vh-12) top=r.top-p-12-th; if(top<12) top=Math.min(vh-th-12,Math.max(12,r.bottom+p+12));
+  tip.style.cssText=`left:${left}px;top:${top}px;width:${tw}px`;
+}
+function coachNext(){ const s=CO.steps[CO.i]; if(s&&s.nav&&S.view!==s.nav){ location.hash="#"+s.nav; } CO.i++; setTimeout(coachStep,s&&s.nav?380:0); }
+function coachBack(){ let i=CO.i-1; while(i>0&&CO.steps[i].nav&&S.view===CO.steps[i].nav) i--; if(CO.steps[i]&&CO.steps[i].nav&&S.view===CO.steps[i].nav) i++; CO.i=Math.max(0,Math.min(i,CO.steps.length-1)); coachStep(); }
+function coachEnd(done){ CO.on=false; CO.tok++; clearInterval(CO.timer); CO.el=null; $("#coachRoot")?.remove(); if(done) toast(t("hbDoneT")); }
+/* tapping the highlighted button also moves the walk-through on (not for boxes you type in) */
+document.addEventListener("click",ev=>{ if(!CO.on||!CO.el) return; if(ev.target.closest&&ev.target.closest("#coachRoot")) return;
+  if(CO.el.contains(ev.target)&&!/^(INPUT|TEXTAREA|SELECT)$/.test(CO.el.tagName)){ const i=CO.i, s=CO.steps[i]; setTimeout(()=>{ if(CO.on&&CO.i===i){ CO.i++; coachStep(); } },s&&s.nav?420:480); } },true);
+document.addEventListener("keydown",ev=>{ if(ev.key==="Escape"&&CO.on) coachEnd(false); });
+document.addEventListener("submit",ev=>{ if(ev.target.id==="hbForm"){ ev.preventDefault(); hbAsk($("#hbQ").value); } });
+addEventListener("resize",()=>{ if(CO.on) coachPlace(); });
+Object.assign(A,{
+  helper(){ hbSheet(); },
+  hbPick(el){ const e=HELP.find(x=>x.id===el.dataset.id); if(!e) return; S.hbLog=S.hbLog||[]; S.hbLog.push(`<div class="hbm me">${esc(hbL(e.t))}</div>`,hbBot(e)); hbPaint(); },
+  hbShow(el){ coachStart(el.dataset.id); },
+  hbMic(){ listen(said=>{ if(S.sheet==="helper"){ const i=$("#hbQ"); if(i) i.value=said; hbAsk(said); } else { hbSheet(); hbAsk(said); } },
+    on=>{ const b=$("#hbMic"); if(b) b.classList.toggle("on",on); }); },
+  coNext(){ coachNext(); }, coBack(){ coachBack(); }, coEnd(){ coachEnd(false); }
+});
 
 /* ---------- start ---------- */
 (async function start(){
