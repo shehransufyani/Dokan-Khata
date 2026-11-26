@@ -27,7 +27,8 @@ var PRICES = { basic: 500, standard: 800, pro: 1200, yearly: 10000 };
 function doGet(e) {
   if (e && e.parameter && e.parameter.feed) return catalogFeed_(e.parameter.feed);
   if (e && e.parameter && e.parameter.admin) return HtmlService.createHtmlOutputFromFile('Admin').setTitle('Store Flow Admin')
-    .addMetaTag('viewport', 'width=device-width, initial-scale=1');
+    .addMetaTag('viewport', 'width=device-width, initial-scale=1')
+    .setFaviconUrl('https://raw.githubusercontent.com/shehransufyani/StoreFlow/3f2490b402b7371fc457a079f46ff038e736b666/icons/admin-192.png');
   return HtmlService.createHtmlOutputFromFile('Index')
     .setTitle('Store Flow')
     .addMetaTag('viewport', 'width=device-width, initial-scale=1, viewport-fit=cover')
