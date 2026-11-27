@@ -23,6 +23,9 @@ h1{font-size:1.5rem}h2{font-size:1.1rem}
 .btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
 .btn.wa{background:#1F9D55;border-color:#1F9D55;color:#fff}
 .btn.bad{color:var(--bad)}
+.btn.danger{background:var(--bad);border-color:var(--bad);color:#fff}
+.dz{margin-top:18px;padding-top:14px;border-top:1px solid var(--line)}
+.warnbox{background:rgba(240,122,106,.1);border:1px solid rgba(240,122,106,.35);border-radius:12px;padding:12px 14px;margin-top:12px}
 .btn.sm{padding:4px 10px;min-height:32px;font-size:.85rem}
 .btn:disabled{opacity:.5;cursor:default}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px}
@@ -45,7 +48,7 @@ tr:last-child td{border-bottom:0}
 .pill{display:inline-block;border-radius:999px;padding:1px 10px;font-size:.78rem;font-weight:600;white-space:nowrap}
 .p-paid{background:rgba(61,220,151,.15);color:var(--ok)}.p-trial{background:rgba(242,193,78,.15);color:var(--gold)}
 .p-ended,.p-trial-ended{background:rgba(240,122,106,.15);color:var(--bad)}.p-off{background:rgba(148,179,164,.15);color:var(--muted)}
-.p-new{background:rgba(148,179,164,.12);color:var(--muted)}.p-owner{background:rgba(61,220,151,.1);color:var(--muted)}
+.p-new{background:rgba(148,179,164,.12);color:var(--muted)}.p-cancelled{background:rgba(240,122,106,.15);color:var(--bad)}.p-owner{background:rgba(61,220,151,.1);color:var(--muted)}
 .code{font-family:ui-monospace,Menlo,monospace;font-size:.85rem;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:1px 6px;white-space:nowrap}
 .acts{display:flex;gap:6px;flex-wrap:wrap}
 .soon{color:var(--warn);font-weight:600}
@@ -77,7 +80,7 @@ tr:last-child td{border-bottom:0}
 <script>
 var KEY = "", D = null, F = { q: "", tab: "all" }, LANG = "en";
 var PLAN_NAME = { basic: "Shuru ৳500", standard: "Bepsha ৳800", pro: "Pro ৳1,200", yearly: "Pro Yearly ৳10,000" };
-var STATUS = { paid: "Paying", trial: "Free trial", ended: "Plan ended", "trial-ended": "Trial ended", off: "Code off", "new": "Not started", owner: "Owner" };
+var STATUS = { paid: "Paying", trial: "Free trial", ended: "Plan ended", "trial-ended": "Trial ended", off: "Code off", "new": "Not started", owner: "Owner", cancelled: "Cancelled" };
 function $(s) { return document.querySelector(s); }
 function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
 function tk(n) { return "৳" + Math.round(n || 0).toLocaleString("en-US"); }
@@ -89,7 +92,7 @@ function call(fn) {
   var args = Array.prototype.slice.call(arguments, 1);
   return new Promise(function (res, rej) { google.script.run.withSuccessHandler(res).withFailureHandler(rej)[fn].apply(null, [KEY].concat(args)); });
 }
-function errMsg(e) { var m = String(e && e.message || e); return /ADMIN_KEY/.test(m) ? "Wrong admin key." : /TOO_MANY/.test(m) ? "Too many wrong tries. Wait 15 minutes." : /NO_EMAIL/.test(m) ? "That email address does not look right." : "Something went wrong: " + m; }
+function errMsg(e) { var m = String(e && e.message || e); return /ADMIN_KEY/.test(m) ? "Wrong admin key." : /TOO_MANY/.test(m) ? "Too many wrong tries. Wait 15 minutes." : /NO_EMAIL/.test(m) ? "That email address does not look right." : /NOT_ACTIVE/.test(m) ? "This shop has no running plan to cancel." : /NOT_CANCELLED/.test(m) ? "This plan was not cancelled here, so there is nothing to undo. Use Change to give a new end date." : /MASTER/.test(m) ? "The owner code cannot be cancelled." : "Something went wrong: " + m; }
 function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
 function lsSet(k, v) { try { if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {} }
 
@@ -126,11 +129,11 @@ function filtered() {
     if (F.tab === "paid" && s.status !== "paid") return false;
     if (F.tab === "trial" && s.status !== "trial") return false;
     if (F.tab === "soon" && !(s.status === "paid" && s.exp - now <= 7 * 864e5)) return false;
-    if (F.tab === "ended" && ["ended", "trial-ended", "off"].indexOf(s.status) < 0) return false;
+    if (F.tab === "ended" && ["ended", "trial-ended", "off", "cancelled"].indexOf(s.status) < 0) return false;
     if (q && (s.shop + " " + s.login + " " + s.code + " " + s.phone).toLowerCase().indexOf(q) < 0) return false;
     return true;
   }).sort(function (a, b) {
-    var rank = { paid: 0, trial: 1, ended: 2, "trial-ended": 3, off: 4, "new": 5 };
+    var rank = { paid: 0, trial: 1, ended: 2, cancelled: 2, "trial-ended": 3, off: 4, "new": 5 };
     return (rank[a.status] - rank[b.status]) || ((a.exp || a.trialEnd) - (b.exp || b.trialEnd));
   });
 }
@@ -138,16 +141,18 @@ function render() {
   var shops = D.shops.filter(function (s) { return s.status !== "owner"; }), now = Date.now();
   var cnt = function (st) { return shops.filter(function (s) { return s.status === st; }).length; };
   var soon = shops.filter(function (s) { return s.status === "paid" && s.exp - now <= 7 * 864e5; }).length;
-  var tabs = [["all", "All", shops.length], ["paid", "Paying", cnt("paid")], ["trial", "Free trial", cnt("trial")], ["soon", "Ending in 7 days", soon], ["ended", "Ended or off", cnt("ended") + cnt("trial-ended") + cnt("off")]];
+  var tabs = [["all", "All", shops.length], ["paid", "Paying", cnt("paid")], ["trial", "Free trial", cnt("trial")], ["soon", "Ending in 7 days", soon], ["ended", "Ended or off", cnt("ended") + cnt("trial-ended") + cnt("off") + cnt("cancelled")]];
   var rows = filtered().map(function (s) {
-    var end = s.status === "paid" || s.status === "ended" || s.status === "off" ? s.exp : s.trialEnd, dl = end ? daysLeft(end) : null;
-    var endTxt = end ? fd(end) + (dl !== null && dl >= 0 && dl <= 7 ? ' <span class="soon">(' + dl + " day" + (dl === 1 ? "" : "s") + " left)</span>" : "") : "—";
+    var end = s.status === "paid" || s.status === "ended" || s.status === "off" || s.status === "cancelled" ? s.exp : s.trialEnd, dl = end ? daysLeft(end) : null;
+    var endTxt = end ? fd(end) + (dl !== null && dl >= 0 && dl <= 7 && s.status !== "cancelled" ? ' <span class="soon">(' + dl + " day" + (dl === 1 ? "" : "s") + " left)</span>" : "") : "—";
     var last = s.payments.length ? s.payments.slice().sort(function (a, b) { return b.at - a.at; })[0] : null;
     var hist = s.payments.length > 1 ? '<div class="hist">' + s.payments.map(function (p) { return fd(p.at) + " · " + tk(p.amount) + " · " + esc(p.method); }).join("<br>") + "</div>" : "";
-    var acts = s.code ? '<button class="btn sm" data-act="email" data-id="' + esc(s.id) + '">Email code</button><a class="btn sm wa" target="_blank" rel="noopener" href="' + esc(waLink(s.phone, codeMsg(s))) + '">WhatsApp code</a>' : "";
+    var acts = s.status === "cancelled" ? (s.canUndo ? '<button class="btn sm" data-act="undoCancel" data-id="' + esc(s.id) + '">Undo cancel</button>' : "") :
+      s.code ? '<button class="btn sm" data-act="email" data-id="' + esc(s.id) + '">Email code</button><a class="btn sm wa" target="_blank" rel="noopener" href="' + esc(waLink(s.phone, codeMsg(s))) + '">WhatsApp code</a>' : "";
+    if (s.status === "paid") acts += '<button class="btn sm bad" data-act="cancelPlan" data-id="' + esc(s.id) + '">Cancel plan</button>';
     return "<tr>" +
       '<td data-l="Business"><b>' + esc(s.shop || "(no shop name)") + '</b><div class="small muted">' + esc(s.login) + (s.phone && s.phone !== s.login ? " · " + esc(s.phone) : "") + "</div></td>" +
-      '<td data-l="Status"><span class="pill p-' + s.status + '">' + STATUS[s.status] + "</span></td>" +
+      '<td data-l="Status"><span class="pill p-' + s.status + '">' + STATUS[s.status] + "</span>" + (s.cancelNote ? '<div class="small muted">' + esc(s.cancelNote) + "</div>" : "") + "</td>" +
       '<td data-l="Plan">' + (s.tier ? esc(PLAN_NAME[s.tier] || s.tier) : s.status === "trial" ? "Free trial" : "—") + "</td>" +
       '<td data-l="Code">' + (s.code ? '<span class="code">' + esc(s.code) + "</span>" : '<span class="muted">—</span>') + "</td>" +
       '<td data-l="Ends">' + endTxt + "</td>" +
@@ -195,7 +200,19 @@ function editSheet(s) {
     '<div class="row" style="margin-top:8px"><button type="button" class="btn sm" data-act="addMonths" data-v="1">+1 month</button><button type="button" class="btn sm" data-act="addMonths" data-v="3">+3 months</button><button type="button" class="btn sm" data-act="addMonths" data-v="12">+12 months</button></div>' +
     '<div class="field"><label><input type="checkbox" id="eOn" ' + (s.codeActive ? "checked" : "") + ' style="width:18px;height:18px;vertical-align:-3px"> Code is on (untick to block this shop)</label></div>' +
     '<div class="row" style="margin-top:16px"><button class="btn primary" type="submit">Save</button></div></form>' +
-    '<div class="field"><label for="eMail">Email the code to</label><div class="row"><input class="input" id="eMail" type="email" value="' + esc(s.email) + '" placeholder="name@example.com" style="flex:1;min-width:180px"><button class="btn" data-act="sendMail" data-code="' + esc(s.code) + '">Send email</button></div></div>');
+    '<div class="field"><label for="eMail">Email the code to</label><div class="row"><input class="input" id="eMail" type="email" value="' + esc(s.email) + '" placeholder="name@example.com" style="flex:1;min-width:180px"><button class="btn" data-act="sendMail" data-code="' + esc(s.code) + '">Send email</button></div></div>' +
+    (s.status === "paid" ? '<div class="dz"><h3 style="font-size:1rem">Cancel subscription</h3><p class="muted small" style="margin:4px 0 10px">Ends the plan today. The shop loses paid features the next time the app checks. You can undo it.</p><button class="btn bad" data-act="cancelPlan" data-id="' + esc(s.id) + '">Cancel subscription</button></div>' :
+     s.status === "cancelled" && s.canUndo ? '<div class="dz"><p class="muted small" style="margin:0 0 10px">' + esc(s.cancelNote) + '</p><button class="btn" data-act="undoCancel" data-id="' + esc(s.id) + '">Undo cancel</button></div>' : ""));
+}
+function cancelSheet(s) {
+  var dl = daysLeft(s.exp);
+  openSheet('<div class="row" style="justify-content:space-between"><h2>Cancel subscription?</h2><button class="btn sm" data-act="close">Close</button></div>' +
+    '<p style="margin:10px 0 0"><b>' + esc(s.shop || s.login) + '</b> <span class="muted small">' + esc(s.login) + "</span></p>" +
+    '<p class="muted small" style="margin:2px 0 0">' + esc(PLAN_NAME[s.tier] || s.tier) + " · code <span class=\"code\">" + esc(s.code) + "</span> · paid until " + fd(s.exp) + (dl > 0 ? " (" + dl + " day" + (dl === 1 ? "" : "s") + " left)" : "") + "</p>" +
+    '<div class="warnbox"><b>What happens</b><ul style="margin:6px 0 0;padding-left:20px"><li>The plan ends today instead of ' + fd(s.exp) + ".</li><li>The shop loses paid features (and the free trial) the next time they open the app. Their shop data stays safe.</li><li>No money is sent back automatically. Refund in bKash, Nagad or Rocket yourself if you need to.</li><li>You can undo this later from the Businesses list.</li></ul></div>" +
+    '<form id="cancelForm" data-code="' + esc(s.code) + '" data-id="' + esc(s.id) + '"><div class="field"><label for="cReason">Reason (optional, only you see it)</label><input class="input" id="cReason" maxlength="120" placeholder="For example: asked to stop, payment returned"></div>' +
+    '<div class="field"><label><input type="checkbox" id="cSure" required style="width:18px;height:18px;vertical-align:-3px"> Yes, cancel this shop\'s subscription</label></div>' +
+    '<div class="row" style="margin-top:16px"><button class="btn danger" type="submit">Cancel subscription</button><button class="btn" type="button" data-act="close">Keep the plan</button></div></form>');
 }
 function newCodeSheet(s) {
   s = s || {};
@@ -223,6 +240,8 @@ var A = {
   sendMail: function (el) { sendMail(el.dataset.code, $("#eMail").value, el); },
   approve: function (el) { busy(el, call("adminPayment", +el.dataset.row, "approve").then(function () { toast("Approved. The shop has its plan now."); return load(true); })); },
   reject: function (el) { if (!confirmTwice(el, "Tap again to reject")) return; busy(el, call("adminPayment", +el.dataset.row, "reject").then(function () { toast("Marked as not received. The code is off."); return load(true); })); },
+  cancelPlan: function (el) { cancelSheet(shopById(el.dataset.id)); },
+  undoCancel: function (el) { var s = shopById(el.dataset.id); if (!confirmTwice(el, "Tap again to undo")) return; busy(el, call("adminUndoCancel", s.code).then(function (exp) { closeSheet(); toast("Plan is back until " + fd(exp)); return load(true); })); },
   codeOff: function (el) { if (!confirmTwice(el, "Tap again to switch off")) return; busy(el, call("adminUpdateCode", el.dataset.code, { active: false }).then(function () { toast("Code switched off"); return load(true); })); }
 };
 function confirmTwice(el, label) { if (el.dataset.armed) return true; el.dataset.armed = "1"; el.textContent = label; return false; }
@@ -238,6 +257,12 @@ document.addEventListener("submit", function (ev) {
   if (f.id === "editForm") {
     var o = { plan: $("#ePlan").value, exp: new Date($("#eExp").value + "T12:00").getTime(), active: $("#eOn").checked };
     busy(btn, call("adminUpdateCode", f.dataset.code, o).then(function () { closeSheet(); toast("Saved"); return load(true); }));
+  }
+  if (f.id === "cancelForm") {
+    if (!$("#cSure").checked) { toast("Tick the box to confirm.", true); return; }
+    var nm = (shopById(f.dataset.id) || {}).shop || "the shop";
+    busy(btn, call("adminCancelPlan", f.dataset.code, $("#cReason").value).then(function () { closeSheet(); toast("Subscription cancelled for " + nm); return load(true); }));
+    return;
   }
   if (f.id === "newForm") {
     var acc = f.dataset.account || ($("#nAcc") ? $("#nAcc").value : "");

@@ -858,10 +858,12 @@ function adminData(key) {
     var myPays = pays.filter(function (p) { return (p.login && p.login === login) || (p.code && codes.some(function (x) { return x.code === p.code && x.account === a.id; })); });
     var phone = (c && c.phone) || (myPays[0] && myPays[0].phone) || (email ? '' : login);
     var trialEnd = a.trialStart ? a.trialStart + TRIAL_MS : 0;
-    var status = c && c.master ? 'owner' : c && c.active && c.exp > now ? 'paid' : c && !c.active ? 'off' : trialEnd > now && !c ? 'trial' : c ? 'ended' : a.trialStart ? 'trial-ended' : 'new';
+    var cancelled = c && !c.master && c.exp <= now && /Cancelled \d/.test(c.note);
+    var status = c && c.master ? 'owner' : c && c.active && c.exp > now ? 'paid' : cancelled ? 'cancelled' : c && !c.active ? 'off' : trialEnd > now && !c ? 'trial' : c ? 'ended' : a.trialStart ? 'trial-ended' : 'new';
     var paid = myPays.filter(function (p) { return !/^(off|refunded|rejected)/i.test(p.status) && !/^check/i.test(p.status); });
     return { id: a.id, shop: a.shop || (c && c.biz) || '', login: login, email: email, phone: phone, created: a.created, last: a.last, trialEnd: trialEnd,
              code: a.code, tier: c ? (c.tier === 'pro' && /yearly/i.test(c.note) ? 'yearly' : c.tier) : '', exp: c ? c.exp : 0, codeActive: c ? c.active : false,
+             cancelNote: cancelled ? (c.note.match(/Cancelled [^|]*/) || [''])[0].trim() : '', canUndo: cancelled && !!cancelled_(c.code),
              status: status, payments: myPays, paidTotal: paid.reduce(function (s, p) { return s + p.amount; }, 0), lastPaid: myPays.length ? Math.max.apply(null, myPays.map(function (p) { return p.at; })) : 0 };
   });
   var used = {}; shops.forEach(function (x) { if (x.code) used[x.code] = 1; });
@@ -895,9 +897,48 @@ function adminUpdateCode(key, code, o) {
     note = o.plan === 'yearly' ? (/yearly/i.test(note) ? note : 'Yearly · ' + note) : note.replace(/Yearly · /i, '');
     sh.getRange(c.row, 4).setValue(tier); sh.getRange(c.row, 8).setValue(note);
   }
-  if (o.exp) { var d = new Date(+o.exp); d.setHours(23, 59, 59, 0); sh.getRange(c.row, 5).setValue(d); }
+  if (o.exp) {
+    var d = new Date(+o.exp); d.setHours(23, 59, 59, 0); sh.getRange(c.row, 5).setValue(d);
+    if (d.getTime() > Date.now()) uncancel_(c, sh);
+  }
   if (o.active === true || o.active === false) sh.getRange(c.row, 6).setValue(o.active ? 'active' : 'off');
   return true;
+}
+/* Cancelling a subscription ends the plan today: the code's end date moves to now, so the app shows
+   "plan ended" the next time it checks (the shop does not fall back to the free trial). The old end date
+   is kept in Script Properties so the owner can undo it. */
+function cancelled_(code) { var v = PropertiesService.getScriptProperties().getProperty('cancel:' + norm_(code)); return v ? JSON.parse(v) : null; }
+function uncancel_(c, sh) {
+  var note = String(sh.getRange(c.row, 8).getValue() || '');
+  if (/Cancelled \d/.test(note)) sh.getRange(c.row, 8).setValue(note.replace(/Cancelled \d[^|]*\| ?/, ''));
+  PropertiesService.getScriptProperties().deleteProperty('cancel:' + c.code);
+}
+/** Cancel a shop's subscription now. The shop loses paid access the next time the app checks. */
+function adminCancelPlan(key, code, reason) {
+  adminAuth_(key);
+  var c = findCode_(code); if (!c) throw new Error('NO_CODE');
+  if (c.master) throw new Error('MASTER');
+  if (!(c.active && c.exp > Date.now())) throw new Error('NOT_ACTIVE');
+  var lock = LockService.getScriptLock(); lock.waitLock(20000);
+  try {
+    var sh = sheet_('codes'), note = String(sh.getRange(c.row, 8).getValue() || ''), now = new Date(Date.now() - 1000);
+    reason = String(reason || '').replace(/[|\s]+/g, ' ').trim().slice(0, 120);
+    PropertiesService.getScriptProperties().setProperty('cancel:' + c.code, JSON.stringify({ exp: c.exp, at: now.getTime(), reason: reason }));
+    sh.getRange(c.row, 5).setValue(now);
+    sh.getRange(c.row, 8).setValue('Cancelled ' + fmt_(now) + ' (was until ' + fmt_(c.exp) + ')' + (reason ? ': ' + reason : '') + ' | ' + note);
+  } finally { lock.releaseLock(); }
+  return true;
+}
+/** Undo a cancel: the plan gets its old end date back (or 1 month from today if that date has passed). */
+function adminUndoCancel(key, code) {
+  adminAuth_(key);
+  var c = findCode_(code); if (!c) throw new Error('NO_CODE');
+  var info = cancelled_(c.code); if (!info) throw new Error('NOT_CANCELLED');
+  var sh = sheet_('codes'), exp = new Date(info.exp);
+  if (exp.getTime() <= Date.now()) { exp = new Date(); exp.setMonth(exp.getMonth() + 1); exp.setHours(23, 59, 59, 0); }
+  sh.getRange(c.row, 5).setValue(exp); sh.getRange(c.row, 6).setValue('active');
+  uncancel_(c, sh);
+  return exp.getTime();
 }
 /** Approve or reject a payment waiting to be checked. Approving gives the shop its code straight away. */
 function adminPayment(key, row, action) {
